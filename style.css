@@ -1,20 +1,91 @@
+/* Configuration générale de la page */
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    margin: 40px;
+    margin: 0;
+    padding: 0;
     background-color: #f4f4f9;
     color: #333;
+    display: flex; /* Permet de mettre le menu et le contenu côte à côte */
+    min-height: 100vh;
 }
-header {
+
+/* La bande de navigation à gauche */
+nav {
+    width: 250px; /* Largeur de la bande */
     background-color: #2c3e50;
     color: white;
-    padding: 20px;
-    text-align: center;
-    border-radius: 5px;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column; /* Aligne les liens verticalement */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
-main {
-    margin-top: 20px;
-    background: white;
+
+/* Titre ou logo factice dans le menu */
+nav::before {
+    content: "Menu SN5";
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #34495e;
+    color: #1abc9c;
+}
+
+/* Les liens du menu */
+nav a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 15px 25px;
+    transition: background 0.3s;
+}
+
+/* Effet de survol */
+nav a:hover {
+    background-color: #34495e;
+    color: white;
+}
+
+/* Style pour la page active */
+nav a.active {
+    background-color: #1abc9c;
+    color: white;
+}
+
+/* Zone de contenu à droite (Header + Main + Footer) */
+.content-container {
+    flex: 1; /* Prend tout l'espace restant à droite */
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+header {
+    background-color: white;
+    color: #2c3e50;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+main {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    flex: 1; /* Pousse le footer vers le bas */
+}
+
+footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #7f8c8d;
 }
