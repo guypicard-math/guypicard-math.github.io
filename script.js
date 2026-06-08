@@ -1,11 +1,11 @@
-// --- LOGIQUE DE L'EXERCICE DE SIMPLIFICATION ---
+// --- LOGIQUE DE L'EXERCICE DE RATIONALISATION ---
 
-function verifierReponseRadical() {
+function verifierRationalisation() {
     // 1. Récupérer les valeurs entrées par l'élève
-    let élèveA = parseInt(document.getElementById('reponse-a').value);
-    let élèveB = parseInt(document.getElementById('reponse-b').value);
+    let élèveA = parseInt(document.getElementById('rationaliser-a').value);
+    let élèveB = parseInt(document.getElementById('rationaliser-b').value);
     
-    let message = document.getElementById('message-retroaction');
+    let message = document.getElementById('rationaliser-retroaction');
     
     // 2. Validation si les cases sont vides
     if (isNaN(élèveA) || isNaN(élèveB)) {
@@ -14,22 +14,22 @@ function verifierReponseRadical() {
         return;
     }
     
-    // 3. Vérification des réponses
-    if (élèveA === 4 && élèveB === 2) {
-        message.innerHTML = "🎉 Excellent travail ! 4&radic;2 est la forme simplifiée au maximum.";
+    // 3. Vérification des réponses pédagogiques
+    if (élèveA === 2 && élèveB === 3) {
+        message.innerHTML = "🎉 Bravo ! En multipliant par &radic;3 en haut et en bas, on obtient 6&radic;3 / 3, ce qui se simplifie magnifiquement en 2&radic;3.";
         message.style.color = "#27ae60";
-    } else if (élèveA === 2 && élèveB === 8) {
-        message.innerHTML = "🤔 C'est un bon début, mais ce n'est pas simplifié au maximum. Peux-tu extraire un autre carré parfait de &radic;8 ?";
+    } else if (élèveA === 6 && élèveB === 3) {
+        message.innerHTML = "🤔 Tu as bien éliminé la racine du dénominateur (6&radic;3 / 3), mais tu as oublié de diviser le coefficient 6 par le dénominateur 3 ! Simplifie ta fraction.";
         message.style.color = "#e67e22";
     } else {
-        message.innerHTML = "❌ Ce n'est pas tout à fait ça. Réessaie ou demande un indice !";
+        message.innerHTML = "❌ Ce n'est pas tout à fait ça. Diviser par une racine revient à multiplier le haut et le bas par cette même racine. Réessaie !";
         message.style.color = "#c0392b";
     }
 }
 
-function afficherIndiceRadical() {
-    let zoneIndice = document.getElementById('message-indice');
-    zoneIndice.innerHTML = "💡 <strong>Indice :</strong> Trouve le plus grand carré parfait qui divise 32 (ex: 4, 9, 16...). Écris ensuite &radic;32 comme &radic;(Carré Parfait &times; Reste).";
+function afficherIndiceRationaliser() {
+    let zoneIndice = document.getElementById('rationaliser-indice');
+    zoneIndice.innerHTML = "💡 <strong>Indice :</strong> Multiplie le numérateur et le dénominateur par &radic;3 pour faire disparaître la racine du bas. N'oublie pas que &radic;3 &times; &radic;3 = 3 !";
     zoneIndice.style.display = "block";
     zoneIndice.style.color = "#2980b9";
 }
