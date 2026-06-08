@@ -16,30 +16,24 @@
 
     <div class="content-container">
         <header>
-            <h1>Bloc 1</h1>
-            <p>Sélectionnez le concept que vous souhaitez pratiquer.</p>
+            <h1>Bloc 1 : Opérations sur les radicaux</h1>
+            <p>Pratiquez les techniques de base pour manipuler les expressions de fonctions.</p>
         </header>
 
         <main>
             <div class="sous-menu">
-                <button class="tab-btn active" onclick="ouvrirConcept('valeur-absolue')">Valeur Absolue</button>
-                <button class="tab-btn" onclick="ouvrirConcept('racine-carree')">Racine Carrée</button>
-                <button class="tab-btn" onclick="ouvrirConcept('partie-entiere')">Partie Entière</button>
+                <button class="tab-btn active" onclick="ouvrirConcept('simplifier')">Simplifier l'expression</button>
+                <button class="tab-btn" onclick="ouvrirConcept('rationaliser')">Rationaliser</button>
             </div>
 
-            <div id="valeur-absolue" class="concept-content">
-                <h2>La Fonction Valeur Absolue</h2>
-                <p>Bienvenue dans la section de la valeur absolue. Notre premier exercice interactif sera codé ici !</p>
+            <div id="simplifier" class="concept-content">
+                <h2>Simplifier l'expression</h2>
+                <p>Ici, nous allons créer l'application pour s'exercer à extraire les carrés parfaits de la racine (ex: $\sqrt{32} = 4\sqrt{2}$).</p>
             </div>
 
-            <div id="racine-carree" class="concept-content" style="display:none;">
-                <h2>La Fonction Racine Carrée</h2>
-                <p>Espace d'exercices pour la fonction racine carrée (en construction).</p>
-            </div>
-
-            <div id="partie-entiere" class="concept-content" style="display:none;">
-                <h2>La Fonction Partie Entière</h2>
-                <p>Espace d'exercices pour la fonction partie entière ou fonction en escalier (en construction).</p>
+            <div id="rationaliser" class="concept-content" style="display:none;">
+                <h2>Rationaliser le dénominateur</h2>
+                <p>Ici, nous allons créer l'application pour s'exercer à éliminer la racine au dénominateur (ex: $\frac{2}{\sqrt{3}} = \frac{2\sqrt{3}}{3}$).</p>
             </div>
         </main>
 
