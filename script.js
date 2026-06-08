@@ -1,47 +1,35 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloc 1 - SN5</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+// --- LOGIQUE DE L'EXERCICE DE SIMPLIFICATION ---
 
-    <nav>
-        <a href="index.html">Accueil</a>
-        <a href="bloc1.html" class="active">Bloc 1 : Les propriétés </a>
-        <a href="bloc2.html">Bloc 2 : Trigonométrie</a>
-    </nav>
+function verifierReponseRadical() {
+    // 1. Récupérer les valeurs entrées par l'élève
+    let élèveA = parseInt(document.getElementById('reponse-a').value);
+    let élèveB = parseInt(document.getElementById('reponse-b').value);
+    
+    let message = document.getElementById('message-retroaction');
+    
+    // 2. Validation si les cases sont vides
+    if (isNaN(élèveA) || isNaN(élèveB)) {
+        message.innerHTML = "⚠️ S'il te plaît, remplis les deux cases avant de vérifier.";
+        message.style.color = "#e67e22";
+        return;
+    }
+    
+    // 3. Vérification des réponses
+    if (élèveA === 4 && élèveB === 2) {
+        message.innerHTML = "🎉 Excellent travail ! 4&radic;2 est la forme simplifiée au maximum.";
+        message.style.color = "#27ae60";
+    } else if (élèveA === 2 && élèveB === 8) {
+        message.innerHTML = "🤔 C'est un bon début, mais ce n'est pas simplifié au maximum. Peux-tu extraire un autre carré parfait de &radic;8 ?";
+        message.style.color = "#e67e22";
+    } else {
+        message.innerHTML = "❌ Ce n'est pas tout à fait ça. Réessaie ou demande un indice !";
+        message.style.color = "#c0392b";
+    }
+}
 
-    <div class="content-container">
-        <header>
-            <h1>Bloc 1 : Opérations sur les radicaux</h1>
-            <p>Pratiquez les techniques de base pour manipuler les expressions de fonctions.</p>
-        </header>
-
-        <main>
-            <div class="sous-menu">
-                <button class="tab-btn active" onclick="ouvrirConcept('simplifier')">Simplifier l'expression</button>
-                <button class="tab-btn" onclick="ouvrirConcept('rationaliser')">Rationaliser</button>
-            </div>
-
-            <div id="simplifier" class="concept-content">
-                <h2>Simplifier l'expression</h2>
-                <p>Ici, nous allons créer l'application pour s'exercer à extraire les carrés parfaits de la racine (ex: $\sqrt{32} = 4\sqrt{2}$).</p>
-            </div>
-
-            <div id="rationaliser" class="concept-content" style="display:none;">
-                <h2>Rationaliser le dénominateur</h2>
-                <p>Ici, nous allons créer l'application pour s'exercer à éliminer la racine au dénominateur (ex: $\frac{2}{\sqrt{3}} = \frac{2\sqrt{3}}{3}$).</p>
-            </div>
-        </main>
-
-        <footer>
-            <p>&copy; 2026 - Site de Mathématiques SN5</p>
-        </footer>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+function afficherIndiceRadical() {
+    let zoneIndice = document.getElementById('message-indice');
+    zoneIndice.innerHTML = "💡 <strong>Indice :</strong> Trouve le plus grand carré parfait qui divise 32 (ex: 4, 9, 16...). Écris ensuite &radic;32 comme &radic;(Carré Parfait &times; Reste).";
+    zoneIndice.style.display = "block";
+    zoneIndice.style.color = "#2980b9";
+}
