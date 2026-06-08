@@ -10,7 +10,7 @@
 
     <nav>
         <a href="index.html">Accueil</a>
-        <a href="bloc1.html" class="active">Bloc 1</a>
+        <a href="bloc1.html" class="active">Bloc 1 : Les propriétés </a>
         <a href="bloc2.html">Bloc 2 : Trigonométrie</a>
     </nav>
 
@@ -27,13 +27,30 @@
             </div>
 
             <div id="simplifier" class="concept-content">
-                <h2>Simplifier l'expression</h2>
-                <p>Ici, nous allons créer l'application pour s'exercer à extraire les carrés parfaits de la racine (ex: $\sqrt{32} = 4\sqrt{2}$).</p>
+                <h2>Exercice 1 : Extraire un carré parfait</h2>
+                <p>Simplifie au maximum l'expression suivante : <strong>&radic;32</strong></p>
+                
+                <div class="zone-exercice">
+                    <p>Format de la réponse : <em>a</em>&radic;<em>b</em></p>
+                    <label>a = </label>
+                    <input type="number" id="reponse-a" placeholder="Ex: 2" class="input-math">
+                    
+                    <label> &radic;b où b = </label>
+                    <input type="number" id="reponse-b" placeholder="Ex: 3" class="input-math">
+                    
+                    <div class="boutons-actions">
+                        <button onclick="verifierReponseRadical()" class="btn-valider">Vérifier</button>
+                        <button onclick="afficherIndiceRadical()" class="btn-indice">Besoin d'un indice ?</button>
+                    </div>
+                    
+                    <p id="message-indice" class="texte-indice" style="display:none;"></p>
+                    <p id="message-retroaction" class="texte-retroaction"></p>
+                </div>
             </div>
 
             <div id="rationaliser" class="concept-content" style="display:none;">
                 <h2>Rationaliser le dénominateur</h2>
-                <p>Ici, nous allons créer l'application pour s'exercer à éliminer la racine au dénominateur (ex: $\frac{2}{\sqrt{3}} = \frac{2\sqrt{3}}{3}$).</p>
+                <p>Ici, nous allons créer l'application pour s'exercer à éliminer la racine au dénominateur.</p>
             </div>
         </main>
 
