@@ -1,26 +1,67 @@
-<div id="rationaliser" class="concept-content" style="display:none;">
-                <h2>Exercice 1 : Éliminer la racine au dénominateur</h2>
-                <p>Rationalise le dénominateur de l'expression suivante et simplifie au maximum :</p>
-                
-                <div class="fraction-container">
-                    <span class="numerateur">6</span>
-                    <span class="denominateur">&radic;3</span>
-                </div>
-                
-                <div class="zone-exercice">
-                    <p>Format de la réponse : <em>a</em>&radic;<em>b</em></p>
-                    <label>a = </label>
-                    <input type="number" id="rationaliser-a" placeholder="Ex: 2" class="input-math">
-                    
-                    <label> &radic;b où b = </label>
-                    <input type="number" id="rationaliser-b" placeholder="Ex: 3" class="input-math">
-                    
-                    <div class="boutons-actions">
-                        <button onclick="verifierRationalisation()" class="btn-valider">Vérifier</button>
-                        <button onclick="afficherIndiceRationaliser()" class="btn-indice">Besoin d'un indice ?</button>
-                    </div>
-                    
-                    <p id="rationaliser-indice" class="texte-indice" style="display:none;"></p>
-                    <p id="rationaliser-retroaction" class="texte-retroaction"></p>
-                </div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercices - Les Propriétés des Radicaux</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="capsule-mode">
+
+    <div class="sous-menu">
+        <button class="tab-btn active" onclick="ouvrirConcept('simplifier')">Simplifier l'expression</button>
+        <button class="tab-btn" onclick="ouvrirConcept('rationaliser')">Rationaliser</button>
+    </div>
+
+    <div id="simplifier" class="concept-content">
+        <h2>Exercice 1 : Extraire un carré parfait</h2>
+        <p>Simplifie au maximum l'expression suivante : <strong>&radic;32</strong></p>
+        
+        <div class="zone-exercice">
+            <p>Format de la réponse : <em>a</em>&radic;<em>b</em></p>
+            <label>a = </label>
+            <input type="number" id="reponse-a" placeholder="Ex: 2" class="input-math">
+            
+            <label> &radic;b où b = </label>
+            <input type="number" id="reponse-b" placeholder="Ex: 3" class="input-math">
+            
+            <div class="boutons-actions">
+                <button onclick="verifierReponseRadical()" class="btn-valider">Vérifier</button>
+                <button onclick="afficherIndiceRadical()" class="btn-indice">Besoin d'un indice ?</button>
             </div>
+            
+            <p id="message-indice" class="texte-indice" style="display:none;"></p>
+            <p id="message-retroaction" class="texte-retroaction"></p>
+        </div>
+    </div>
+
+    <div id="rationaliser" class="concept-content" style="display:none;">
+        <h2>Exercice 1 : Éliminer la racine au dénominateur</h2>
+        <p>Rationalise le dénominateur de l'expression suivante et simplifie au maximum :</p>
+        
+        <div class="fraction-container">
+            <span class="numerateur">6</span>
+            <span class="denominateur">&radic;3</span>
+        </div>
+        
+        <div class="zone-exercice">
+            <p>Format de la réponse : <em>a</em>&radic;<em>b</em></p>
+            <label>a = </label>
+            <input type="number" id="rationaliser-a" placeholder="Ex: 2" class="input-math">
+            
+            <label> &radic;b où b = </label>
+            <input type="number" id="rationaliser-b" placeholder="Ex: 3" class="input-math">
+            
+            <div class="boutons-actions">
+                <button onclick="verifierRationalisation()" class="btn-valider">Vérifier</button>
+                <button onclick="afficherIndiceRationaliser()" class="btn-indice">Besoin d'un indice ?</button>
+            </div>
+            
+            <p id="rationaliser-indice" class="texte-indice" style="display:none;"></p>
+            <p id="rationaliser-retroaction" class="texte-retroaction"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
