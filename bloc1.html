@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercices - Les Propriétés des Radicaux</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body class="capsule-mode">
 
@@ -41,17 +41,26 @@
         <p>Rationalise le dénominateur de l'expression suivante et simplifie au maximum :</p>
         
         <div class="fraction-container">
-            <span class="numerateur" id="num-rationaliser">6</span>
-            <span class="denominateur" id="den-rationaliser">&radic;3</span>
+            <span class="numerateur" id="num-rationaliser">5</span>
+            <span class="denominateur" id="den-rationaliser">&radic;2</span>
         </div>
         
         <div class="zone-exercice">
-            <p>Format de la réponse : <em>a</em>&radic;<em>b</em></p>
-            <label>a = </label>
-            <input type="number" id="rationaliser-a" placeholder="Ex: 2" class="input-math">
+            <p>Format de la réponse :</p>
             
-            <label> &radic;b où b = </label>
-            <input type="number" id="rationaliser-b" placeholder="Ex: 3" class="input-math">
+            <div class="reponse-fraction-bloc">
+                <div class="rep-num">
+                    <input type="number" id="rationaliser-a" placeholder="a" class="input-math">
+                    <label> &radic; </label>
+                    <input type="number" id="rationaliser-b" placeholder="b" class="input-math">
+                </div>
+                <div class="rep-barre"></div>
+                <div class="rep-den">
+                    <input type="number" id="rationaliser-c" placeholder="c" class="input-math">
+                </div>
+            </div>
+            
+            <p style="margin-top: 10px; font-size: 0.9rem; color: #7f8c8d;">* Si le résultat n'est pas une fraction, inscris 1 au dénominateur (c = 1).</p>
             
             <div class="boutons-actions">
                 <button onclick="verifierRationalisation()" class="btn-valider">Vérifier</button>
