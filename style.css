@@ -1,14 +1,179 @@
+/* ==========================================================================
+   1. STRUCTURE GÉNÉRALE (MODE INTÉGRATION GOOGLE SITES)
+   ========================================================================== */
+body.capsule-mode {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 10px;
+    padding: 0;
+    background-color: transparent; /* Se fond parfaitement dans Google Sites */
+    color: #2c3e50;
+}
+
+h2 {
+    color: #2c3e50;
+    margin-top: 10px;
+    font-size: 1.4rem;
+}
+
+p {
+    font-size: 1.05rem;
+    margin-bottom: 15px;
+}
+
+/* ==========================================================================
+   2. LES ONGLETS (SOUS-MENU)
+   ========================================================================== */
+.sous-menu {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    background-color: #edf2f7;
+    color: #4a5568;
+    border: none;
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    background-color: #cbd5e1;
+    color: #1a202c;
+}
+
+.tab-btn.active {
+    background-color: #1abc9c;
+    color: white;
+    box-shadow: 0 2px 4px rgba(26, 188, 156, 0.3);
+}
+
+/* ==========================================================================
+   3. LA ZONE D'EXERCICE ET ENTRÉES MATHS
+   ========================================================================== */
+.zone-exercice {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 25px;
+    border-radius: 10px;
+    margin-top: 15px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Empêche les cases de s'étirer sur toute la largeur */
+.input-math {
+    width: 70px !important; 
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    border: 2px solid #cbd5e1;
+    border-radius: 6px;
+    margin: 0 10px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-math:focus {
+    border-color: #3498db;
+}
+
+label {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   4. LES BOUTONS D'ACTION
+   ========================================================================== */
+.boutons-actions {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Base commune pour les boutons */
+.boutons-actions button {
+    border: none;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-valider {
+    background-color: #2ecc71;
+    color: white;
+}
+.btn-valider:hover {
+    background-color: #27ae60;
+}
+
+.btn-indice {
+    background-color: #3498db;
+    color: white;
+}
+.btn-indice:hover {
+    background-color: #2980b9;
+}
+
 .btn-suivant {
     background-color: #34495e;
     color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 10px;
-    transition: background 0.2s;
 }
 .btn-suivant:hover {
     background-color: #2c3e50;
+}
+
+/* ==========================================================================
+   5. RÉTROACTIONS ET FRACTIONS
+   ========================================================================== */
+.texte-indice, .texte-retroaction {
+    margin-top: 18px;
+    font-weight: bold;
+    font-size: 1.05rem;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.fraction-container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 15px 0;
+    color: #2c3e50;
+}
+
+.numerateur {
+    padding-bottom: 3px;
+}
+
+.denominateur {
+    border-top: 2px solid #2c3e50;
+    padding-top: 5px;
+}
+
+/* Animation fluide au changement d'onglet */
+.concept-content {
+    animation: fadeIn 0.35s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: translateY(0); }
 }
