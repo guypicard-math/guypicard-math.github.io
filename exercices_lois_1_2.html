@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Générateur d'exercices - Lois des exposants</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+ <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+ <style>
+ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+ .katex-display { margin: 0; }
+ </style>
+</head>
+<body class="bg-slate-100 min-h-screen p-4 md:p-8 text-slate-800">
+
+ <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
+ 
+ <!-- En-tête -->
+ <div class="bg-indigo-600 text-white p-6 text-center">
+ <h1 class="text-2xl md:text-3xl font-bold mb-2">Lois des exposants - Sec 3</h1>
+ <p class="text-indigo-100">Pratique la multiplication et la division avec différents niveaux de difficulté !</p>
+ </div>
+
+ <div class="p-6 md:p-8">
+ 
+ <!-- Contrôles -->
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+ 
+ <!-- Choix de la loi -->
+ <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+ <h3 class="font-semibold text-slate-700 mb-3">1. Choisis la loi</h3>
+ <div class="flex flex-col space-y-2">
+ <label class="inline-flex items-center cursor-pointer">
+ <input type="radio" name="operation" value="multiplication" class="form-radio text-indigo-600 w-5 h-5" checked>
+ <span class="ml-3 text-slate-700">Multiplication (Loi du produit)</span>
+ </label>
+ <label class="inline-flex items-center cursor-pointer">
+ <input type="radio" name="operation" value="division" class="form-radio text-indigo-600 w-5 h-5">
+ <span class="ml-3 text-slate-700">Division (Loi du quotient)</span>
+ </label>
+ </div>
+ </div>
+
+ <!-- Choix de la difficulté -->
+ <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+ <h3 class="font-semibold text-slate-700 mb-3">2. Choisis la difficulté</h3>
+ <div class="flex flex-col space-y-2">
+ <label class="inline-flex items-center cursor-pointer">
+ <input type="radio" name="difficulte" value="doux" class="form-radio text-green-500 w-5 h-5" checked>
+ <span class="ml-3 text-slate-700">🍏 Doux (Bases simples)</span>
+ </label>
+ <label class="inline-flex items-center cursor-pointer">
+ <input type="radio" name="difficulte" value="moyen" class="form-radio text-yellow-500 w-5 h-5">
+ <span class="ml-3 text-slate-700">🌮 Moyen (Avec coefficients)</span>
+ </label>
+ <label class="inline-flex items-center cursor-pointer">
+ <input type="radio" name="difficulte" value="epice" class="form-radio text-red-500 w-5 h-5">
+ <span class="ml-3 text-slate-700">🌶️ Épicé (Multi-variables et pièges)</span>
+ </label>
+ </div>
+ </div>
+ </div>
+
+ <!-- Zone d'affichage du problème -->
+ <div class="text-center mb-8 border-b-2 border-slate-100 pb-8">
+ <button id="btn-generer" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105 mb-6">
+ Générer un exercice
+ </button>
+
+ <div class="min-h-[150px] flex flex-col items-center justify-center bg-indigo-50 rounded-2xl border-2 border-indigo-100 p-6 relative max-w-lg mx-auto">
+ <span class="absolute top-3 left-4 text-xs font-bold text-indigo-400 uppercase tracking-wide">Question</span>
+ <div id="affichage-question" class="text-3xl md:text-4xl text-slate-800">
+ <span class="text-slate-400 text-lg">Clique sur le bouton pour commencer</span>
+ </div>
+ </div>
+ </div>
+
+ <!-- NOUVELLE ZONE: Saisie de l'élève -->
+ <div id="zone-saisie" class="hidden flex-col items-center bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm max-w-md mx-auto relative mb-6">
+ <span class="absolute top-3 left-4 text-xs font-bold text-slate-400 uppercase tracking-wide">Ta réponse</span>
+ 
+ <p class="text-sm text-center text-slate-600 mb-4 mt-2">Écris ta réponse avec des <b>exposants positifs</b>.<br><span class="text-xs italic">(Utilise <b>^</b> pour l'exposant. Laisse le bas vide s'il n'y a pas de fraction).</span></p>
+ 
+ <div class="flex flex-col items-center w-full px-8">
+ <input type="text" id="input-num" class="w-full text-center border-2 border-slate-300 rounded-lg p-2 text-xl font-semibold focus:border-indigo-500 focus:outline-none placeholder-slate-300 transition-colors" placeholder="Numérateur (Haut)">
+ 
+ <div class="w-full h-0.5 bg-slate-800 my-2"></div>
+ 
+ <input type="text" id="input-den" class="w-full text-center border-2 border-slate-300 rounded-lg p-2 text-xl font-semibold focus:border-indigo-500 focus:outline-none placeholder-slate-300 transition-colors" placeholder="Dénominateur (Bas)">
+ </div>
+ 
+ <button id="btn-verifier" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl shadow transition transform hover:scale-105">
+ Vérifier ma réponse
+ </button>
+ 
+ <p id="message-feedback" class="mt-4 font-semibold text-lg text-center hidden"></p>
+ </div>
+
+ <!-- Zone de réponse officielle (Révélée à la fin) -->
+ <div id="zone-reponse" class="hidden min-h-[100px] flex-col items-center justify-center bg-green-50 rounded-2xl border-2 border-green-200 p-6 relative max-w-md mx-auto transition-all">
+ <span id="titre-reponse" class="absolute top-3 left-4 text-xs font-bold text-green-600 uppercase tracking-wide">La bonne réponse</span>
+ <div id="affichage-reponse" class="text-2xl md:text-3xl text-green-800 font-semibold mt-2">
+ <!-- La réponse apparaîtra ici -->
+ </div>
+ </div>
+
+ </div>
+ </div>
+
+ <script>
+ let reponseAttendue = { numPlain: "", denPlain: "", latexFormat: "" };
+ let tentatives = 0;
+ const MAX_TENTATIVES = 3;
+
+ function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+ function formaterTermeQuestion(coef, var1, exp1, var2 = null, exp2 = 0) {
+ let terme = "";
+ if (coef === 1) terme = "";
+ else if (coef === -1) terme = "-";
+ else terme = coef.toString();
+ 
+ if (exp1 === 1) terme += var1;
+ else if (exp1 !== 0) terme += `${var1}^{${exp1}}`;
+ 
+ if (var2 !== null) {
+ if (exp2 === 1) terme += var2;
+ else if (exp2 !== 0) terme += `${var2}^{${exp2}}`;
+ }
+ 
+ if (terme === "" || terme === "-") return coef.toString();
+ return terme;
+ }
+
+ function genererTermeFinal(coef, var1, exp1, var2 = null, exp2 = 0) {
+ if (exp1 === 0 && exp2 === 0) { return { latex: coef.toString(), numPlain: coef.toString(), denPlain: "" }; }
+ let numVars = []; let denVars = [];
+
+ if (exp1 > 0) numVars.push(exp1 === 1 ? var1 : `${var1}^${exp1}`);
+ else if (exp1 < 0) denVars.push(exp1 === -1 ? var1 : `${var1}^${-exp1}`);
+
+ if (var2 !== null) {
+ if (exp2 > 0) numVars.push(exp2 === 1 ? var2 : `${var2}^${exp2}`);
+ else if (exp2 < 0) denVars.push(exp2 === -1 ? var2 : `${var2}^${-exp2}`);
+ }
+
+ let numStrPlain = ""; let numStrLatex = "";
+ if (coef === 1) { numStrPlain = numVars.length === 0 ? "1" : ""; numStrLatex = numVars.length === 0 ? "1" : ""; } 
+ else if (coef === -1) { numStrPlain = numVars.length === 0 ? "-1" : "-"; numStrLatex = numVars.length === 0 ? "-1" : "-"; } 
+ else { numStrPlain = coef.toString(); numStrLatex = coef.toString(); }
+
+ numStrPlain += numVars.join(""); numStrLatex += numVars.join("");
+
+ if ((numStrPlain === "" || numStrPlain === "-") && denVars.length > 0) { numStrPlain += "1"; numStrLatex += "1"; }
+
+ let denStrPlain = denVars.join(""); let denStrLatex = denVars.join("");
+
+ if (denVars.length === 0) { return { latex: numStrLatex, numPlain: numStrPlain, denPlain: "" }; } 
+ else { return { latex: `\\frac{${numStrLatex}}{${denStrLatex}}`, numPlain: numStrPlain, denPlain: denStrPlain }; }
+ }
+
+ function genererMultiplication(difficulte) {
+ const var1 = "a"; const var2 = "b";
+ let question = ""; let coef1 = 1, coef2 = 1, exp1_a = 0, exp2_a = 0, exp1_b = 0, exp2_b = 0;
+
+ if (difficulte === "doux") {
+ exp1_a = randomInt(-5, 6); exp2_a = randomInt(-5, 6);
+ while(exp1_a === 0) exp1_a = randomInt(-5, 6);
+ while(exp2_a === 0 || exp1_a + exp2_a === 0) exp2_a = randomInt(-5, 6);
+ question = `${var1}^{${exp1_a}} \\cdot ${var1}^{${exp2_a}}`;
+ } 
+ else if (difficulte === "moyen") {
+ coef1 = randomInt(2, 5); coef2 = randomInt(2, 5);
+ exp1_a = randomInt(-4, 5); exp2_a = randomInt(-4, 5);
+ while(exp1_a === 0) exp1_a = randomInt(-4, 5);
+ while(exp2_a === 0) exp2_a = randomInt(-4, 5);
+ question = `${coef1}${var1}^{${exp1_a}} \\cdot ${coef2}${var1}^{${exp2_a}}`;
+ } 
+ else if (difficulte === "epice") {
+ coef1 = randomInt(2, 6); coef2 = randomInt(2, 6);
+ if (randomInt(0, 1) === 1) coef1 *= -1;
+ exp1_a = randomInt(-4, 4); if(exp1_a===0) exp1_a=1;
+ exp1_b = randomInt(-4, 4); if(exp1_b===0) exp1_b=1;
+ exp2_a = randomInt(-4, 4); if(exp2_a===0) exp2_a=1;
+ exp2_b = randomInt(-4, 4); if(exp2_b===0) exp2_b=1;
+ let terme1 = formaterTermeQuestion(coef1, var1, exp1_a, var2, exp1_b);
+ let terme2 = formaterTermeQuestion(coef2, var1, exp2_a, var2, exp2_b);
+ question = `(${terme1})(${terme2})`;
+ }
+ 
+ let rep_coef = coef1 * coef2;
+ let rep = genererTermeFinal(rep_coef, var1, exp1_a + exp2_a, var2, exp1_b + exp2_b);
+ return { question: question, latexFormat: rep.latex, numPlain: rep.numPlain, denPlain: rep.denPlain };
+ }
+
+ function genererDivision(difficulte) {
+ const var1 = "x"; const var2 = "y";
+ let question = ""; let coef1 = 1, coef2 = 1, rep_coef = 1;
+ let exp1_x = 0, exp2_x = 0, exp1_y = 0, exp2_y = 0;
+
+ if (difficulte === "doux") {
+ exp1_x = randomInt(2, 9); exp2_x = randomInt(2, 9);
+ while (exp1_x === exp2_x) exp2_x = randomInt(2, 9);
+ question = `\\frac{${var1}^{${exp1_x}}}{${var1}^{${exp2_x}}}`;
+ } 
+ else if (difficulte === "moyen") {
+ coef2 = randomInt(2, 5); rep_coef = randomInt(2, 5); coef1 = coef2 * rep_coef;
+ exp1_x = randomInt(2, 8); exp2_x = randomInt(2, 8);
+ while (exp1_x === exp2_x) exp2_x = randomInt(2, 8);
+ question = `\\frac{${coef1}${var1}^{${exp1_x}}}{${coef2}${var1}^{${exp2_x}}}`;
+ } 
+ else if (difficulte === "epice") {
+ coef2 = randomInt(2, 6); rep_coef = randomInt(2, 6);
+ if (randomInt(0, 1) === 1) rep_coef *= -1;
+ coef1 = coef2 * rep_coef;
+ exp1_x = randomInt(1, 8); exp2_x = randomInt(1, 8);
+ exp1_y = randomInt(1, 8); exp2_y = randomInt(1, 8);
+ let num = formaterTermeQuestion(coef1, var1, exp1_x, var2, exp1_y);
+ let den = formaterTermeQuestion(coef2, var1, exp2_x, var2, exp2_y);
+ question = `\\frac{${num}}{${den}}`;
+ }
+
+ let rep = genererTermeFinal(rep_coef, var1, exp1_x - exp2_x, var2, exp1_y - exp2_y);
+ return { question: question, latexFormat: rep.latex, numPlain: rep.numPlain, denPlain: rep.denPlain };
+ }
+
+ function normaliser(str) {
+ if (!str) return "";
+ let s = str.replace(/\s+/g, '').toLowerCase();
+ const mapExp = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-' };
+ s = s.replace(/\^?([⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+)/g, function(match, p1) {
+ let normalNums = p1.split('').map(c => mapExp[c]).join('');
+ return '^' + normalNums;
+ });
+ s = s.replace(/([a-z])\^1(?!\d)/g, '$1');
+ return s;
+ }
+
+ const btnGenerer = document.getElementById('btn-generer');
+ const btnVerifier = document.getElementById('btn-verifier');
+
+ btnGenerer.addEventListener('click', () => {
+ tentatives = 0;
+ document.getElementById('input-num').value = ""; document.getElementById('input-den').value = "";
+ document.getElementById('input-num').disabled = false; document.getElementById('input-den').disabled = false;
+ btnVerifier.disabled = false; btnVerifier.classList.remove('opacity-50', 'cursor-not-allowed');
+ document.getElementById('message-feedback').classList.add('hidden');
+ document.getElementById('zone-saisie').classList.remove('hidden'); document.getElementById('zone-saisie').classList.add('flex');
+ document.getElementById('zone-reponse').classList.add('hidden'); document.getElementById('zone-reponse').classList.remove('flex');
+ 
+ const operation = document.querySelector('input[name="operation"]:checked').value;
+ const difficulte = document.querySelector('input[name="difficulte"]:checked').value;
+ 
+ let exercice = operation === "multiplication" ? genererMultiplication(difficulte) : genererDivision(difficulte);
+ reponseAttendue = exercice;
+
+ try { katex.render(exercice.question, document.getElementById('affichage-question'), { displayMode: true }); } 
+ catch (e) { document.getElementById('affichage-question').innerHTML = "Erreur mathématique."; }
+ });
+
+ btnVerifier.addEventListener('click', () => {
+ let userNum = normaliser(document.getElementById('input-num').value);
+ let userDen = normaliser(document.getElementById('input-den').value);
+ if (userDen === '1') userDen = '';
+
+ if (userNum === reponseAttendue.numPlain && userDen === reponseAttendue.denPlain) {
+ afficherFeedback("Bravo ! Bonne réponse 🥳", "text-green-600"); afficherReponseFinale("Ta réponse est parfaite !");
+ } else {
+ tentatives++;
+ if (tentatives >= MAX_TENTATIVES) {
+ afficherFeedback("Nombre maximum d'essais atteint.", "text-red-500"); afficherReponseFinale("Voici la bonne réponse");
+ } else {
+ let restants = MAX_TENTATIVES - tentatives; let msg = restants === 1 ? "Dernier essai !" : `Encore ${restants} essais.`;
+ afficherFeedback(`Incorrect. ${msg}`, "text-orange-500");
+ }
+ }
+ });
+
+ function afficherFeedback(msg, colorClass) {
+ let fb = document.getElementById('message-feedback');
+ fb.className = `mt-4 font-semibold text-lg text-center ${colorClass}`;
+ fb.innerText = msg; fb.classList.remove('hidden');
+ }
+
+ function afficherReponseFinale(titre) {
+ document.getElementById('input-num').disabled = true; document.getElementById('input-den').disabled = true;
+ btnVerifier.disabled = true; btnVerifier.classList.add('opacity-50', 'cursor-not-allowed');
+ let zRep = document.getElementById('zone-reponse');
+ document.getElementById('titre-reponse').innerText = titre;
+ zRep.classList.remove('hidden'); zRep.classList.add('flex');
+ try { katex.render(reponseAttendue.latexFormat, document.getElementById('affichage-reponse'), { displayMode: true }); } 
+ catch (e) { document.getElementById('affichage-reponse').innerHTML = reponseAttendue.latexFormat; }
+ }
+ </script>
+</body>
+</html>
