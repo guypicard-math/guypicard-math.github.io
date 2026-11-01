@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Explorateur de Paramètres a, b, h, k - Math 5SN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            overscroll-behavior-y: contain; /* Prevents pull-to-refresh on mobile */
+        }
+        canvas {
+            touch-action: none; /* Crucial for drawing on mobile without scrolling */
+            background-color: #ffffff;
+            background-image: 
+                linear-gradient(rgba(226, 232, 240, 0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
+            background-size: 40px 40px; /* Will be dynamically adjusted in JS, this is fallback */
+            border-radius: 0.5rem;
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+            cursor: crosshair;
+        }
+        .math-text {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+        }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex flex-col">
+
+    <header class="bg-blue-600 text-white p-4 shadow-md shrink-0">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">Activité 5SN : L'effet des paramètres</h1>
+                <p class="text-blue-100 text-sm mt-1">Prédis l'effet géométrique des paramètres a, b, h et k sur la fonction de base.</p>
+            </div>
+            <div class="flex gap-2 text-sm font-medium bg-blue-700/50 p-2 rounded-lg">
+                <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-slate-400 block border border-slate-500"></span> Base</div>
+                <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500 block border border-blue-600"></span> Ta prédiction</div>
+                <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-500 block border border-emerald-600"></span> Réponse</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 flex flex-col lg:flex-row gap-6 overflow-hidden">
+        
+        <!-- Panneau de contrôle -->
+        <aside class="w-full lg:w-1/3 flex flex-col gap-4 shrink-0 overflow-y-auto pr-2">
+            
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="font-semibold text-lg mb-4 text-slate-700 border-b pb-2">1. Choisir une fonction</h2>
+                <div class="space-y-3">
+                    <label class="block text-sm font-medium text-slate-600">Type de fonction de base :</label>
+                    <select id="funcSelect" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow">
+                        <option value="random">🎲 Aléatoire</option>
+                        <option value="sin">Sinus (Trigonométrique)</option>
+                        <option value="abs">Valeur absolue</option>
+                        <option value="floor">Escalier (Partie entière)</option>
+                        <option value="exp">Exponentielle (base 2)</option>
+                        <option value="log">Logarithmique (base 2)</option>
+                        <option value="piecewise">Fonction définie par parties</option>
+                    </select>
+
+                    <label class="block text-sm font-medium text-slate-600">Niveau de difficulté :</label>
+                    <select id="diffSelect" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow">
+                        <option value="doux">🌶️ Doux (1 paramètre)</option>
+                        <option value="moyen">🌶️🌶️ Moyen (2 paramètres)</option>
+                        <option value="epice" selected>🌶️🌶️🌶️ Épicé (3-4 paramètres)</option>
+                    </select>
+                    
+                    <button id="btnGenerate" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        Générer une nouvelle équation
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex-1 flex flex-col">
+                <h2 class="font-semibold text-lg mb-2 text-slate-700 border-b pb-2">2. Équation cible</h2>
+                <p class="text-sm text-slate-500 mb-4">Observe les paramètres et prédis la transformation. Dessine ton esquisse dans la zone de droite.</p>
+                
+                <div class="bg-blue-50 border border-blue-100 rounded-lg p-6 flex items-center justify-center min-h-[120px] mb-4">
+                    <span id="equationDisplay" class="math-text text-2xl font-bold text-slate-800 text-center">
+                        <!-- Equation injected via JS -->
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-4 gap-2 mb-4 text-center text-sm font-mono bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <div><span class="text-slate-500 block text-xs uppercase tracking-wider">a</span><strong id="valA" class="text-blue-600 text-lg"></strong></div>
+                    <div><span class="text-slate-500 block text-xs uppercase tracking-wider">b</span><strong id="valB" class="text-blue-600 text-lg"></strong></div>
+                    <div><span class="text-slate-500 block text-xs uppercase tracking-wider">h</span><strong id="valH" class="text-emerald-600 text-lg"></strong></div>
+                    <div><span class="text-slate-500 block text-xs uppercase tracking-wider">k</span><strong id="valK" class="text-emerald-600 text-lg"></strong></div>
+                </div>
+                
+                <div class="mt-auto space-y-3">
+                    <button id="btnResetPred" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2 rounded-lg transition-colors border border-slate-300">
+                        Réinitialiser ma prédiction
+                    </button>
+                    <button id="btnVerify" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-lg shadow-md transition-colors text-lg flex items-center justify-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Vérifier la réponse
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="w-full lg:w-2/3 bg-white rounded-xl shadow-sm border border-slate-200 p-2 flex flex-col h-[50vh] lg:h-auto relative">
+            <div id="canvasContainer" class="w-full h-full relative rounded-lg overflow-hidden border border-slate-200">
+                <canvas id="graphCanvas"></canvas>
+                <!-- Message box fallback overlay -->
+                <div id="messageBox" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden opacity-0 transition-opacity duration-300">
+                    <div class="bg-white rounded-xl shadow-xl border border-slate-200 p-6 max-w-md text-center transform scale-95 transition-transform duration-300" id="messageBoxContent">
+                        <div id="messageIcon" class="mx-auto w-16 h-16 rounded-full bg-emerald-100 text-emerald-500 flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <h3 id="messageTitle" class="text-xl font-bold text-slate-800 mb-2">Bravo !</h3>
+                        <p id="messageText" class="text-slate-600 mb-6">Compare maintenant ta prédiction (bleu) avec la véritable courbe (vert).</p>
+                        <button id="messageBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+                            Continuer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Éléments du DOM ---
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const equationDisplay = document.getElementById('equationDisplay');
+        
+        const btnGenerate = document.getElementById('btnGenerate');
+        const btnVerify = document.getElementById('btnVerify');
+        const btnResetPred = document.getElementById('btnResetPred');
+        const funcSelect = document.getElementById('funcSelect');
+        const diffSelect = document.getElementById('diffSelect');
+        
+        const valA = document.getElementById('valA');
+        const valB = document.getElementById('valB');
+        const valH = document.getElementById('valH');
+        const valK = document.getElementById('valK');
+
+        const messageBox = document.getElementById('messageBox');
+        const messageBtn = document.getElementById('messageBtn');
+        const messageBoxContent = document.getElementById('messageBoxContent');
+
+        // --- Paramètres Globaux du Plan Cartésien ---
+        let scale = 40; // Pixels par unité
+        let originX, originY;
+        let isVerified = false;
+        
+        // --- Variables de l'équation courante ---
+        let currentFuncType = 'sin';
+        let currentParams = { a: 1, b: 1, h: 0, k: 0 };
+        const functionTypes = ['sin', 'abs', 'floor', 'exp', 'log', 'piecewise'];
+
+        // --- Variables de manipulation (Points glissants) ---
+        let studentParams = { a: 1, b: 1, h: 0, k: 0 };
+        let activeHandle = null;
+        let hoverHandle = null;
+        const bValues = [-4, -3, -2, -1, -0.5, 0.5, 1, 2, 3, 4]; // Valeurs autorisées pour b
+
+        // --- Initialisation et Redimensionnement ---
+        function resizeCanvas() {
+            // Setup correct resolution for retina displays
+            const rect = canvasContainer.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = `${rect.width}px`;
+            canvas.style.height = `${rect.height}px`;
+            
+            ctx.scale(dpr, dpr);
+            
+            originX = rect.width / 2;
+            originY = rect.height / 2;
+            
+            // Adjust scale slightly for small mobile screens so more graph is visible
+            scale = rect.width < 500 ? 25 : 40; 
+            
+            // Update CSS background grid
+            canvas.style.backgroundSize = `${scale}px ${scale}px`;
+            canvas.style.backgroundPosition = `${originX}px ${originY}px`;
+            
+            render();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        function getRandomParam(options) {
+            return options[Math.floor(Math.random() * options.length)];
+        }
+
+        function generateFunction() {
+            let type = funcSelect.value;
+            if (type === 'random') {
+                type = functionTypes[Math.floor(Math.random() * functionTypes.length)];
+            }
+            currentFuncType = type;
+
+            // Options pour les paramètres a et b (on retire 1 pour forcer un changement)
+            const multOptions = [-3, -2, -1, -0.5, 0.5, 2, 3];
+            // Options pour h et k (on retire 0 pour forcer un changement)
+            const addOptions = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];
+
+            // Valeurs de base (fonction mère)
+            currentParams = { a: 1, b: 1, h: 0, k: 0 };
+
+            // Déterminer le nombre de paramètres à modifier selon la difficulté
+            const difficulty = diffSelect.value;
+            let numParamsToChange = 4;
+            if (difficulty === 'doux') numParamsToChange = 1;
+            else if (difficulty === 'moyen') numParamsToChange = 2;
+            else numParamsToChange = Math.floor(Math.random() * 2) + 3; // 3 ou 4 pour épicé
+
+            // Choisir aléatoirement quels paramètres seront modifiés
+            let paramsToChange = ['a', 'b', 'h', 'k'];
+            paramsToChange = paramsToChange.sort(() => 0.5 - Math.random()).slice(0, numParamsToChange);
+
+            // Assigner les nouvelles valeurs uniquement aux paramètres choisis
+            paramsToChange.forEach(param => {
+                if (param === 'a' || param === 'b') {
+                    currentParams[param] = getRandomParam(multOptions);
+                } else {
+                    currentParams[param] = getRandomParam(addOptions);
+                }
+            });
+
+            // Ajustements spécifiques pour l'affichage
+            // Éviter h trop grand pour log car le domaine serait hors de la vue
+            if (currentFuncType === 'log' && paramsToChange.includes('h')) {
+                const logHOptions = [-3, -2, -1, 1, 2, 3];
+                currentParams.h = getRandomParam(logHOptions);
+            }
+            // Pour l'exponentielle, éviter les combinaisons qui font exploser le Y trop vite
+            if (currentFuncType === 'exp') {
+                if (paramsToChange.includes('a') && Math.abs(currentParams.a) > 2) currentParams.a = currentParams.a > 0 ? 2 : -2;
+                if (paramsToChange.includes('b') && Math.abs(currentParams.b) > 2) currentParams.b = currentParams.b > 0 ? 1 : -1;
+            }
+
+            isVerified = false;
+            studentParams = { a: 1, b: 1, h: 0, k: 0 };
+            activeHandle = null;
+            hoverHandle = null;
+            
+            updateUI();
+            render();
+        }
+
+        function formatEquation(type, p) {
+            const formatMultiplier = (val, isOuter = false) => {
+                if (val === 1) return isOuter ? "" : "1";
+                if (val === -1) return "-";
+                return val;
+            };
+
+            const formatH = (h) => {
+                if (h === 0) return "";
+                return h > 0 ? ` - ${h}` : ` + ${Math.abs(h)}`;
+            };
+
+            const formatK = (k) => {
+                if (k === 0) return "";
+                return k > 0 ? ` + ${k}` : ` - ${Math.abs(k)}`;
+            };
+
+            let aStr = formatMultiplier(p.a, true);
+            let bStr = p.b === 1 ? "" : (p.b === -1 ? "-" : p.b);
+            
+            // X expression: b(x - h)
+            let xExpr = "";
+            if (p.h === 0) {
+                xExpr = `${p.b === 1 ? "" : p.b === -1 ? "-" : p.b}x`;
+            } else {
+                xExpr = `${bStr}(x${formatH(p.h)})`;
+            }
+
+            let kStr = formatK(p.k);
+            let finalEq = "";
+
+            switch(type) {
+                case 'sin':
+                    finalEq = `g(x) = ${aStr === "" && p.a!==1 ? "1" : aStr}${aStr !== "" && aStr!=="-" ? " " : ""}\\sin(${xExpr})${kStr}`;
+                    break;
+                case 'abs':
+                    finalEq = `g(x) = ${aStr}|${xExpr}|${kStr}`;
+                    break;
+                case 'floor':
+                    finalEq = `g(x) = ${aStr}[${xExpr}]${kStr}`;
+                    break;
+                case 'exp':
+                    finalEq = `g(x) = ${aStr === "-" ? "-1 \\cdot " : aStr !== "" ? aStr + " \\cdot " : ""}2^{${xExpr}}${kStr}`;
+                    break;
+                case 'log':
+                    finalEq = `g(x) = ${aStr}\\log_2(${xExpr})${kStr}`;
+                    break;
+                case 'piecewise':
+                    finalEq = `g(x) = ${aStr}f(${xExpr})${kStr}`;
+                    break;
+            }
+
+            // Convert to basic HTML for display without a heavy math library
+            // Handling superscripts and subscripts
+            let htmlEq = finalEq
+                .replace(/\\sin/g, 'sin')
+                .replace(/\\log_2/g, 'log<sub>2</sub>')
+                .replace(/\\cdot/g, '·')
+                .replace(/\^{([^}]+)}/g, '<sup>$1</sup>');
+            
+            return `<i class="math-text">${htmlEq}</i>`;
+        }
+
+        function updateUI() {
+            equationDisplay.innerHTML = formatEquation(currentFuncType, currentParams);
+            valA.innerText = currentParams.a;
+            valB.innerText = currentParams.b;
+            valH.innerText = currentParams.h;
+            valK.innerText = currentParams.k;
+            
+            if (isVerified) {
+                btnVerify.innerHTML = `
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Nouvelle Transformation
+                `;
+                btnVerify.classList.replace('bg-emerald-500', 'bg-blue-600');
+                btnVerify.classList.replace('hover:bg-emerald-600', 'hover:bg-blue-700');
+            } else {
+                btnVerify.innerHTML = `
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Vérifier la réponse
+                `;
+                btnVerify.classList.replace('bg-blue-600', 'bg-emerald-500');
+                btnVerify.classList.replace('hover:bg-blue-700', 'hover:bg-emerald-600');
+            }
+        }
+
+        function mathEval(x, type) {
+            switch(type) {
+                case 'sin': return Math.sin(x);
+                case 'abs': return Math.abs(x);
+                case 'floor': return Math.floor(x);
+                case 'exp': return Math.pow(2, x);
+                case 'log': return x > 0 ? Math.log2(x) : NaN;
+                case 'piecewise': 
+                    // Passe par l'origine: y=x pour x<=0, y=x^2 pour x>0
+                    return x <= 0 ? x : Math.pow(x, 2);
+                default: return 0;
+            }
+        }
+
+        function drawAxes() {
+            ctx.beginPath();
+            ctx.strokeStyle = '#94a3b8'; // slate-400
+            ctx.lineWidth = 2;
+            
+            // X axis
+            ctx.moveTo(0, originY);
+            ctx.lineTo(canvas.width, originY);
+            // Y axis
+            ctx.moveTo(originX, 0);
+            ctx.lineTo(originX, canvas.height);
+            ctx.stroke();
+
+            // Ticks and labels
+            ctx.fillStyle = '#64748b'; // slate-500
+            ctx.font = '12px Inter';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            const unitsX = Math.ceil(canvas.width / scale / 2);
+            const unitsY = Math.ceil(canvas.height / scale / 2);
+
+            for (let i = -unitsX; i <= unitsX; i++) {
+                if (i === 0) continue;
+                const px = originX + i * scale;
+                ctx.fillRect(px - 1, originY - 4, 2, 8);
+                if (i % 2 === 0) { // Label every 2 units
+                    ctx.fillText(i, px, originY + 8);
+                }
+            }
+
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            for (let i = -unitsY; i <= unitsY; i++) {
+                if (i === 0) continue;
+                const py = originY - i * scale;
+                ctx.fillRect(originX - 4, py - 1, 8, 2);
+                if (i % 2 === 0) {
+                    ctx.fillText(i, originX - 8, py);
+                }
+            }
+            
+            // Origin
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'top';
+            ctx.fillText("0", originX - 6, originY + 6);
+        }
+
+        function drawMathFunction(type) {
+            let p;
+            ctx.beginPath();
+            
+            // Apparence selon le type de tracé
+            if (type === 'target') {
+                p = currentParams;
+                ctx.strokeStyle = '#10b981'; // emerald-500
+                ctx.lineWidth = 3;
+                ctx.setLineDash([]);
+            } else if (type === 'prediction') {
+                p = studentParams;
+                ctx.strokeStyle = '#3b82f6'; // blue-500
+                ctx.lineWidth = 3;
+                ctx.setLineDash([]);
+            } else { // base
+                p = { a: 1, b: 1, h: 0, k: 0 };
+                ctx.strokeStyle = '#475569'; // slate-600
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+            }
+
+            const pixelStep = 2;
+            let firstPoint = true;
+            let lastY = 0;
+
+            for (let px = 0; px <= canvas.width; px += pixelStep) {
+                const mathX = (px - originX) / scale;
+                const innerX = p.b * (mathX - p.h);
+                const baseY = mathEval(innerX, currentFuncType);
+                let mathY = isNaN(baseY) ? NaN : p.a * baseY + p.k;
+
+                if (!isNaN(mathY)) {
+                    const py = originY - mathY * scale;
+
+                    if (!firstPoint && Math.abs(py - lastY) > scale * 0.9) { 
+                        if (currentFuncType === 'floor' || currentFuncType === 'piecewise') {
+                           ctx.stroke();
+                           ctx.beginPath();
+                        } else {
+                           ctx.lineTo(px, py);
+                        }
+                    } else if (firstPoint) {
+                        ctx.moveTo(px, py);
+                        firstPoint = false;
+                    } else {
+                        ctx.lineTo(px, py);
+                    }
+                    lastY = py;
+                } else {
+                    firstPoint = true; 
+                }
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawHandles() {
+            if (isVerified) return; // Cacher les poignées une fois vérifié
+            
+            const pxH = originX + studentParams.h * scale;
+            const pyK = originY - studentParams.k * scale;
+            
+            const pxA = originX + studentParams.h * scale;
+            const pyA = originY - (studentParams.k + studentParams.a) * scale;
+            
+            const pxB = originX + (studentParams.h + 1/studentParams.b) * scale;
+            const pyB = originY - studentParams.k * scale;
+
+            // Lignes de connexion
+            ctx.beginPath();
+            ctx.moveTo(pxH, pyK);
+            ctx.lineTo(pxA, pyA);
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)'; // Rouge pointillé
+            ctx.lineWidth = 2;
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(pxH, pyK);
+            ctx.lineTo(pxB, pyB);
+            ctx.strokeStyle = 'rgba(168, 85, 247, 0.5)'; // Violet
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Fonction utilitaire pour dessiner les cercles de poignées
+            const drawPoint = (x, y, color, label, isHover) => {
+                ctx.beginPath();
+                ctx.arc(x, y, isHover ? 10 : 7, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            };
+
+            drawPoint(pxA, pyA, '#ef4444', 'a', activeHandle === 'a' || hoverHandle === 'a');
+            drawPoint(pxB, pyB, '#a855f7', 'b', activeHandle === 'b' || hoverHandle === 'b');
+            drawPoint(pxH, pyK, '#3b82f6', '(h,k)', activeHandle === 'hk' || hoverHandle === 'hk');
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawAxes();
+            drawMathFunction('base');
+            drawMathFunction('prediction');
+            drawHandles();
+            
+            if (isVerified) {
+                drawMathFunction('target'); 
+            }
+        }
+
+        function getPointerPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            // Handle both touch and mouse
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            // Scale correctly for canvas internal resolution
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        function getHoveredHandle(mathX, mathY) {
+            const h = studentParams.h;
+            const k = studentParams.k;
+            const a = studentParams.a;
+            const b = studentParams.b;
+            
+            // Marge d'erreur de cliquage (environ 15px)
+            const thresholdX = 15 / scale;
+            const thresholdY = 15 / scale;
+
+            if (Math.abs(mathX - h) < thresholdX && Math.abs(mathY - (k + a)) < thresholdY) return 'a';
+            if (Math.abs(mathX - (h + 1/b)) < thresholdX && Math.abs(mathY - k) < thresholdY) return 'b';
+            if (Math.abs(mathX - h) < thresholdX && Math.abs(mathY - k) < thresholdY) return 'hk';
+            
+            return null;
+        }
+
+        function handlePointerDown(e) {
+            if (isVerified) return;
+            e.preventDefault();
+            const pos = getPointerPos(e);
+            const mathX = (pos.x - originX) / scale;
+            const mathY = (originY - pos.y) / scale;
+            
+            activeHandle = getHoveredHandle(mathX, mathY);
+            if(activeHandle) {
+                canvas.style.cursor = 'grabbing';
+            }
+            render();
+        }
+
+        function handlePointerMove(e) {
+            if (isVerified) return;
+            e.preventDefault();
+            const pos = getPointerPos(e);
+            const mathX = (pos.x - originX) / scale;
+            const mathY = (originY - pos.y) / scale;
+
+            if (activeHandle) {
+                if (activeHandle === 'hk') {
+                    // Accrochage à des valeurs au 0.5 près
+                    studentParams.h = Math.round(mathX * 2) / 2;
+                    studentParams.k = Math.round(mathY * 2) / 2;
+                } else if (activeHandle === 'a') {
+                    let newA = Math.round((mathY - studentParams.k) * 2) / 2;
+                    if (newA === 0) newA = 0.5; // Empêcher l'aplatissement complet
+                    studentParams.a = newA;
+                } else if (activeHandle === 'b') {
+                    const dx = mathX - studentParams.h;
+                    // Trouver le 1/b le plus proche selon les valeurs autorisées
+                    let closestB = bValues[0];
+                    let minDiff = Infinity;
+                    for (const b of bValues) {
+                        const targetDx = 1 / b;
+                        const diff = Math.abs(dx - targetDx);
+                        if (diff < minDiff) {
+                            minDiff = diff;
+                            closestB = b;
+                        }
+                    }
+                    studentParams.b = closestB;
+                }
+                render();
+            } else {
+                // Effet visuel au survol
+                const newHover = getHoveredHandle(mathX, mathY);
+                if (newHover !== hoverHandle) {
+                    hoverHandle = newHover;
+                    canvas.style.cursor = hoverHandle ? 'grab' : 'crosshair';
+                    render();
+                }
+            }
+        }
+
+        function handlePointerUp(e) {
+            if (activeHandle) {
+                e.preventDefault();
+                activeHandle = null;
+                canvas.style.cursor = hoverHandle ? 'grab' : 'crosshair';
+                render();
+            }
+        }
+
+        // Évènements de souris
+        canvas.addEventListener('mousedown', handlePointerDown);
+        canvas.addEventListener('mousemove', handlePointerMove);
+        window.addEventListener('mouseup', handlePointerUp); // Gère les relâchements hors de la zone
+        
+        // Évènements tactiles
+        canvas.addEventListener('touchstart', handlePointerDown, {passive: false});
+        canvas.addEventListener('touchmove', handlePointerMove, {passive: false});
+        window.addEventListener('touchend', handlePointerUp);
+
+        btnResetPred.addEventListener('click', () => {
+            studentParams = { a: 1, b: 1, h: 0, k: 0 };
+            render();
+        });
+
+        btnGenerate.addEventListener('click', () => {
+            generateFunction();
+        });
+
+        funcSelect.addEventListener('change', () => {
+            generateFunction();
+        });
+
+        diffSelect.addEventListener('change', () => {
+            generateFunction();
+        });
+
+        function showMessage(title, text) {
+            document.getElementById('messageTitle').innerText = title;
+            document.getElementById('messageText').innerText = text;
+            messageBox.classList.remove('hidden');
+            // Timeout to allow DOM update before transitioning opacity
+            setTimeout(() => {
+                messageBox.classList.remove('opacity-0');
+                messageBoxContent.classList.remove('scale-95');
+                messageBoxContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        messageBtn.addEventListener('click', () => {
+            messageBox.classList.add('opacity-0');
+            messageBoxContent.classList.remove('scale-100');
+            messageBoxContent.classList.add('scale-95');
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 300);
+        });
+
+        btnVerify.addEventListener('click', () => {
+            if (isVerified) {
+                generateFunction();
+            } else {
+                isVerified = true;
+                updateUI();
+                render();
+                showMessage("Bravo !", "Compare maintenant ta prédiction (bleue) avec la véritable courbe (verte).");
+            }
+        });
+
+        // Initialize
+        resizeCanvas();
+        generateFunction();
+
+    </script>
+</body>
+</html>

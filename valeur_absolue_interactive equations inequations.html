@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activité : Fonction Valeur Absolue</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        canvas {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .math-text {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body class="text-slate-800 p-4 md:p-8 min-h-screen flex flex-col items-center">
+
+    <div class="max-w-4xl w-full bg-white rounded-xl shadow-lg p-6 md:p-8 mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-blue-700 mb-2">Défi : Valeur Absolue</h1>
+        <p class="text-center text-slate-500 mb-8">Mathématiques 5SN - Résolution d'équations et d'inéquations</p>
+
+        <div class="flex flex-col md:flex-row justify-center gap-4 mb-8">
+            <button onclick="setLevel('doux')" id="btn-doux" class="px-6 py-3 rounded-lg font-semibold transition-colors duration-200 bg-green-100 text-green-700 hover:bg-green-200 border-2 border-green-500">
+                🌶️ Doux (Équations simples)
+            </button>
+            <button onclick="setLevel('moyen')" id="btn-moyen" class="px-6 py-3 rounded-lg font-semibold transition-colors duration-200 bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-2 border-transparent">
+                🌶️🌶️ Moyen (Équations et Inéquations)
+            </button>
+            <button onclick="setLevel('epice')" id="btn-epice" class="px-6 py-3 rounded-lg font-semibold transition-colors duration-200 bg-red-100 text-red-700 hover:bg-red-200 border-2 border-transparent">
+                🌶️🌶️🌶️ Épicé (Inéquations complexes)
+            </button>
+        </div>
+
+        <div id="problem-area" class="bg-blue-50 p-6 rounded-lg border border-blue-100 mb-8 text-center hidden">
+            <h2 class="text-xl font-semibold mb-4 text-blue-800">Résous ce problème :</h2>
+            <div id="equation-display" class="math-text text-2xl mb-6 text-slate-800 bg-white p-4 inline-block rounded border border-blue-200">
+                <!-- L'équation apparaîtra ici -->
+            </div>
+            
+            <div class="flex flex-col items-center gap-4">
+                <div class="text-sm text-slate-600 mb-2 text-left w-full max-w-md">
+                    <p class="font-semibold mb-1">Format de réponse :</p>
+                    <ul class="list-disc pl-5">
+                        <li>Si une ou deux solutions : ex: <code>2, -4</code></li>
+                        <li>Si intervalle : ex: <code>[2, 5[</code> ou <code>]-inf, 3] U [5, inf[</code></li>
+                        <li>Si aucune solution : écris <code>aucun</code></li>
+                    </ul>
+                </div>
+                <div class="flex w-full max-w-md gap-2">
+                    <input type="text" id="user-answer" placeholder="Ta réponse ici..." class="flex-1 p-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 font-mono" onkeypress="handleKeyPress(event)">
+                    <button onclick="checkAnswer()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        Vérifier
+                    </button>
+                </div>
+                <div id="feedback-message" class="mt-4 font-semibold text-lg min-h-[1.75rem]"></div>
+            </div>
+        </div>
+
+        <div id="results-area" class="hidden flex-col w-full gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-start">
+                
+                <!-- Résolution algébrique -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm w-full">
+                    <h3 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <span>📝</span> Résolution algébrique
+                    </h3>
+                    <div id="resolution-steps" class="space-y-4 text-slate-700 font-medium text-sm md:text-base leading-relaxed">
+                        <!-- Les étapes de résolution iront ici -->
+                    </div>
+                </div>
+
+                <!-- Graphique -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm w-full flex flex-col items-center">
+                    <h3 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <span>📉</span> Validation graphique
+                    </h3>
+                    <div class="relative w-full aspect-video md:aspect-[4/3] lg:aspect-video">
+                        <canvas id="cartesian-canvas" class="w-full h-full rounded border border-slate-200"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4 text-center">La courbe bleue est la fonction. La ligne rouge pointillée est la constante. La zone colorée sur l'axe confirme l'ensemble solution.</p>
+                </div>
+
+            </div>
+            <div class="flex justify-center mt-2 mb-8">
+                <button onclick="generateProblem()" class="bg-slate-800 hover:bg-slate-900 text-white px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg">
+                    Prochain problème
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration de l'état
+        let currentLevel = 'doux';
+        let currentProblem = null;
+        let canvas = document.getElementById('cartesian-canvas');
+        let ctx = canvas.getContext('2d');
+        
+        // Configuration du plan cartésien
+        const graphConfig = {
+            minX: -10, maxX: 10,
+            minY: -10, maxY: 10,
+            padding: 20
+        };
+
+        const problemGenerators = {
+            doux: () => {
+                // a|x - h| + k = c  (Équations simples)
+                const h = getRandomInt(-5, 5);
+                const k = getRandomInt(-5, 5);
+                const a = getRandomInt(1, 3) * (Math.random() > 0.5 ? 1 : -1);
+                
+                // Assurer qu'il y a des solutions "belles" la plupart du temps
+                const dx = getRandomInt(1, 4);
+                const c = k + a * dx; 
+
+                return {
+                    type: 'eq',
+                    latex: `${a === 1 ? '' : a === -1 ? '-' : a}|x ${formatTerm(-h)}| ${formatTerm(k)} = ${c}`,
+                    a, h, k, c, operator: '='
+                };
+            },
+            moyen: () => {
+                // a|x - h| + k (<, >, ≤, ≥, =) c (Mélange)
+                const h = getRandomInt(-6, 6);
+                const k = getRandomInt(-6, 6);
+                const a = getRandomInt(1, 4) * (Math.random() > 0.5 ? 1 : -1);
+                
+                let dx = getRandomInt(1, 5);
+                let c = k + a * dx;
+                
+                // Parfois générer un cas sans solution ou solution tout R
+                if (Math.random() < 0.15) {
+                    c = k - a * dx; // c est du côté opposé à l'ouverture
+                }
+
+                const ops = ['=', '<', '>', '≤', '≥'];
+                const operator = ops[Math.floor(Math.random() * ops.length)];
+
+                return {
+                    type: operator === '=' ? 'eq' : 'ineq',
+                    latex: `${a === 1 ? '' : a === -1 ? '-' : a}|x ${formatTerm(-h)}| ${formatTerm(k)} ${operator} ${c}`,
+                    a, h, k, c, operator
+                };
+            },
+            epice: () => {
+                // a|x - h| + k (<, >, ≤, ≥) c (Inéquations, forme canonique seulement)
+                const h = getRandomInt(-8, 8);
+                const k = getRandomInt(-8, 8);
+                const a = getRandomInt(-4, -1); // 'a' est négatif pour tester le changement de signe
+                
+                const dx = getRandomInt(1, 5);
+                let c = k + a * dx;
+
+                 // Cas spéciaux
+                 if (Math.random() < 0.2) {
+                    c = k - a * dx; // Forcer des cas sans solution ou tout R
+                }
+
+                const ops = ['<', '>', '≤', '≥'];
+                const operator = ops[Math.floor(Math.random() * ops.length)];
+
+                return {
+                    type: 'ineq',
+                    latex: `${a === -1 ? '-' : a}|x ${formatTerm(-h)}| ${formatTerm(k)} ${operator} ${c}`,
+                    a, h, k, c, operator
+                };
+            }
+        };
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function formatTerm(num) {
+            if (num === 0) return '';
+            return num > 0 ? `+ ${num}` : `- ${Math.abs(num)}`;
+        }
+
+        // Configuration du niveau
+        function setLevel(level) {
+            currentLevel = level;
+            
+            // Mise à jour visuelle des boutons
+            document.querySelectorAll('button[id^="btn-"]').forEach(btn => {
+                btn.classList.remove('border-green-500', 'border-yellow-500', 'border-red-500');
+                btn.classList.add('border-transparent');
+            });
+            
+            const btn = document.getElementById(`btn-${level}`);
+            if (level === 'doux') btn.classList.replace('border-transparent', 'border-green-500');
+            if (level === 'moyen') btn.classList.replace('border-transparent', 'border-yellow-500');
+            if (level === 'epice') btn.classList.replace('border-transparent', 'border-red-500');
+
+            document.getElementById('problem-area').classList.remove('hidden');
+            document.getElementById('results-area').classList.add('hidden');
+            
+            generateProblem();
+        }
+
+        function generateProblem() {
+            currentProblem = problemGenerators[currentLevel]();
+            
+            document.getElementById('equation-display').innerHTML = `$$${currentProblem.latex}$$`.replace(/\$\$/g, '');
+            document.getElementById('user-answer').value = '';
+            document.getElementById('feedback-message').textContent = '';
+            document.getElementById('results-area').classList.add('hidden');
+            document.getElementById('user-answer').focus();
+
+            // Ajuster la fenêtre du graphique basée sur le problème
+            adjustGraphWindow(currentProblem);
+            
+            // Solve silently to have the answer ready
+            currentProblem.solution = solveProblem(currentProblem);
+            console.log("Solution attendue (pour profs) :", currentProblem.solution);
+        }
+
+        function adjustGraphWindow(p) {
+            // S'assurer que le sommet (h,k) et les intersections (y=c) sont visibles
+            const pX = [p.h];
+            const pY = [p.k, p.c];
+
+            if (p.a !== 0) {
+                const val = (p.c - p.k) / p.a;
+                if (val >= 0) {
+                    pX.push(p.h + val, p.h - val);
+                }
+            }
+
+            const minTargetX = Math.min(...pX) - 2;
+            const maxTargetX = Math.max(...pX) + 2;
+            const minTargetY = Math.min(...pY) - 2;
+            const maxTargetY = Math.max(...pY) + 2;
+
+            // Garder un minimum de fenêtre -10, 10 mais l'étendre si nécessaire
+            graphConfig.minX = Math.min(-5, minTargetX);
+            graphConfig.maxX = Math.max(5, maxTargetX);
+            graphConfig.minY = Math.min(-5, minTargetY);
+            graphConfig.maxY = Math.max(5, maxTargetY);
+            
+            // Rendre le ratio à peu près carré
+            const rangeX = graphConfig.maxX - graphConfig.minX;
+            const rangeY = graphConfig.maxY - graphConfig.minY;
+            const maxRange = Math.max(rangeX, rangeY);
+            
+            const midX = (graphConfig.maxX + graphConfig.minX) / 2;
+            const midY = (graphConfig.maxY + graphConfig.minY) / 2;
+            
+            graphConfig.minX = midX - maxRange/2;
+            graphConfig.maxX = midX + maxRange/2;
+            graphConfig.minY = midY - maxRange/2;
+            graphConfig.maxY = midY + maxRange/2;
+        }
+
+        function solveProblem(p) {
+            // Résoudre a|x - h| + k (?) c
+            // |x - h| (?) (c - k) / a
+            
+            const val = (p.c - p.k) / p.a;
+            
+            let type = p.operator;
+            // Si on a divisé par 'a' négatif, on change le sens de l'inégalité
+            if (p.a < 0) {
+                if (type === '<') type = '>';
+                else if (type === '>') type = '<';
+                else if (type === '≤') type = '≥';
+                else if (type === '≥') type = '≤';
+            }
+
+            // Cas de base
+            if (type === '=') {
+                if (val < 0) return { type: 'none', str: 'aucun' };
+                if (val === 0) return { type: 'point', p1: p.h, str: `${p.h}` };
+                const x1 = p.h + val;
+                const x2 = p.h - val;
+                return { type: 'points', p1: Math.min(x1, x2), p2: Math.max(x1, x2), str: `${Math.min(x1, x2)}, ${Math.max(x1, x2)}` };
+            }
+            
+            if (type === '<' || type === '≤') {
+                if (val < 0) return { type: 'none', str: 'aucun' };
+                if (val === 0) {
+                    if (type === '<') return { type: 'none', str: 'aucun' };
+                    return { type: 'point', p1: p.h, str: `${p.h}` }; // juste le sommet
+                }
+                const min = p.h - val;
+                const max = p.h + val;
+                const bracketL = type === '≤' ? '[' : ']';
+                const bracketR = type === '≤' ? ']' : '[';
+                return { type: 'interval', min, max, includeMin: type==='≤', includeMax: type==='≤', str: `${bracketL}${min}, ${max}${bracketR}` };
+            }
+
+            if (type === '>' || type === '≥') {
+                if (val < 0) return { type: 'all', str: ']-inf, inf[' }; // Tous les réels
+                if (val === 0) {
+                    if (type === '≥') return { type: 'all', str: ']-inf, inf[' };
+                    // ]-inf, h[ U ]h, inf[
+                    return { type: 'union', min1: null, max1: p.h, min2: p.h, max2: null, 
+                             incMax1: false, incMin2: false,
+                             str: `]-inf, ${p.h}[ U ]${p.h}, inf[` };
+                }
+                const min = p.h - val;
+                const max = p.h + val;
+                const bracketR1 = type === '≥' ? ']' : '[';
+                const bracketL2 = type === '≥' ? '[' : ']';
+                return { type: 'union', min1: null, max1: min, min2: max, max2: null,
+                         incMax1: type==='≥', incMin2: type==='≥',
+                         str: `]-inf, ${min}${bracketR1} U ${bracketL2}${max}, inf[` };
+            }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') checkAnswer();
+        }
+
+        function checkAnswer() {
+            const userInputRaw = document.getElementById('user-answer').value.trim().toLowerCase();
+            const feedbackEl = document.getElementById('feedback-message');
+            const resultsArea = document.getElementById('results-area');
+            
+            if (!userInputRaw) {
+                feedbackEl.textContent = "N'oublie pas d'entrer une réponse !";
+                feedbackEl.className = "mt-4 font-semibold text-lg text-orange-600 min-h-[1.75rem]";
+                return;
+            }
+
+            const sol = currentProblem.solution;
+            let isCorrect = false;
+
+            // Normalisation de l'entrée de l'utilisateur pour flexibilité
+            let input = userInputRaw.replace(/\s+/g, '').replace(/infini/g, 'inf').replace(/u/g, 'U');
+
+            if (sol.type === 'none' && (input === 'aucun' || input === 'aucune' || input === '{}' || input === 'ø' || input === 'vide')) {
+                isCorrect = true;
+            } else if (sol.type === 'all' && (input === ']-inf,inf[' || input === 'r')) {
+                isCorrect = true;
+            } else if (sol.type === 'point' && parseFloat(input) === sol.p1) {
+                isCorrect = true;
+            } else if (sol.type === 'points') {
+                const parts = input.split(/,|;/).map(parseFloat).sort((a,b)=>a-b);
+                if (parts.length === 2 && Math.abs(parts[0] - sol.p1) < 0.01 && Math.abs(parts[1] - sol.p2) < 0.01) {
+                    isCorrect = true;
+                }
+            } else if (sol.type === 'interval' || sol.type === 'union') {
+                // Simplification : on compare la chaîne nettoyée. 
+                // Pour une vraie classe, on voudrait un parseur plus robuste, mais ceci couvre 90% des cas normaux
+                const expectedStr = sol.str.replace(/\s+/g, '');
+                if (input === expectedStr) {
+                    isCorrect = true;
+                } else {
+                    // Try to catch common formatting differences
+                    const altInput = input.replace(/\]/g, '['); // Some students might write [a, b[ as [a, b) but we asked for french brackets. Let's stick to strict string matching for now based on instructions.
+                }
+            }
+
+            if (isCorrect) {
+                feedbackEl.textContent = "✨ Excellent ! C'est la bonne réponse !";
+                feedbackEl.className = "mt-4 font-semibold text-lg text-green-600 min-h-[1.75rem]";
+            } else {
+                feedbackEl.textContent = `Pas tout à fait. La réponse attendue était : ${sol.str}`;
+                feedbackEl.className = "mt-4 font-semibold text-lg text-red-600 min-h-[1.75rem]";
+            }
+
+            // Générer et afficher la résolution algébrique
+            document.getElementById('resolution-steps').innerHTML = generateResolutionHTML(currentProblem);
+
+            // Toujours afficher les résultats et le graphique après une tentative
+            resultsArea.classList.remove('hidden');
+            resultsArea.classList.add('flex');
+            drawGraph(currentProblem, sol, isCorrect);
+            
+            // Scroll en douceur vers les résultats
+            setTimeout(() => {
+                resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        function generateResolutionHTML(p) {
+            let html = '';
+            const op1 = p.operator;
+            let op2 = p.operator; // Après division
+            
+            // 1. Équation de départ
+            html += `<div class="p-3 bg-slate-50 rounded border border-slate-100">`;
+            html += `<div class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Étape 1 : Isoler la valeur absolue</div>`;
+            const c_minus_k = p.c - p.k;
+            html += `<div class="font-mono text-base mb-2">${p.a === 1 ? '' : p.a === -1 ? '-' : p.a}|x ${formatTerm(-p.h)}| ${formatTerm(p.k)} ${op1} ${p.c}</div>`;
+            
+            // 2. Soustraction
+            let currentLeft = `${p.a === 1 ? '' : p.a === -1 ? '-' : p.a}|x ${formatTerm(-p.h)}|`;
+            if (p.k !== 0) {
+                html += `<div class="font-mono text-base mb-2 text-slate-600">${currentLeft} ${op1} ${p.c} ${formatTerm(-p.k)}</div>`;
+            }
+            html += `<div class="font-mono text-base mb-2">${currentLeft} ${op1} ${c_minus_k}</div>`;
+            
+            // 3. Division
+            const v = c_minus_k / p.a;
+            if (p.a !== 1) {
+                if (p.a < 0) {
+                    // Changement de signe
+                    if (op1 === '<') op2 = '>';
+                    else if (op1 === '>') op2 = '<';
+                    else if (op1 === '≤') op2 = '≥';
+                    else if (op1 === '≥') op2 = '≤';
+                    
+                    html += `<div class="mt-2 text-red-600 bg-red-50 p-2 rounded border border-red-100 text-sm">⚠️ On divise par ${p.a} (un négatif), le sens de l'inégalité change !</div>`;
+                }
+                html += `<div class="font-mono text-base mt-2">|x ${formatTerm(-p.h)}| ${op2} ${v}</div>`;
+            }
+            html += `</div>`;
+            
+            // 4. Analyse et Séparation
+            html += `<div class="p-3 bg-blue-50 rounded border border-blue-100 mt-4">`;
+            html += `<div class="text-xs text-blue-500 uppercase font-bold tracking-wider mb-1">Étape 2 : Analyse et Résolution</div>`;
+            
+            if (v < 0) {
+                if (op2 === '=' || op2 === '<' || op2 === '≤') {
+                    html += `<div class="text-sm mb-2">Une valeur absolue est toujours positive (≥ 0). Elle ne peut pas être ${op2 === '=' ? 'égale à' : 'plus petite qu\''} un nombre négatif.</div>`;
+                    html += `<div class="font-mono font-bold text-green-700 bg-green-50 p-2 inline-block rounded border border-green-200 mt-1">Solution : Ø (Aucune)</div>`;
+                } else {
+                    html += `<div class="text-sm mb-2">Une valeur absolue est toujours positive (≥ 0). Elle est donc toujours plus grande qu'un nombre négatif.</div>`;
+                    html += `<div class="font-mono font-bold text-green-700 bg-green-50 p-2 inline-block rounded border border-green-200 mt-1">Solution : ]-∞, ∞[ (Tous les réels)</div>`;
+                }
+            } else if (v === 0) {
+                 if (op2 === '<') {
+                      html += `<div class="text-sm mb-2">Une valeur absolue ne peut pas être strictement plus petite que 0.</div>`;
+                      html += `<div class="font-mono font-bold text-green-700 bg-green-50 p-2 inline-block rounded border border-green-200 mt-1">Solution : Ø (Aucune)</div>`;
+                 } else if (op2 === '>') {
+                      html += `<div class="text-sm mb-2">La valeur absolue est > 0 partout sauf au sommet.</div>`;
+                      html += `<div class="font-mono text-sm mb-2">x ${formatTerm(-p.h)} ≠ 0 &rarr; x ≠ ${p.h}</div>`;
+                      html += `<div class="font-mono font-bold text-green-700 bg-green-50 p-2 inline-block rounded border border-green-200 mt-1">Solution : ]-∞, ${p.h}[ ∪ ]${p.h}, ∞[</div>`;
+                 } else { 
+                      html += `<div class="text-sm mb-2">La valeur absolue est égale à 0. L'intérieur doit être 0.</div>`;
+                      html += `<div class="font-mono text-sm mb-2">x ${formatTerm(-p.h)} = 0 &rarr; x = ${p.h}</div>`;
+                      if (op2 === '≥') {
+                           html += `<div class="text-sm mb-2">Comme elle est aussi ≥ 0 partout ailleurs, tous les réels fonctionnent.</div>`;
+                           html += `<div class="font-mono font-bold text-green-700 bg-green-50 p-2 inline-block rounded border border-green-200 mt-1">Solution : ]-∞, ∞[</div>`;
+                      } else {
+                           html += `<div class="font-mono font-bold text-green-700 bg-green-50 p-2 inline-block rounded border border-green-200 mt-1">Solution : ${p.h}</div>`;
+                      }
+                 }
+            } else {
+                // v > 0
+                if (op2 === '=') {
+                    html += `<div class="text-sm mb-2">On sépare en deux équations :</div>`;
+                    html += `<ul class="list-disc pl-5 font-mono text-sm space-y-1 mb-3">`;
+                    html += `<li>x ${formatTerm(-p.h)} = ${v} &rarr; x = ${p.h + v}</li>`;
+                    html += `<li>x ${formatTerm(-p.h)} = -${v} &rarr; x = ${p.h - v}</li>`;
+                    html += `</ul>`;
+                    const s1 = Math.min(p.h-v, p.h+v);
+                    const s2 = Math.max(p.h-v, p.h+v);
+                    html += `<div class="font-mono font-bold text-green-700 bg-green-50 p-2 inline-block rounded border border-green-200">Solution : ${s1}, ${s2}</div>`;
+                } else if (op2 === '<' || op2 === '≤') {
+                    html += `<div class="text-sm mb-2">On cherche les valeurs "à l'intérieur" :</div>`;
+                    html += `<div class="font-mono text-sm mb-1">-${v} ${op2} x ${formatTerm(-p.h)} ${op2} ${v}</div>`;
+                    html += `<div class="font-mono text-sm mb-3 text-slate-600">${-v + p.h} ${op2} x ${op2} ${v + p.h}</div>`;
+                    const bracketL = op2 === '≤' ? '[' : ']';
+                    const bracketR = op2 === '≤' ? ']' : '[';
+                    html += `<div class="font-mono font-bold text-green-700 bg-green-50 p-2 inline-block rounded border border-green-200">Solution : ${bracketL}${-v + p.h}, ${v + p.h}${bracketR}</div>`;
+                } else if (op2 === '>' || op2 === '≥') {
+                    html += `<div class="text-sm mb-2">On cherche les valeurs "à l'extérieur" :</div>`;
+                    let negOp = (op2 === '>') ? '<' : '≤';
+                    html += `<ul class="list-disc pl-5 font-mono text-sm space-y-1 mb-3">`;
+                    html += `<li>x ${formatTerm(-p.h)} ${op2} ${v} &rarr; x ${op2} ${p.h + v}</li>`;
+                    html += `<li>x ${formatTerm(-p.h)} ${negOp} -${v} &rarr; x ${negOp} ${p.h - v}</li>`;
+                    html += `</ul>`;
+                    const bracketR1 = op2 === '≥' ? ']' : '[';
+                    const bracketL2 = op2 === '≥' ? '[' : ']';
+                    html += `<div class="font-mono font-bold text-green-700 bg-green-50 p-2 inline-block rounded border border-green-200">Solution : ]-∞, ${p.h - v}${bracketR1} ∪ ${bracketL2}${p.h + v}, ∞[</div>`;
+                }
+            }
+            html += `</div>`;
+            
+            return html;
+        }
+
+        function drawGraph(p, sol, isCorrect) {
+            resizeCanvas(); // Ensure high resolution
+            
+            const w = canvas.width;
+            const h = canvas.height;
+            
+            ctx.clearRect(0, 0, w, h);
+
+            // Fonctions de transformation de coordonnées
+            const mapX = (x) => ((x - graphConfig.minX) / (graphConfig.maxX - graphConfig.minX)) * w;
+            const mapY = (y) => h - ((y - graphConfig.minY) / (graphConfig.maxY - graphConfig.minY)) * h; // Y inversé pour canvas
+
+            // 1. Dessiner la grille
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for(let i = Math.floor(graphConfig.minX); i <= Math.ceil(graphConfig.maxX); i++) {
+                ctx.moveTo(mapX(i), 0); ctx.lineTo(mapX(i), h);
+            }
+            for(let i = Math.floor(graphConfig.minY); i <= Math.ceil(graphConfig.maxY); i++) {
+                ctx.moveTo(0, mapY(i)); ctx.lineTo(w, mapY(i));
+            }
+            ctx.stroke();
+
+            // 2. Axes X et Y
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            // Axe X
+            if (graphConfig.minY <= 0 && graphConfig.maxY >= 0) {
+                ctx.moveTo(0, mapY(0)); ctx.lineTo(w, mapY(0));
+            }
+            // Axe Y
+            if (graphConfig.minX <= 0 && graphConfig.maxX >= 0) {
+                ctx.moveTo(mapX(0), 0); ctx.lineTo(mapX(0), h);
+            }
+            ctx.stroke();
+
+            // Graduations
+            ctx.fillStyle = '#64748b';
+            ctx.font = '12px Inter';
+            ctx.textAlign = 'center';
+            for(let i = Math.floor(graphConfig.minX); i <= Math.ceil(graphConfig.maxX); i+=2) {
+                if (i !== 0) ctx.fillText(i, mapX(i), mapY(0) + 15);
+            }
+            ctx.textAlign = 'right';
+            for(let i = Math.floor(graphConfig.minY); i <= Math.ceil(graphConfig.maxY); i+=2) {
+                if (i !== 0) ctx.fillText(i, mapX(0) - 5, mapY(i) + 4);
+            }
+
+            // 3. Tracer f(x) = c (Ligne rouge)
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.6)'; // Red-500
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(0, mapY(p.c));
+            ctx.lineTo(w, mapY(p.c));
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Label de la constante
+            ctx.fillStyle = 'rgba(239, 68, 68, 1)';
+            ctx.font = 'bold 14px Inter';
+            ctx.fillText(`y = ${p.c}`, w - 30, mapY(p.c) - 10);
+
+            // 4. Tracer la fonction valeur absolue f(x) = a|x-h| + k (Courbe bleue)
+            ctx.strokeStyle = '#2563eb'; // Blue-600
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            // Calcul du sommet
+            const sommetX = p.h;
+            const sommetY = p.k;
+            
+            // Point gauche
+            const leftX = graphConfig.minX;
+            const leftY = p.a * Math.abs(leftX - p.h) + p.k;
+            
+            // Point droit
+            const rightX = graphConfig.maxX;
+            const rightY = p.a * Math.abs(rightX - p.h) + p.k;
+
+            ctx.moveTo(mapX(leftX), mapY(leftY));
+            ctx.lineTo(mapX(sommetX), mapY(sommetY));
+            ctx.lineTo(mapX(rightX), mapY(rightY));
+            ctx.stroke();
+
+            // 5. Mettre en évidence la zone de solution (Vert)
+            const solColor = isCorrect ? 'rgba(34, 197, 94, 0.4)' : 'rgba(249, 115, 22, 0.4)'; // Vert si correct, Orange si erreur
+            const solLineColor = isCorrect ? '#16a34a' : '#ea580c';
+            
+            // Mettre en évidence l'axe des X
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = solLineColor;
+            
+            if (sol.type === 'points') {
+                drawPoint(mapX(sol.p1), mapY(0), solLineColor);
+                drawPoint(mapX(sol.p2), mapY(0), solLineColor);
+                
+                // Mettre les points sur la courbe aussi
+                drawPoint(mapX(sol.p1), mapY(p.c), solLineColor);
+                drawPoint(mapX(sol.p2), mapY(p.c), solLineColor);
+
+            } else if (sol.type === 'point') {
+                drawPoint(mapX(sol.p1), mapY(0), solLineColor);
+                drawPoint(mapX(sol.p1), mapY(p.k), solLineColor);
+
+            } else if (sol.type === 'interval') {
+                // Surligner l'axe des X
+                ctx.beginPath();
+                ctx.moveTo(mapX(sol.min), mapY(0));
+                ctx.lineTo(mapX(sol.max), mapY(0));
+                ctx.stroke();
+                
+                // Points aux bornes (plein si inclus, vide si exclu)
+                drawBoundaryPoint(mapX(sol.min), mapY(0), sol.includeMin, solLineColor);
+                drawBoundaryPoint(mapX(sol.max), mapY(0), sol.includeMax, solLineColor);
+
+                // Hachurer la zone sous/sur la courbe
+                fillAreaUnderCurve(p, sol.min, sol.max, solColor, mapX, mapY);
+
+            } else if (sol.type === 'union') {
+                // Partie gauche
+                ctx.beginPath();
+                ctx.moveTo(0, mapY(0)); // Start edge
+                ctx.lineTo(mapX(sol.max1), mapY(0));
+                ctx.stroke();
+                drawBoundaryPoint(mapX(sol.max1), mapY(0), sol.incMax1, solLineColor);
+                fillAreaUnderCurve(p, graphConfig.minX, sol.max1, solColor, mapX, mapY);
+
+                // Partie droite
+                ctx.beginPath();
+                ctx.moveTo(mapX(sol.min2), mapY(0));
+                ctx.lineTo(w, mapY(0)); // End edge
+                ctx.stroke();
+                drawBoundaryPoint(mapX(sol.min2), mapY(0), sol.incMin2, solLineColor);
+                fillAreaUnderCurve(p, sol.min2, graphConfig.maxX, solColor, mapX, mapY);
+
+            } else if (sol.type === 'all') {
+                 ctx.beginPath();
+                 ctx.moveTo(0, mapY(0));
+                 ctx.lineTo(w, mapY(0));
+                 ctx.stroke();
+                 fillAreaUnderCurve(p, graphConfig.minX, graphConfig.maxX, solColor, mapX, mapY);
+            }
+        }
+
+        function drawPoint(x, y, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, 6, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawBoundaryPoint(x, y, isIncluded, color) {
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(x, y, 6, 0, Math.PI * 2);
+            if (isIncluded) {
+                // Point plein (bornes [ ou ])
+                ctx.fillStyle = color;
+                ctx.fill();
+            } else {
+                // Point vide (bornes ] ou [ exclues)
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                ctx.strokeStyle = color;
+                ctx.stroke();
+            }
+        }
+
+        function fillAreaUnderCurve(p, xStart, xEnd, color, mapX, mapY) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            
+            // Pour l'aire entre la courbe et la ligne y=c
+            ctx.moveTo(mapX(xStart), mapY(p.c));
+            
+            // Si le sommet (h) est dans l'intervalle, il faut un point supplémentaire
+            if (xStart < p.h && xEnd > p.h) {
+                const yStart = p.a * Math.abs(xStart - p.h) + p.k;
+                ctx.lineTo(mapX(xStart), mapY(yStart));
+                ctx.lineTo(mapX(p.h), mapY(p.k));
+                const yEnd = p.a * Math.abs(xEnd - p.h) + p.k;
+                ctx.lineTo(mapX(xEnd), mapY(yEnd));
+            } else {
+                const yStart = p.a * Math.abs(xStart - p.h) + p.k;
+                ctx.lineTo(mapX(xStart), mapY(yStart));
+                const yEnd = p.a * Math.abs(xEnd - p.h) + p.k;
+                ctx.lineTo(mapX(xEnd), mapY(yEnd));
+            }
+            
+            ctx.lineTo(mapX(xEnd), mapY(p.c));
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Pour éviter le rendu flou sur les écrans haute densité (Retina)
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            // Scale resolution to device pixel ratio
+            const scale = window.devicePixelRatio || 1;
+            canvas.width = rect.width * scale;
+            canvas.height = rect.height * scale;
+            // Normalize coordinate system to use css pixels
+            ctx.scale(scale, scale);
+        }
+
+        // Initialisation au chargement
+        window.addEventListener('resize', () => {
+            if (!document.getElementById('results-area').classList.contains('hidden') && currentProblem) {
+                drawGraph(currentProblem, currentProblem.solution, document.getElementById('feedback-message').textContent.includes('Excellent'));
+            }
+        });
+        
+        // Démarrer l'application
+        setLevel('doux');
+
+    </script>
+</body>
+</html>
