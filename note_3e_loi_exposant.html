@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Notes de cours - Lois des exposants (Puissances)</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <style>
+ @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Inter:wght@400;600;700&display=swap');
+ 
+ body {
+ font-family: 'Inter', sans-serif;
+ background-color: #f8fafc;
+ color: #334155;
+ }
+ 
+ .handwritten {
+ font-family: 'Architects Daughter', cursive;
+ color: #2563eb;
+ }
+ 
+ .answer {
+ visibility: hidden;
+ opacity: 0;
+ transition: opacity 0.3s ease;
+ }
+ 
+ .show-answers .answer,
+ .answer.revealed {
+ visibility: visible;
+ opacity: 1;
+ }
+
+ .box-title {
+ position: absolute;
+ top: -12px;
+ left: 16px;
+ background: white;
+ padding: 0 8px;
+ font-weight: bold;
+ color: #475569;
+ border-radius: 4px;
+ }
+
+ .clickable-blank {
+ cursor: pointer;
+ transition: background-color 0.2s ease;
+ border-radius: 0.25rem;
+ }
+
+ .clickable-blank:hover {
+ background-color: #e2e8f0;
+ }
+
+ @media print {
+ body { background-color: white; }
+ .no-print { display: none; }
+ .page-break { page-break-before: always; }
+ .clickable-blank:hover { background-color: transparent; }
+ .shadow-sm { box-shadow: none !important; }
+ }
+ </style>
+</head>
+<body class="p-4 md:p-8">
+
+ <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-sm border border-slate-200">
+ 
+ <!-- Header -->
+ <div class="flex justify-between items-center mb-8 border-b-2 border-slate-800 pb-4">
+ <h1 class="text-3xl font-bold text-slate-800">Lois des exposants : Les Puissances</h1>
+ <button id="toggleAnswers" class="no-print bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition">
+ Afficher tout le corrigé
+ </button>
+ </div>
+
+ <!-- SECTION 1: DÉCOUVERTE -->
+ <h2 class="text-xl font-bold mb-6 text-slate-700">1. Découverte : Que se passe-t-il avec les parenthèses ?</h2>
+ <p class="mb-4 text-sm text-slate-500 italic">Consigne : Développe chaque expression pour découvrir les 3 nouvelles règles mathématiques ! <br> <span class="text-blue-600 font-semibold no-print">👉 Clique sur les lignes pour vérifier tes réponses une à une.</span></p>
+
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+ 
+ <!-- Puissance d'une puissance -->
+ <div class="border-2 border-slate-300 rounded-xl p-6 relative bg-slate-50">
+ <span class="box-title text-purple-600">Puissance d'une puissance</span>
+ 
+ <div class="space-y-4 mt-2">
+ <div class="flex items-center gap-4">
+ <span class="font-semibold text-lg">Calcul :</span>
+ <span class="text-xl">\( (x^2)^3 \)</span>
+ </div>
+ 
+ <div>
+ <span class="font-semibold block mb-1">1) Développe selon l'exposant extérieur (3) :</span>
+ <div class="min-h-[2.5rem] border-b border-dashed border-slate-400 pb-1 px-2 flex items-end">
+ <span class="answer handwritten text-xl">\( (x^2) \cdot (x^2) \cdot (x^2) \)</span>
+ </div>
+ </div>
+ 
+ <div>
+ <span class="font-semibold block mb-1">2) Applique la loi de multiplication (Réponse simplifiée) :</span>
+ <div class="min-h-[2.5rem] border-b border-dashed border-slate-400 pb-1 px-2 flex items-end">
+ <span class="answer handwritten text-xl">\( x^6 \)</span>
+ </div>
+ </div>
+
+ <div class="bg-purple-100 p-3 rounded-lg mt-4">
+ <span class="font-semibold text-purple-800 block">Que remarques-tu sur les exposants 2 et 3 ?</span>
+ <div class="min-h-[2rem] mt-1 px-1">
+ <span class="answer handwritten block">2 × 3 = 6 (On les a multipliés !)</span>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Puissance d'un produit -->
+ <div class="border-2 border-slate-300 rounded-xl p-6 relative bg-slate-50">
+ <span class="box-title text-emerald-600">Puissance d'un produit</span>
+ 
+ <div class="space-y-4 mt-2">
+ <div class="flex items-center gap-4">
+ <span class="font-semibold text-lg">Calcul :</span>
+ <span class="text-xl">\( (a^3b^4)^2 \)</span>
+ </div>
+ 
+ <div>
+ <span class="font-semibold block mb-1">1) Développe la parenthèse :</span>
+ <div class="min-h-[2.5rem] border-b border-dashed border-slate-400 pb-1 px-2 flex items-center">
+ <span class="answer handwritten text-xl">\( (a^3b^4) \cdot (a^3b^4) \)</span>
+ </div>
+ </div>
+ 
+ <div>
+ <span class="font-semibold block mb-1">2) Regroupe les lettres pareilles (Réponse simplifiée) :</span>
+ <div class="min-h-[2.5rem] border-b border-dashed border-slate-400 pb-1 px-2 flex items-end">
+ <span class="answer handwritten text-xl">\( a^6b^8 \)</span>
+ </div>
+ </div>
+
+ <div class="bg-emerald-100 p-3 rounded-lg mt-4">
+ <span class="font-semibold text-emerald-800 block">L'exposant extérieur (2) a affecté quoi ?</span>
+ <div class="min-h-[2rem] mt-1 px-1">
+ <span class="answer handwritten block">Chaque exposant à l'intérieur (On les a tous multipliés par 2)</span>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Puissance d'un quotient -->
+ <div class="border-2 border-slate-300 rounded-xl p-6 relative bg-slate-50 md:col-span-2">
+ <span class="box-title text-indigo-600">Puissance d'un quotient (fraction)</span>
+ 
+ <div class="space-y-4 mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+ <div>
+ <div class="flex items-center gap-4 mb-4">
+ <span class="font-semibold text-lg">Calcul :</span>
+ <span class="text-xl">\( \left(\frac{m^5}{n^2}\right)^3 \)</span>
+ </div>
+ 
+ <div>
+ <span class="font-semibold block mb-1">1) Développe la fraction :</span>
+ <div class="min-h-[3.5rem] border-b border-dashed border-slate-400 pb-1 px-2 flex items-center">
+ <span class="answer handwritten text-xl">\( \frac{m^5}{n^2} \cdot \frac{m^5}{n^2} \cdot \frac{m^5}{n^2} \)</span>
+ </div>
+ </div>
+ </div>
+ <div>
+ <div>
+ <span class="font-semibold block mb-1 mt-2 md:mt-0">2) Multiplie les numérateurs ensemble et dénominateurs ensemble :</span>
+ <div class="min-h-[3.5rem] border-b border-dashed border-slate-400 pb-1 px-2 flex items-end">
+ <span class="answer handwritten text-xl">\( \frac{m^{15}}{n^6} \)</span>
+ </div>
+ </div>
+ <div class="bg-indigo-100 p-3 rounded-lg mt-4">
+ <span class="font-semibold text-indigo-800 block">Où est allé l'exposant 3 ?</span>
+ <div class="min-h-[2rem] mt-1 px-1">
+ <span class="answer handwritten block">En haut (numérateur) ET en bas (dénominateur).</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ </div>
+
+ <!-- SECTION 2: À RETENIR ET MON EXEMPLE -->
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+ <!-- À Retenir -->
+ <div class="border-4 border-yellow-300 rounded-xl p-6 relative bg-yellow-50">
+ <span class="box-title bg-yellow-300 text-yellow-900 rounded-full px-4 py-1">⭐ À retenir</span>
+ <div class="mt-4 space-y-4">
+ <p class="font-semibold text-slate-700">Lorsqu'un exposant est à l'extérieur d'une parenthèse, on <span class="text-blue-600 underline">multiplie</span> les exposants !</p>
+ 
+ <div class="bg-white p-3 rounded border border-yellow-200 text-center text-lg shadow-sm">
+ <span class="text-slate-500 text-sm block mb-1">Puissance d'une puissance</span>
+ \( (a^m)^n = a^{m \cdot n} \)
+ </div>
+ <div class="bg-white p-3 rounded border border-yellow-200 text-center text-lg shadow-sm">
+ <span class="text-slate-500 text-sm block mb-1">Puissance d'un produit</span>
+ \( (a^m \cdot b^n)^p = a^{m \cdot p} \cdot b^{n \cdot p} \)
+ </div>
+ <div class="bg-white p-3 rounded border border-yellow-200 text-center text-lg shadow-sm">
+ <span class="text-slate-500 text-sm block mb-1">Puissance d'un quotient</span>
+ \( \left(\frac{a^m}{b^n}\right)^p = \frac{a^{m \cdot p}}{b^{n \cdot p}} \)
+ </div>
+
+ <!-- NOUVEAUX AVERTISSEMENTS -->
+ <div class="bg-red-100 border border-red-300 p-3 rounded mt-4">
+ <p class="text-sm font-bold text-red-700">⚠️ PIÈGE FRÉQUENT : LES COEFFICIENTS</p>
+ <p class="text-sm text-red-900 mt-1">N'oublie pas que les gros nombres ont un exposant caché de 1 ! L'exposant extérieur s'applique aussi à eux.</p>
+ <p class="text-sm text-red-900 font-bold mt-1">Ex: \( (3x^4)^2 = 3^2 \cdot x^8 = 9x^8 \)</p>
+ </div>
+
+ <div class="bg-orange-100 border border-orange-300 p-3 rounded mt-2">
+ <p class="text-sm font-bold text-orange-800">🛑 ERREUR FATALE : ADDITIONS ET SOUSTRACTIONS</p>
+ <p class="text-sm text-orange-900 mt-1">On distribue l'exposant <strong>SEULEMENT</strong> s'il y a des multiplications ou des divisions dans la parenthèse.</p>
+ <p class="text-sm text-orange-900 font-bold mt-1">Ça ne fonctionne PAS avec des + ou des - !</p>
+ <p class="text-sm text-red-600 font-bold mt-1 text-center bg-white p-1 rounded">\( (a + b)^2 \neq a^2 + b^2 \)</p>
+ <p class="text-xs text-orange-800 italic mt-1 text-center">En réalité, \( (a+b)^2 = (a+b)(a+b) \), ce qui donnera une réponse bien différente !</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- Mon exemple -->
+ <div class="border-2 border-slate-400 border-dashed rounded-xl p-6 relative">
+ <span class="box-title text-slate-600">✍️ Mon exemple</span>
+ <p class="text-sm text-slate-500 mb-4">Crée un "super" exemple qui utilise un coefficient, plusieurs lettres et une fraction pour t'aider à étudier plus tard.</p>
+ 
+ <div class="h-3/4 border-b border-slate-200 mb-4 pb-2">
+ <span class="text-slate-400 text-sm">Mon exemple complexe (avec la réponse finale) :</span>
+ </div>
+ </div>
+ </div>
+
+ <div class="page-break"></div>
+
+ <!-- SECTION 3: PRATIQUE -->
+ <h2 class="text-xl font-bold mb-6 text-slate-700 mt-10">2. À ton tour ! (Pratique)</h2>
+ <p class="text-blue-600 font-semibold mb-6 no-print">👉 Essaie de résoudre en appliquant la règle de multiplication des exposants, puis clique pour te corriger.</p>
+ 
+ <!-- Doux -->
+ <div class="mb-8">
+ <h3 class="text-lg font-bold text-green-600 flex items-center gap-2 mb-4">
+ <span>🍏 Doux</span> <span class="text-sm font-normal text-slate-500">(Application directe, sans coefficients)</span>
+ </h3>
+ <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+ <div>
+ <p class="mb-2">a) \( (x^4)^5 \)</p>
+ <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( x^{20} \)</span></div>
+ </div>
+ <div>
+ <p class="mb-2">b) \( (a^3b^2)^4 \)</p>
+ <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( a^{12}b^8 \)</span></div>
+ </div>
+ <div>
+ <p class="mb-2">c) \( \left(\frac{y^5}{z^2}\right)^3 \)</p>
+ <div class="min-h-[3rem] border-b border-slate-300 px-2 flex items-center"><span class="answer handwritten text-lg">\( \frac{y^{15}}{z^6} \)</span></div>
+ </div>
+ <div>
+ <p class="mb-2">d) \( (m^7)^2 \)</p>
+ <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( m^{14} \)</span></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Moyen -->
+ <div class="mb-8">
+ <h3 class="text-lg font-bold text-orange-500 flex items-center gap-2 mb-4">
+ <span>🌮 Moyen</span> <span class="text-sm font-normal text-slate-500">(Attention aux coefficients !)</span>
+ </h3>
+ <p class="text-sm italic text-slate-500 mb-4">Astuce : Applique d'abord l'exposant extérieur au gros chiffre (ex: \(2^3 = 8\)), puis multiplie les exposants des lettres.</p>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+ <div>
+ <p class="mb-2">e) \( (3x^4)^2 \)</p>
+ <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( 9x^8 \) <span class="text-sm text-slate-400">(car \(3^2=9\))</span></span></div>
+ </div>
+ <div>
+ <p class="mb-2">f) \( (2a^3b^5)^4 \)</p>
+ <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( 16a^{12}b^{20} \) <span class="text-sm text-slate-400">(car \(2^4=16\))</span></span></div>
+ </div>
+ <div>
+ <p class="mb-2">g) \( \left(\frac{5m^2}{n^4}\right)^2 \)</p>
+ <div class="min-h-[3.5rem] border-b border-slate-300 px-2 flex items-center"><span class="answer handwritten text-lg">\( \frac{25m^4}{n^8} \)</span></div>
+ </div>
+ <div>
+ <p class="mb-2">h) \( (-2x^5y)^3 \)</p>
+ <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( -8x^{15}y^3 \) <span class="text-sm text-slate-400">(car \((-2)^3=-8\))</span></span></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Épicé -->
+ <div class="mb-4">
+ <h3 class="text-lg font-bold text-red-600 flex items-center gap-2 mb-4">
+ <span>🌶️ Épicé</span> <span class="text-sm font-normal text-slate-500">(Combinaison des lois de la multiplication/division)</span>
+ </h3>
+ <p class="text-sm italic text-slate-500 mb-4">Ordre des opérations (PEMDAS) : Règle toujours les parenthèses avec leurs exposants (P/E) AVANT de faire la multiplication (M) ou la division (D) avec l'autre bloc.</p>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+ <div>
+ <p class="mb-2">i) \( (2x^3)^2 \cdot (x^4)^3 \)</p>
+ <div class="min-h-[3.5rem] border-b border-slate-300 px-2 flex items-center"><span class="answer handwritten text-lg">\( (4x^6) \cdot (x^{12}) = 4x^{18} \)</span></div>
+ </div>
+ <div>
+ <p class="mb-2">j) \( \frac{(3a^2b^4)^2}{a^3b} \)</p>
+ <div class="min-h-[3.5rem] border-b border-slate-300 px-2 flex items-center"><span class="answer handwritten text-lg">\( \frac{9a^4b^8}{a^3b} = 9a^1b^7 \) ou \( 9ab^7 \)</span></div>
+ </div>
+ </div>
+ </div>
+
+ </div>
+
+ <!-- MathJax for rendering math formulas beautifully -->
+ <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+ <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+ <script>
+ // --- 1. Gestion de l'affichage individuel (au clic sur une ligne) ---
+ const answers = document.querySelectorAll('.answer');
+ 
+ answers.forEach(answer => {
+ const parentBlock = answer.parentElement;
+ 
+ parentBlock.classList.add('clickable-blank');
+ parentBlock.title = "Clique pour révéler ou masquer la réponse";
+ 
+ parentBlock.addEventListener('click', () => {
+ answer.classList.toggle('revealed');
+ });
+ });
+
+ // --- 2. Gestion de l'affichage global (bouton principal) ---
+ const toggleBtn = document.getElementById('toggleAnswers');
+ let allAnswersVisible = false;
+
+ toggleBtn.addEventListener('click', () => {
+ allAnswersVisible = !allAnswersVisible;
+ if (allAnswersVisible) {
+ document.body.classList.add('show-answers');
+ toggleBtn.textContent = 'Masquer le corrigé';
+ toggleBtn.classList.replace('bg-blue-600', 'bg-slate-600');
+ toggleBtn.classList.replace('hover:bg-blue-700', 'hover:bg-slate-700');
+ 
+ answers.forEach(ans => ans.classList.remove('revealed'));
+ } else {
+ document.body.classList.remove('show-answers');
+ toggleBtn.textContent = 'Afficher tout le corrigé';
+ toggleBtn.classList.replace('bg-slate-600', 'bg-blue-600');
+ toggleBtn.classList.replace('hover:bg-slate-700', 'hover:bg-blue-700');
+ }
+ });
+ </script>
+</body>
+</html>
