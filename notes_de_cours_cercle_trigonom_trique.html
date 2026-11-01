@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le cercle trigonométrique - Notes de cours</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        handwriting: ['Architects Daughter', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Architects+Daughter&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .answer-text {
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .answer-text.visible {
+            opacity: 1;
+        }
+        /* Optimisation pour l'impression PDF */
+        @media print {
+            body { background-color: white !important; }
+            .shadow-sm, .shadow { box-shadow: none !important; }
+            .border-dashed { border-style: solid !important; border-color: #cbd5e1 !important; }
+            button { display: none !important; }
+            .answer-text { opacity: 1 !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans p-6 md:p-10 max-w-5xl mx-auto leading-relaxed">
+
+    <!-- En-tête -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-4 border-b-2 border-slate-200 gap-4">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Le cercle trigonométrique (SN5)</h1>
+            <p class="text-slate-500 mt-2 text-lg">Comprendre les coordonnées des points remarquables</p>
+        </div>
+        <button onclick="toggleAll()" class="bg-white hover:bg-slate-100 text-blue-700 font-semibold py-2 px-4 border border-blue-200 rounded-lg shadow-sm transition-all focus:ring-2 focus:ring-blue-400 outline-none w-full md:w-auto">
+            👁️ Afficher tout le corrigé
+        </button>
+    </header>
+
+    <!-- Section 1: Exemple guidé -->
+    <section class="bg-white border rounded-xl shadow-sm p-6 mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-slate-800 border-l-4 border-blue-500 pl-3">1. Les bases du cercle trigonométrique</h2>
+        <p class="mb-6 text-lg">
+            Le cercle trigonométrique est un cercle centré à l'origine \( (0,0) \) dont le rayon est de 
+            <span class="inline-block border-b-2 border-dashed border-slate-400 min-w-[3rem] px-1 text-center cursor-pointer transition-colors hover:bg-slate-100 answer-zone pb-0.5" onclick="toggleAnswer(this)"><span class="answer-text font-handwriting text-blue-600 text-xl">\( r = 1 \)</span></span>. 
+            Chaque point \( P \) sur le pourtour du cercle est défini par un angle \( \theta \) (en radians), mesuré à partir de l'axe des \( x \) positifs (sens antihoraire).
+        </p>
+
+        <div class="flex flex-col md:flex-row gap-8 items-center bg-slate-50 rounded-lg p-6 border border-slate-100">
+            <!-- Graphique SVG -->
+            <div class="w-full md:w-1/2 flex justify-center">
+                <svg viewBox="-1.2 -1.2 2.4 2.4" class="w-full max-w-[280px] overflow-visible">
+                    <!-- Axes -->
+                    <line x1="-1.2" y1="0" x2="1.2" y2="0" stroke-width="0.015" class="stroke-slate-400"></line>
+                    <line x1="0" y1="-1.2" x2="0" y2="1.2" stroke-width="0.015" class="stroke-slate-400"></line>
+                    <circle cx="0" cy="0" r="1" fill="none" stroke-width="0.02" class="stroke-slate-800"></circle>
+                    
+                    <!-- Lignes des angles du 1er quadrant -->
+                    <line x1="0" y1="0" x2="0.866" y2="-0.5" stroke-width="0.015" stroke-dasharray="0.04" class="stroke-slate-400"></line>
+                    <line x1="0" y1="0" x2="0.707" y2="-0.707" stroke-width="0.015" stroke-dasharray="0.04" class="stroke-slate-400"></line>
+                    <line x1="0" y1="0" x2="0.5" y2="-0.866" stroke-width="0.015" stroke-dasharray="0.04" class="stroke-slate-400"></line>
+                    
+                    <!-- Points inclus (points pleins) -->
+                    <circle cx="1" cy="0" r="0.04" class="fill-blue-600"></circle>
+                    <circle cx="0.866" cy="-0.5" r="0.04" class="fill-blue-600"></circle>
+                    <circle cx="0.707" cy="-0.707" r="0.04" class="fill-blue-600"></circle>
+                    <circle cx="0.5" cy="-0.866" r="0.04" class="fill-blue-600"></circle>
+                    <circle cx="0" cy="-1" r="0.04" class="fill-blue-600"></circle>
+                    
+                    <!-- Étiquettes textuelles (sans bordure !) -->
+                    <text x="1.08" y="0.03" font-size="0.14" stroke-width="0" fill="#1e293b" font-family="sans-serif">0</text>
+                    <text x="0.92" y="-0.52" font-size="0.14" stroke-width="0" fill="#1e293b" font-family="sans-serif">π/6</text>
+                    <text x="0.75" y="-0.74" font-size="0.14" stroke-width="0" fill="#1e293b" font-family="sans-serif">π/4</text>
+                    <text x="0.52" y="-0.92" font-size="0.14" stroke-width="0" fill="#1e293b" font-family="sans-serif">π/3</text>
+                    <text x="-0.02" y="-1.08" font-size="0.14" stroke-width="0" fill="#1e293b" font-family="sans-serif">π/2</text>
+                </svg>
+            </div>
+            
+            <div class="w-full md:w-1/2">
+                <h3 class="text-xl font-semibold mb-4">Points remarquables du 1er quadrant</h3>
+                <ul class="space-y-5 text-lg">
+                    <li>\( P\left(\frac{\pi}{6}\right) = \) 
+                        <span class="inline-block border-b-2 border-dashed border-slate-400 min-w-[6rem] px-2 text-center cursor-pointer transition-colors hover:bg-white answer-zone pb-1" onclick="toggleAnswer(this)">
+                            <span class="answer-text font-handwriting text-blue-600 text-xl">\(\left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right)\)</span>
+                        </span>
+                    </li>
+                    <li>\( P\left(\frac{\pi}{4}\right) = \) 
+                        <span class="inline-block border-b-2 border-dashed border-slate-400 min-w-[6rem] px-2 text-center cursor-pointer transition-colors hover:bg-white answer-zone pb-1" onclick="toggleAnswer(this)">
+                            <span class="answer-text font-handwriting text-blue-600 text-xl">\(\left(\frac{\sqrt{2}}{2}, \frac{\sqrt{2}}{2}\right)\)</span>
+                        </span>
+                    </li>
+                    <li>\( P\left(\frac{\pi}{3}\right) = \) 
+                        <span class="inline-block border-b-2 border-dashed border-slate-400 min-w-[6rem] px-2 text-center cursor-pointer transition-colors hover:bg-white answer-zone pb-1" onclick="toggleAnswer(this)">
+                            <span class="answer-text font-handwriting text-blue-600 text-xl">\(\left(\frac{1}{2}, \frac{\sqrt{3}}{2}\right)\)</span>
+                        </span>
+                    </li>
+                </ul>
+                <div class="mt-6 p-4 bg-blue-100/50 border border-blue-200 rounded text-lg">
+                    <p>L'abscisse (\(x\)) correspond à <span class="inline-block border-b-2 border-dashed border-slate-400 min-w-[4rem] px-1 text-center cursor-pointer hover:bg-white answer-zone pb-1" onclick="toggleAnswer(this)"><span class="answer-text font-handwriting text-blue-600 text-xl">\(\cos \theta\)</span></span>.</p>
+                    <p class="mt-2">L'ordonnée (\(y\)) correspond à <span class="inline-block border-b-2 border-dashed border-slate-400 min-w-[4rem] px-1 text-center cursor-pointer hover:bg-white answer-zone pb-1" onclick="toggleAnswer(this)"><span class="answer-text font-handwriting text-blue-600 text-xl">\(\sin \theta\)</span></span>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Réflexion -->
+    <section class="bg-white border rounded-xl shadow-sm p-6 mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-slate-800 border-l-4 border-purple-500 pl-3">2. Question de réflexion</h2>
+        <p class="text-lg mb-4">Sachant que \( \tan \theta = \frac{\sin \theta}{\cos \theta} \), pourquoi affirme-t-on que la tangente de l'angle \( \frac{\pi}{2} \) rad (soit 90°) n'est pas définie ?</p>
+        
+        <div class="border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors rounded p-5 min-h-[100px] cursor-pointer answer-zone flex items-center" onclick="toggleAnswer(this)">
+            <p class="answer-text font-handwriting text-blue-600 text-xl leading-relaxed">
+                À \( \frac{\pi}{2} \), le point a pour coordonnées (0, 1). Le cosinus (\(x\)) vaut donc 0, et le sinus (\(y\)) vaut 1. En calculant la tangente, on obtient le rapport \( \frac{1}{0} \), ce qui entraîne une division par zéro qui est mathématiquement indéfinie !
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 3: Mon exemple -->
+    <section class="bg-white border rounded-xl shadow-sm p-6 mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-slate-800 border-l-4 border-green-500 pl-3">3. Mon exemple</h2>
+        <p class="text-lg mb-4">Trouve les coordonnées du point trigonométrique associé à l'angle \( \theta = \frac{5\pi}{4} \) rad.</p>
+        
+        <div class="border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors rounded p-5 min-h-[160px] cursor-pointer answer-zone flex flex-col justify-center" onclick="toggleAnswer(this)">
+            <div class="answer-text font-handwriting text-blue-600 text-xl space-y-2">
+                <p>1. L'angle \( \frac{5\pi}{4} \) est situé dans le 3e quadrant (puisque \( \pi < \frac{5\pi}{4} < \frac{3\pi}{2} \)).</p>
+                <p>2. Son angle de référence dans le Q1 est \( \frac{\pi}{4} \). Les valeurs absolues de \(x\) et \(y\) sont donc \( \frac{\sqrt{2}}{2} \).</p>
+                <p>3. Dans le 3e quadrant, les abscisses et ordonnées sont toutes les deux négatives.</p>
+                <p class="mt-4 font-bold font-sans text-blue-700">Réponse finale : \( P\left(\frac{5\pi}{4}\right) = \left( -\frac{\sqrt{2}}{2}, -\frac{\sqrt{2}}{2} \right) \)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Grille 2x2 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        
+        <!-- ⭐ À retenir -->
+        <section class="bg-yellow-50 border border-yellow-200 rounded-xl shadow-sm p-6">
+            <h2 class="text-2xl font-semibold mb-5 text-yellow-800 flex items-center">
+                <span class="mr-3 text-3xl">⭐</span> À retenir
+            </h2>
+            <ul class="space-y-5 text-lg text-yellow-900">
+                <li class="flex flex-col space-y-2">
+                    <span class="font-medium">Identité pythagoricienne fondamentale :</span> 
+                    <span class="font-semibold px-3 py-2 bg-white rounded shadow-sm self-start border border-yellow-200">\( \cos^2 \theta + \sin^2 \theta = 1 \)</span>
+                </li>
+                <li class="mt-4 border-t border-yellow-200 pt-5">
+                    <strong class="font-medium block mb-3">Exemple d'utilisation :</strong>
+                    <p class="mb-3">Si \( \sin \theta = \frac{\sqrt{3}}{2} \), trouvons \( \cos \theta \) :</p>
+                    <div class="bg-white/70 p-4 rounded border border-yellow-200 space-y-3 font-sans">
+                        <p>\( \cos^2 \theta + \left(\frac{\sqrt{3}}{2}\right)^2 = 1 \)</p>
+                        <p>\( \cos^2 \theta + \frac{3}{4} = 1 \)</p>
+                        <p>\( \cos^2 \theta = \frac{1}{4} \)</p>
+                        <p class="font-semibold text-blue-700">\( \cos \theta = \pm \frac{1}{2} \)</p>
+                    </div>
+                    <p class="text-sm mt-3 italic text-yellow-700/80">(Le signe positif ou négatif dépendra du quadrant de l'angle.)</p>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 🛑 Erreur fatale -->
+        <section class="bg-red-50 border border-red-200 rounded-xl shadow-sm p-6">
+            <h2 class="text-2xl font-semibold mb-5 text-red-800 flex items-center">
+                <span class="mr-3 text-3xl">🛑</span> Erreur fatale
+            </h2>
+            <p class="text-lg text-red-900 mb-4 font-medium">Se tromper de sens de rotation pour les angles négatifs !</p>
+            <div class="bg-white p-5 rounded border border-red-200 text-lg shadow-sm">
+                <p class="line-through text-slate-400 mb-3 decoration-red-400 decoration-2">L'angle \( -\frac{\pi}{6} \) se trouve dans le 2e quadrant (en reculant par le haut).</p>
+                <p class="font-semibold text-red-700 mt-2 mb-3">Attention ! Un angle négatif tourne dans le sens horaire (vers le bas).</p>
+                <p class="text-slate-800">
+                    Le point \( P\left(-\frac{\pi}{6}\right) \) correspond en réalité au même point que 
+                    <span class="inline-block border-b-2 border-dashed border-red-300 min-w-[3rem] px-2 text-center cursor-pointer hover:bg-red-50 answer-zone pb-1" onclick="toggleAnswer(this)">
+                        <span class="answer-text font-handwriting text-blue-600 text-xl">\( P\left(\frac{11\pi}{6}\right) \)</span>
+                    </span> 
+                    dans le 4e quadrant.
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Section 5: Pratique -->
+    <section class="bg-white border rounded-xl shadow-sm p-6">
+        <h2 class="text-2xl font-semibold mb-6 text-slate-800 border-l-4 border-slate-500 pl-3">5. Pratique</h2>
+        
+        <div class="space-y-6">
+            <!-- Doux -->
+            <div class="p-5 bg-slate-50 rounded border border-slate-200">
+                <h3 class="font-semibold text-lg flex items-center mb-4 text-slate-700">
+                    <span class="text-2xl mr-3">🍏</span> Doux - Évaluation directe
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-lg">
+                    <div class="flex items-center">
+                        <span class="w-28 text-right mr-3 font-medium">\( \sin\left(\frac{5\pi}{6}\right) = \)</span>
+                        <span class="inline-block border-b-2 border-dashed border-slate-400 flex-1 px-3 cursor-pointer hover:bg-white transition-colors answer-zone pb-1" onclick="toggleAnswer(this)">
+                            <span class="answer-text font-handwriting text-blue-600 text-xl">\( \frac{1}{2} \)</span>
+                        </span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-28 text-right mr-3 font-medium">\( \cos\left(\frac{4\pi}{3}\right) = \)</span>
+                        <span class="inline-block border-b-2 border-dashed border-slate-400 flex-1 px-3 cursor-pointer hover:bg-white transition-colors answer-zone pb-1" onclick="toggleAnswer(this)">
+                            <span class="answer-text font-handwriting text-blue-600 text-xl">\( -\frac{1}{2} \)</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Moyen -->
+            <div class="p-5 bg-slate-50 rounded border border-slate-200">
+                <h3 class="font-semibold text-lg flex items-center mb-4 text-slate-700">
+                    <span class="text-2xl mr-3">🌮</span> Moyen - Angles négatifs et tangentes
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-lg">
+                    <div class="flex items-center">
+                        <span class="w-28 text-right mr-3 font-medium">\( \tan\left(\frac{11\pi}{6}\right) = \)</span>
+                        <span class="inline-block border-b-2 border-dashed border-slate-400 flex-1 px-3 cursor-pointer hover:bg-white transition-colors answer-zone pb-1" onclick="toggleAnswer(this)">
+                            <span class="answer-text font-handwriting text-blue-600 text-xl">\( -\frac{\sqrt{3}}{3} \)</span>
+                        </span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-28 text-right mr-3 font-medium">\( \sin\left(-\frac{\pi}{4}\right) = \)</span>
+                        <span class="inline-block border-b-2 border-dashed border-slate-400 flex-1 px-3 cursor-pointer hover:bg-white transition-colors answer-zone pb-1" onclick="toggleAnswer(this)">
+                            <span class="answer-text font-handwriting text-blue-600 text-xl">\( -\frac{\sqrt{2}}{2} \)</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Épicé -->
+            <div class="p-5 bg-slate-50 rounded border border-slate-200">
+                <h3 class="font-semibold text-lg flex items-center mb-4 text-slate-700">
+                    <span class="text-2xl mr-3">🌶️</span> Épicé - Équations trigonométriques simples
+                </h3>
+                <p class="text-lg mb-4">Trouve toutes les valeurs possibles de l'angle \( \theta \) dans l'intervalle \( [0, 2\pi[ \) sachant que \( \cos \theta = \frac{1}{2} \).</p>
+                <div class="border border-slate-200 bg-white hover:bg-slate-50 transition-colors rounded p-5 min-h-[120px] cursor-pointer answer-zone flex flex-col justify-center" onclick="toggleAnswer(this)">
+                    <div class="answer-text font-handwriting text-blue-600 text-xl space-y-2">
+                        <p>Le cosinus (\(x\)) est positif, l'angle \( \theta \) se trouve donc dans le Q1 ou le Q4.</p>
+                        <p>La coordonnée \(x = \frac{1}{2}\) est associée à l'angle de référence \( \frac{\pi}{3} \).</p>
+                        <p class="mt-3 font-bold font-sans text-blue-700">Solutions : \( \theta_1 = \frac{\pi}{3} \) (Q1) et \( \theta_2 = \frac{5\pi}{3} \) (Q4).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOUVELLE SECTION EXTRA ÉPICÉ -->
+            <div class="p-5 bg-slate-50 rounded border border-slate-200 mt-6">
+                <h3 class="font-semibold text-lg flex items-center mb-4 text-slate-700">
+                    <span class="text-2xl mr-3">🌶️🌶️</span> Extra Épicé - Point non remarquable
+                </h3>
+                <p class="text-lg mb-4">Sachant que \( \sin \theta = \frac{3}{4} \), trouve toutes les valeurs possibles de \( \cos \theta \).</p>
+                <div class="border border-slate-200 bg-white hover:bg-slate-50 transition-colors rounded p-5 min-h-[160px] cursor-pointer answer-zone flex flex-col justify-center" onclick="toggleAnswer(this)">
+                    <div class="answer-text font-handwriting text-blue-600 text-xl space-y-3">
+                        <p>On utilise l'identité pythagoricienne : \( \cos^2 \theta + \sin^2 \theta = 1 \).</p>
+                        <p>\( \cos^2 \theta + \left(\frac{3}{4}\right)^2 = 1 \)</p>
+                        <p>\( \cos^2 \theta + \frac{9}{16} = 1 \implies \cos^2 \theta = \frac{16}{16} - \frac{9}{16} = \frac{7}{16} \)</p>
+                        <p>\( \cos \theta = \pm\sqrt{\frac{7}{16}} \)</p>
+                        <p class="mt-3 font-bold font-sans text-blue-700">Réponse : \( \cos \theta = \frac{\sqrt{7}}{4} \) ou \( \cos \theta = -\frac{\sqrt{7}}{4} \)</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Script JavaScript -->
+    <script>
+        // Fonction pour afficher/masquer un corrigé individuel
+        function toggleAnswer(element) {
+            const answer = element.querySelector('.answer-text');
+            if (answer) {
+                answer.classList.toggle('visible');
+            }
+        }
+
+        // Fonction pour le bouton global "Afficher tout"
+        function toggleAll() {
+            const answers = document.querySelectorAll('.answer-text');
+            const allVisible = Array.from(answers).every(a => a.classList.contains('visible'));
+            
+            answers.forEach(a => {
+                if (allVisible) {
+                    a.classList.remove('visible'); // Masque tout si tout est déjà visible
+                } else {
+                    a.classList.add('visible'); // Affiche tout sinon
+                }
+            });
+        }
+    </script>
+</body>
+</html>
