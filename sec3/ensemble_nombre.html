@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Ensembles de Nombres - Math 3e secondaire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cambria+Math&display=swap');
+        
+        .math-sym {
+            font-family: "Cambria Math", "Times New Roman", serif;
+            font-style: italic;
+        }
+        .double-bar {
+            font-family: "Cambria Math", serif;
+            font-style: normal;
+            font-weight: normal;
+        }
+        .correct { border-color: #10b981; background-color: #ecfdf5; }
+        .incorrect { border-color: #ef4444; background-color: #fef2f2; }
+        .hint-box { background-color: #eff6ff; border-left: 4px solid #3b82f6; }
+        
+        /* Style pour les fractions */
+        .frac {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .frac > span { display: block; padding: 0.1em; }
+        .frac span.bottom { border-top: 2px solid black; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <div class="max-w-4xl mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-blue-800 mb-2">Les Ensembles de Nombres</h1>
+            <p class="text-gray-600 italic">Révision et pratique interactive</p>
+        </header>
+
+        <!-- Rappels Théoriques -->
+        <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Rappels</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-3 bg-blue-50 rounded"><strong class="double-bar text-lg">ℕ</strong> <strong>(Naturels) :</strong> Entiers positifs {0, 1, 2, ...}</div>
+                <div class="p-3 bg-blue-50 rounded"><strong class="double-bar text-lg">ℤ</strong> <strong>(Entiers) :</strong> Entiers positifs et négatifs {..., -1, 0, 1, ...}</div>
+                <div class="p-3 bg-blue-50 rounded"><strong class="double-bar text-lg">ℚ</strong> <strong>(Rationnels) :</strong> Nombres pouvant s'écrire <span class="math-sym">a/b</span>. (Décimaux finis ou périodiques).</div>
+                <div class="p-3 bg-blue-50 rounded"><strong class="double-bar text-lg">ℚ'</strong> <strong>(Irrationnels) :</strong> Décimaux infinis non périodiques (ex: <span class="math-sym">π</span>, √2).</div>
+                <div class="p-3 bg-blue-50 rounded md:col-span-2 text-center"><strong class="double-bar text-lg">ℝ</strong> <strong>(Réels) :</strong> L'union de tous les ensembles ci-dessus.</div>
+            </div>
+        </section>
+
+        <!-- Activité Interactive -->
+        <section class="bg-white rounded-xl shadow-lg p-6">
+            <div id="game-container">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Exercice de classification</h2>
+                    <span id="score-display" class="bg-blue-100 text-blue-800 px-4 py-1 rounded-full font-bold">Score : 0 / 0</span>
+                </div>
+
+                <div id="question-area" class="text-center py-12 bg-gray-100 rounded-lg mb-6 min-h-[220px] flex flex-col justify-center items-center">
+                    <p class="text-gray-500 mb-4" id="instruction-text">À quel ensemble appartient ce nombre ?</p>
+                    <div id="current-number" class="text-6xl font-extrabold text-blue-600 mb-6 math-sym">...</div>
+                    <p class="text-sm text-gray-500" id="precision-text">(Choisis l'ensemble le plus précis)</p>
+                </div>
+
+                <!-- Boutons d'ensembles -->
+                <div id="options-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <!-- Généré par JS -->
+                </div>
+
+                <!-- Zone de feedback et indices -->
+                <div id="feedback-area" class="hidden p-4 rounded-lg mb-4 text-center font-medium"></div>
+                <div id="hint-area" class="hidden hint-box p-4 rounded-lg mb-4 italic text-blue-800"></div>
+
+                <div class="flex justify-center">
+                    <button id="next-btn" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-8 rounded-lg transition shadow-lg">
+                        Nombre suivant
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Utilisation de HTML pour les radicaux et fractions
+        const questions = [
+            { display: "42", ans: "N", hint: "C'est un nombre entier positif sans virgule.", final: "C'est un nombre Naturel (ℕ)." },
+            { display: "-15", ans: "Z", hint: "C'est un entier, mais il est sous zéro.", final: "C'est un nombre Entier (ℤ)." },
+            { display: '<div class="frac"><span>3</span><span class="bottom">4</span></div>', ans: "Q", hint: "Il est écrit sous forme de fraction a/b.", final: "C'est un nombre Rationnel (ℚ)." },
+            { display: "0,333...", ans: "Q", hint: "C'est un nombre à développement décimal périodique.", final: "Les nombres périodiques sont Rationnels (ℚ)." },
+            { display: "π", ans: "QI", hint: "Ses décimales ne s'arrêtent jamais et ne sont pas périodiques.", final: "C'est un nombre Irrationnel (ℚ')." },
+            { display: "√2", ans: "QI", hint: "Est-ce que cette racine donne un nombre entier ?", final: "C'est une racine non parfaite, donc Irrationnel (ℚ')." },
+            { display: "-2,5", ans: "Q", hint: "C'est un nombre décimal fini.", final: "Il peut s'écrire sous forme de fraction, donc Rationnel (ℚ)." },
+            { display: "√25", ans: "N", hint: "Calcule la racine carrée ! √25 = ?", final: "√25 = 5, c'est donc un Naturel (ℕ)." },
+            { display: "0", ans: "N", hint: "Il est considéré comme le premier des naturels.", final: "0 appartient aux Naturels (ℕ)." },
+            { display: "√7", ans: "QI", hint: "Est-ce un carré parfait ?", final: "Non, son développement est infini et non périodique : Irrationnel (ℚ')." },
+            { display: '<div class="frac"><span>-10</span><span class="bottom">2</span></div>', ans: "Z", hint: "Simplifie la fraction d'abord !", final: "-10/2 = -5, c'est donc un Entier (ℤ)." },
+            // Nouvelles questions
+            { display: "1,25", ans: "Q", hint: "C'est un décimal fini. Peut-on l'écrire en fraction ?", final: "1,25 = 5/4, c'est donc un Rationnel (ℚ)." },
+            { display: "-√100", ans: "Z", hint: "Calcule la racine carrée d'abord, puis applique le signe moins.", final: "-√100 = -10, c'est un Entier (ℤ)." },
+            { display: "0,121212...", ans: "Q", hint: "Vois-tu un motif qui se répète (une période) ?", final: "C'est un nombre périodique, donc Rationnel (ℚ)." },
+            { display: "√0,16", ans: "Q", hint: "Essaie de trouver un nombre qui, multiplié par lui-même, donne 0,16.", final: "√0,16 = 0,4. C'est un Rationnel (ℚ)." },
+            { display: '<div class="frac"><span>18</span><span class="bottom">3</span></div>', ans: "N", hint: "Fais la division ! Quel est le résultat ?", final: "18 ÷ 3 = 6, c'est donc un Naturel (ℕ)." },
+            { display: "√(-4)", ans: "R_NON", hint: "Peux-tu multiplier un nombre par lui-même et obtenir un résultat négatif ?", final: "Une racine carrée d'un nombre négatif n'est pas un nombre Réel (ℝ)." },
+            { display: "-1/3", ans: "Q", hint: "C'est une fraction négative.", final: "C'est un nombre Rationnel (ℚ)." },
+            { display: "5,1234567...", ans: "QI", hint: "Il y a des points de suspension, mais y a-t-il une période ?", final: "Sans période répétitive, c'est un Irrationnel (ℚ')." },
+            { display: '<div class="frac"><span>π</span><span class="bottom">2</span></div>', ans: "QI", hint: "Si on divise un nombre irrationnel par 2, reste-t-il irrationnel ?", final: "Oui, π/2 reste un Irrationnel (ℚ')." }
+        ];
+
+        const sets = [
+            { id: "N", label: "ℕ (Naturels)" },
+            { id: "Z", label: "ℤ (Entiers)" },
+            { id: "Q", label: "ℚ (Rationnels)" },
+            { id: "QI", label: "ℚ' (Irrationnels)" },
+            { id: "R_NON", label: "Pas Réel (∉ℝ)" }
+        ];
+
+        let currentIndex = 0;
+        let attempts = 0;
+        let score = 0;
+        let totalAnswered = 0;
+
+        const numberEl = document.getElementById('current-number');
+        const optionsGrid = document.getElementById('options-grid');
+        const feedbackArea = document.getElementById('feedback-area');
+        const hintArea = document.getElementById('hint-area');
+        const nextBtn = document.getElementById('next-btn');
+        const scoreDisplay = document.getElementById('score-display');
+
+        function initQuestion() {
+            const q = questions[currentIndex];
+            numberEl.innerHTML = q.display;
+            attempts = 0;
+            feedbackArea.classList.add('hidden');
+            hintArea.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            renderOptions();
+        }
+
+        function renderOptions() {
+            optionsGrid.innerHTML = '';
+            
+            // On affiche seulement les 4 ensembles de base sauf si la question porte sur un non-réel
+            let availableSets = sets.filter(s => s.id !== "R_NON");
+            const q = questions[currentIndex];
+            
+            // Si la réponse est R_NON, on s'assure que le bouton existe pour cette question
+            if (q.ans === "R_NON") {
+                availableSets.push(sets.find(s => s.id === "R_NON"));
+            }
+
+            // Mélange
+            const shuffledSets = [...availableSets].sort(() => Math.random() - 0.5);
+            
+            shuffledSets.forEach(set => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white border-2 border-blue-200 hover:border-blue-500 p-4 rounded-xl font-bold text-blue-800 shadow-sm transition-all active:scale-95 text-lg double-bar";
+                btn.textContent = set.label;
+                btn.onclick = () => checkAnswer(set.id, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(choice, btn) {
+            const q = questions[currentIndex];
+
+            if (choice === q.ans) {
+                btn.classList.add('correct');
+                feedbackArea.textContent = "Bravo ! " + q.final;
+                feedbackArea.className = "p-4 rounded-lg mb-4 text-center font-medium bg-green-100 text-green-800";
+                feedbackArea.classList.remove('hidden');
+                hintArea.classList.add('hidden');
+                
+                if (attempts === 0) score++;
+                totalAnswered++;
+                updateScore();
+                disableButtons();
+                nextBtn.classList.remove('hidden');
+            } else {
+                attempts++;
+                btn.classList.add('incorrect');
+                btn.disabled = true;
+
+                if (attempts === 1) {
+                    feedbackArea.textContent = "Réessaie encore...";
+                    feedbackArea.className = "p-4 rounded-lg mb-4 text-center font-medium bg-yellow-100 text-yellow-800";
+                    feedbackArea.classList.remove('hidden');
+                    
+                    hintArea.textContent = "Indice : " + q.hint;
+                    hintArea.classList.remove('hidden');
+                } else {
+                    feedbackArea.textContent = "La réponse était : " + q.final;
+                    feedbackArea.className = "p-4 rounded-lg mb-4 text-center font-medium bg-red-100 text-red-800";
+                    feedbackArea.classList.remove('hidden');
+                    hintArea.classList.add('hidden');
+                    totalAnswered++;
+                    updateScore();
+                    disableButtons();
+                    nextBtn.classList.remove('hidden');
+                }
+            }
+        }
+
+        function disableButtons() {
+            const buttons = optionsGrid.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = `Score : ${score} / ${totalAnswered}`;
+        }
+
+        nextBtn.onclick = () => {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                initQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            const container = document.getElementById('game-container');
+            const percent = Math.round((score / questions.length) * 100);
+            let message = percent >= 80 ? "Excellent travail !" : percent >= 60 ? "Bien joué !" : "Continue de réviser les définitions.";
+            
+            container.innerHTML = `
+                <div class="text-center py-10">
+                    <h2 class="text-3xl font-bold mb-4">${message}</h2>
+                    <p class="text-xl mb-6">Tu as obtenu <strong>${score} / ${questions.length}</strong> (${percent}%).</p>
+                    <button onclick="location.reload()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-full transition shadow-lg">
+                        Recommencer l'activité
+                    </button>
+                </div>
+            `;
+        }
+
+        window.onload = initQuestion;
+    </script>
+</body>
+</html>
