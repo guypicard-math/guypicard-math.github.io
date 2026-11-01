@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes de cours - Exposants spéciaux et Révision</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+        }
+        
+        .handwritten {
+            font-family: 'Architects Daughter', cursive;
+            color: #2563eb;
+        }
+        
+        .answer {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .show-answers .answer,
+        .answer.revealed {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .box-title {
+            position: absolute;
+            top: -12px;
+            left: 16px;
+            background: white;
+            padding: 0 8px;
+            font-weight: bold;
+            color: #475569;
+            border-radius: 4px;
+        }
+
+        .clickable-blank {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-radius: 0.25rem;
+        }
+
+        .clickable-blank:hover {
+            background-color: #e2e8f0;
+        }
+
+        @media print {
+            body { background-color: white; }
+            .no-print { display: none; }
+            .page-break { page-break-before: always; }
+            .clickable-blank:hover { background-color: transparent; }
+            .shadow-sm { box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-sm border border-slate-200">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8 border-b-2 border-slate-800 pb-4">
+            <h1 class="text-3xl font-bold text-slate-800">Lois des exposants : Le résumé et la racine</h1>
+            <button id="toggleAnswers" class="no-print bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition">
+                Afficher tout le corrigé
+            </button>
+        </div>
+
+        <!-- SECTION 1: DÉCOUVERTE -->
+        <h2 class="text-xl font-bold mb-6 text-slate-700">1. Découverte : L'exposant fractionnaire</h2>
+        <p class="mb-4 text-sm text-slate-500 italic">Consigne : Faisons appel à la logique et aux lois que l'on connaît déjà pour comprendre ce cas spécial. <br> <span class="text-blue-600 font-semibold no-print">👉 Clique sur les lignes pour vérifier tes réponses.</span></p>
+
+        <div class="mb-8">
+            
+            <!-- L'exposant fractionnaire -->
+            <div class="border-2 border-slate-300 rounded-xl p-6 relative bg-slate-50">
+                <span class="box-title text-teal-600">L'exposant fractionnaire (1/2)</span>
+                
+                <div class="space-y-4 mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="font-semibold text-lg">Calcul mystère :</span>
+                            <span class="text-xl">\( 9^{1/2} \cdot 9^{1/2} \)</span>
+                        </div>
+                        
+                        <div>
+                            <span class="font-semibold block mb-1">1) Avec la loi de l'addition des exposants :</span>
+                            <div class="min-h-[2.5rem] border-b border-dashed border-slate-400 pb-1 px-2 flex items-center">
+                                <span class="answer handwritten text-xl">\( 9^{\frac{1}{2} + \frac{1}{2}} = 9^1 = 9 \)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <span class="font-semibold block mb-1 mt-2 md:mt-0">2) Quel nombre identique donne 9 si on le multiplie par lui-même ?</span>
+                            <div class="min-h-[2.5rem] border-b border-dashed border-slate-400 pb-1 px-2 flex items-end">
+                                <span class="answer handwritten text-xl">\( 3 \cdot 3 = 9 \)</span>
+                            </div>
+                        </div>
+                        <div class="bg-teal-100 p-3 rounded-lg mt-4">
+                            <span class="font-semibold text-teal-800 block">Quelle opération mathématique donne 3 à partir de 9 ?</span>
+                            <div class="min-h-[2rem] mt-1 px-1">
+                                <span class="answer handwritten block text-lg">La racine carrée ! \( (\sqrt{9} = 3) \)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SECTION 2: À RETENIR -->
+        <div class="border-4 border-yellow-300 rounded-xl p-6 relative bg-yellow-50 mb-10">
+            <span class="box-title bg-yellow-300 text-yellow-900 rounded-full px-4 py-1">⭐ À retenir : Le résumé ultime</span>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <!-- Loi 1: Produit -->
+                <div class="bg-white p-4 rounded-lg border-2 border-yellow-200 text-center shadow-sm">
+                    <span class="text-slate-600 font-bold block mb-2 text-sm">Le produit</span>
+                    <div class="text-xl font-bold text-slate-800 mb-2">\( a^m \cdot a^n = a^{m+n} \)</div>
+                    <p class="text-xs text-slate-500">Bases identiques multipliées = on additionne les exposants.</p>
+                </div>
+                <!-- Loi 2: Quotient -->
+                <div class="bg-white p-4 rounded-lg border-2 border-yellow-200 text-center shadow-sm">
+                    <span class="text-slate-600 font-bold block mb-2 text-sm">Le quotient</span>
+                    <div class="text-xl font-bold text-slate-800 mb-2">\( \frac{a^m}{a^n} = a^{m-n} \)</div>
+                    <p class="text-xs text-slate-500">Bases identiques divisées = on soustrait les exposants.</p>
+                </div>
+                <!-- Loi 3: Puissance d'une puissance -->
+                <div class="bg-white p-4 rounded-lg border-2 border-yellow-200 text-center shadow-sm">
+                    <span class="text-slate-600 font-bold block mb-2 text-sm">Puissance de puissance</span>
+                    <div class="text-xl font-bold text-slate-800 mb-2">\( (a^m)^n = a^{m \cdot n} \)</div>
+                    <p class="text-xs text-slate-500">Exposant sur un exposant = on les multiplie.</p>
+                </div>
+                <!-- Loi 4: Distribution -->
+                <div class="bg-white p-4 rounded-lg border-2 border-yellow-200 text-center shadow-sm">
+                    <span class="text-slate-600 font-bold block mb-2 text-sm">La distribution</span>
+                    <div class="text-xl font-bold text-slate-800 mb-2">\( (ab)^m = a^m b^m \)</div>
+                    <p class="text-xs text-slate-500">L'exposant se distribue sur chaque facteur de la parenthèse.</p>
+                </div>
+                <!-- Loi 5: Fantôme -->
+                <div class="bg-white p-4 rounded-lg border-2 border-yellow-200 text-center shadow-sm">
+                    <span class="text-slate-600 font-bold block mb-2 text-sm">Le fantôme</span>
+                    <div class="text-xl font-bold text-slate-800 mb-2">\( m^1 = m \)</div>
+                    <p class="text-xs text-slate-500">Un nombre sans exposant a un 1 caché.</p>
+                </div>
+                <!-- Loi 6: Destructeur -->
+                <div class="bg-white p-4 rounded-lg border-2 border-yellow-200 text-center shadow-sm">
+                    <span class="text-slate-600 font-bold block mb-2 text-sm">Le destructeur</span>
+                    <div class="text-xl font-bold text-slate-800 mb-2">\( m^0 = 1 \)</div>
+                    <p class="text-xs text-slate-500">Tout nombre à la puissance zéro donne 1.</p>
+                </div>
+                <!-- Loi 7: Racine -->
+                <div class="bg-white p-4 rounded-lg border-2 border-yellow-200 text-center shadow-sm">
+                    <span class="text-slate-600 font-bold block mb-2 text-sm">La racine</span>
+                    <div class="text-xl font-bold text-slate-800 mb-2">\( m^{1/2} = \sqrt{m} \)</div>
+                    <p class="text-xs text-slate-500">L'exposant fractionnaire devient une racine carrée.</p>
+                </div>
+                <!-- Loi 8: Ascenseur -->
+                <div class="bg-white p-4 rounded-lg border-2 border-yellow-200 text-center shadow-sm">
+                    <span class="text-slate-600 font-bold block mb-2 text-sm">L'ascenseur</span>
+                    <div class="text-xl font-bold text-slate-800 mb-2">\( m^{-a} = \frac{1}{m^a} \)</div>
+                    <p class="text-xs text-slate-500">L'exposant négatif fait changer d'étage dans la fraction.</p>
+                </div>
+            </div>
+
+            <!-- AVERTISSEMENT -->
+            <div class="bg-orange-100 border-l-4 border-orange-500 p-4 rounded mt-6">
+                <p class="text-sm font-bold text-orange-800">🛑 ERREUR FATALE : L'ASCENSEUR ET LES COEFFICIENTS</p>
+                <p class="text-sm text-orange-900 mt-1">L'exposant négatif n'affecte <strong>QUE</strong> la base qui est juste devant lui. Le gros chiffre devant (le coefficient) reste à sa place !</p>
+                <div class="flex justify-around items-center mt-3 bg-white p-2 rounded border border-orange-200">
+                    <div class="text-center">
+                        <span class="text-red-600 font-bold block line-through">\( 3x^{-2} = \frac{1}{3x^2} \)</span>
+                        <span class="text-xs text-slate-500">NON ! Le 3 n'a pas d'exposant négatif.</span>
+                    </div>
+                    <div class="text-center border-l-2 border-orange-200 pl-4">
+                        <span class="text-green-600 font-bold block">\( 3x^{-2} = \frac{3}{x^2} \)</span>
+                        <span class="text-xs text-slate-500">OUI ! Seul le \(x\) prend l'ascenseur.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- SECTION 3: PRATIQUE -->
+        <h2 class="text-xl font-bold mb-6 text-slate-700 mt-10">2. À ton tour ! (Pratique globale)</h2>
+        <p class="text-blue-600 font-semibold mb-6 no-print">👉 Simplifie les expressions avec toutes les lois (ne laisse aucun exposant négatif ou zéro). Clique pour te corriger.</p>
+        
+        <!-- Doux -->
+        <div class="mb-8">
+            <h3 class="text-lg font-bold text-green-600 flex items-center gap-2 mb-4">
+                <span>🍏 Doux</span> <span class="text-sm font-normal text-slate-500">(1 seule loi à la fois)</span>
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div>
+                    <p class="mb-2">a) \( x^4 \cdot x^5 \)</p>
+                    <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( x^9 \)</span></div>
+                </div>
+                <div>
+                    <p class="mb-2">b) \( (y^3)^4 \)</p>
+                    <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( y^{12} \)</span></div>
+                </div>
+                <div>
+                    <p class="mb-2">c) \( 49^{1/2} \)</p>
+                    <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( \sqrt{49} = 7 \)</span></div>
+                </div>
+                <div>
+                    <p class="mb-2">d) \( m^{-5} \)</p>
+                    <div class="min-h-[3rem] border-b border-slate-300 px-2 flex items-center"><span class="answer handwritten text-lg">\( \frac{1}{m^5} \)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Moyen -->
+        <div class="mb-8">
+            <h3 class="text-lg font-bold text-orange-500 flex items-center gap-2 mb-4">
+                <span>🌮 Moyen</span> <span class="text-sm font-normal text-slate-500">(Combinaison de 2 lois / Pièges)</span>
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <p class="mb-2">e) \( (3a^4)^2 \)</p>
+                    <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( 9a^8 \) <span class="text-sm text-slate-400">(Le 3 est aussi au carré)</span></span></div>
+                </div>
+                <div>
+                    <p class="mb-2">f) \( \frac{12x^7}{3x^2} \)</p>
+                    <div class="min-h-[2.5rem] border-b border-slate-300 px-2 flex items-end pb-1"><span class="answer handwritten text-lg">\( 4x^5 \)</span></div>
+                </div>
+                <div>
+                    <p class="mb-2">g) \( 7b^{-2} \)</p>
+                    <div class="min-h-[3rem] border-b border-slate-300 px-2 flex items-center"><span class="answer handwritten text-lg">\( \frac{7}{b^2} \)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Épicé -->
+        <div class="mb-4">
+            <h3 class="text-lg font-bold text-red-600 flex items-center gap-2 mb-4">
+                <span>🌶️ Épicé</span> <span class="text-sm font-normal text-slate-500">(Mélange de plusieurs lois)</span>
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="mb-2">h) \( \frac{(2x^3)^3}{4x^{11}} \)</p>
+                    <div class="min-h-[3.5rem] border-b border-slate-300 px-2 flex items-center"><span class="answer handwritten text-lg">\( \frac{8x^9}{4x^{11}} = 2x^{-2} = \frac{2}{x^2} \)</span></div>
+                </div>
+                <div>
+                    <p class="mb-2">i) \( (25y^6)^{1/2} \cdot y^{-3} \)</p>
+                    <div class="min-h-[3.5rem] border-b border-slate-300 px-2 flex items-center"><span class="answer handwritten text-lg">\( 5y^3 \cdot y^{-3} = 5y^0 = 5 \)</span></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MathJax for rendering math formulas beautifully -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script>
+        // --- 1. Gestion de l'affichage individuel (au clic sur une ligne) ---
+        const answers = document.querySelectorAll('.answer');
+        
+        answers.forEach(answer => {
+            const parentBlock = answer.parentElement;
+            
+            parentBlock.classList.add('clickable-blank');
+            parentBlock.title = "Clique pour révéler ou masquer la réponse";
+            
+            parentBlock.addEventListener('click', () => {
+                answer.classList.toggle('revealed');
+            });
+        });
+
+        // --- 2. Gestion de l'affichage global (bouton principal) ---
+        const toggleBtn = document.getElementById('toggleAnswers');
+        let allAnswersVisible = false;
+
+        toggleBtn.addEventListener('click', () => {
+            allAnswersVisible = !allAnswersVisible;
+            if (allAnswersVisible) {
+                document.body.classList.add('show-answers');
+                toggleBtn.textContent = 'Masquer le corrigé';
+                toggleBtn.classList.replace('bg-blue-600', 'bg-slate-600');
+                toggleBtn.classList.replace('hover:bg-blue-700', 'hover:bg-slate-700');
+                
+                answers.forEach(ans => ans.classList.remove('revealed'));
+            } else {
+                document.body.classList.remove('show-answers');
+                toggleBtn.textContent = 'Afficher tout le corrigé';
+                toggleBtn.classList.replace('bg-slate-600', 'bg-blue-600');
+                toggleBtn.classList.replace('hover:bg-slate-700', 'hover:bg-blue-700');
+            }
+        });
+    </script>
+</body>
+</html>
