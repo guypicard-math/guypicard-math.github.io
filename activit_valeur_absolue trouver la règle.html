@@ -1,609 +1,498 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math SN5 - Fonction Valeur Absolue</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-        }
-        canvas {
-            touch-action: none;
-            background-color: #ffffff;
-            background-image: 
-                linear-gradient(#f1f5f9 1px, transparent 1px),
-                linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
-            background-size: 25px 25px; /* Grid size calculated in JS */
-            background-position: center center;
-        }
-        /* Custom scrollbar for the solution area */
-        .solution-scroll::-webkit-scrollbar {
-            width: 8px;
-        }
-        .solution-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-        .solution-scroll::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        .solution-scroll::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Math SN5 - Fonction Valeur Absolue</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <style>
+ @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+ body {
+ font-family: 'Inter', sans-serif;
+ background-color: #f8fafc;
+ }
+ canvas {
+ touch-action: none;
+ background-color: #ffffff;
+ background-image: 
+linear-gradient(#f1f5f9 1px, transparent 1px),
+ linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
+ background-size: 25px 25px; /* Grid size calculated in JS */
+ background-position: center center;
+ }
+ /* Custom scrollbar for the solution area */
+ .solution-scroll::-webkit-scrollbar {
+ width: 8px;
+ }
+ .solution-scroll::-webkit-scrollbar-track {
+ background: #f1f1f1;
+ border-radius: 4px;
+ }
+ .solution-scroll::-webkit-scrollbar-thumb {
+ background: #cbd5e1;
+ border-radius: 4px;
+ }
+ .solution-scroll::-webkit-scrollbar-thumb:hover {
+ background: #94a3b8;
+ }
+ </style>
 </head>
 <body class="min-h-screen text-slate-800 p-4 md:p-8">
 
 <div class="max-w-6xl mx-auto space-y-6">
-    
-    <!-- Header -->
-    <header class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-900">Trouver la règle d'une fonction valeur absolue</h1>
-            <p class="text-slate-500 text-sm mt-1">Mathématiques - Secondaire 5 SN (Compétence 2 : Déployer un raisonnement mathématique)</p>
-        </div>
-        <div class="flex bg-slate-100 p-1 rounded-lg">
-            <button id="mode-2pts" class="px-4 py-2 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-blue-600" onclick="setMode('2pts')">
-                2 points (Sommet + 1)
-            </button>
-            <button id="mode-3pts" class="px-4 py-2 rounded-md text-sm font-medium transition-colors text-slate-600 hover:text-slate-900" onclick="setMode('3pts')">
-                3 points (Branches)
-            </button>
-        </div>
-    </header>
+ 
+<!-- Header -->
+ <header class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+ <div>
+ <h1 class="text-2xl font-bold text-slate-900">Trouver la règle d'une fonction valeur absolue</h1>
+ <p class="text-slate-500 text-sm mt-1">Mathématiques - Secondaire 5 SN (Compétence 2 : Déployer un raisonnement mathématique)</p>
+ </div>
+ <div class="flex bg-slate-100 p-1 rounded-lg">
+ <button id="mode-2pts" class="px-4 py-2 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-blue-600" onclick="setMode('2pts')">
+ 2 points (Sommet + 1)
+ </button>
+ <button id="mode-3pts" class="px-4 py-2 rounded-md text-sm font-medium transition-colors text-slate-600 hover:text-slate-900" onclick="setMode('3pts')">
+ 3 points (Branches)
+ </button>
+ </div>
+ </header>
 
-    <!-- Main Content -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <!-- Left Column: Graph -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col items-center">
-            <div class="w-full flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold">Graphique de la fonction</h2>
-                <button onclick="generateProblem()" class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg transition-colors font-medium flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Nouvel exemple
-                </button>
-            </div>
-            
-            <div class="relative w-full aspect-square max-w-[500px] border-2 border-slate-300 rounded-xl overflow-hidden shadow-inner bg-white">
-                <canvas id="mathCanvas" width="500" height="500" class="w-full h-full block"></canvas>
-            </div>
-            <p class="text-xs text-slate-400 mt-3 text-center">Forme standard : <span class="font-mono bg-slate-100 px-1 rounded">f(x) = a|x - h| + k</span></p>
-        </div>
+ <!-- Main Content -->
+ <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+ 
+<!-- Left Column: Graph -->
+ <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col items-center">
+ <div class="w-full flex justify-between items-center mb-4">
+ <h2 class="text-lg font-semibold">Graphique de la fonction</h2>
+ <button onclick="generateProblem()" class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg transition-colors font-medium flex items-center gap-2">
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+ Nouvel exemple
+ </button>
+ </div>
+ 
+<div class="relative w-full aspect-square max-w-[500px] border-2 border-slate-300 rounded-xl overflow-hidden shadow-inner bg-white">
+ <canvas id="mathCanvas" width="500" height="500" class="w-full h-full block"></canvas>
+ </div>
+ <p class="text-xs text-slate-400 mt-3 text-center">Forme standard : <span class="font-mono bg-slate-100 px-1 rounded">f(x) = a|x - h| + k</span></p>
+ </div>
 
-        <!-- Right Column: Interaction and Solution -->
-        <div class="flex flex-col gap-6">
-            
-            <!-- Input Area -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <h2 class="text-lg font-semibold mb-4">Votre réponse</h2>
-                <p class="text-sm text-slate-600 mb-4">Identifiez les paramètres <span class="italic font-serif">a</span>, <span class="italic font-serif">h</span> et <span class="italic font-serif">k</span> de la règle à partir du graphique.</p>
-                
-                <div class="mb-5">
-                    <label for="input-student-name" class="block text-sm font-medium text-slate-700 mb-1">
-                        Nom et prénom de l'élève <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="input-student-name" placeholder="Entrez votre nom complet..." class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-slate-800">
-                </div>
+ <!-- Right Column: Interaction and Solution -->
+ <div class="flex flex-col gap-6">
+ 
+<!-- Input Area -->
+ <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+ <h2 class="text-lg font-semibold mb-4">Votre réponse</h2>
+ <p class="text-sm text-slate-600 mb-4">Identifiez les paramètres <span class="italic font-serif">a</span>, <span class="italic font-serif">h</span> et <span class="italic font-serif">k</span> de la règle à partir du graphique.</p>
 
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Paramètre a</label>
-                        <input type="number" step="any" id="input-a" oninput="updateLiveEquation()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none font-mono text-center">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Paramètre h</label>
-                        <input type="number" step="any" id="input-h" oninput="updateLiveEquation()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none font-mono text-center">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Paramètre k</label>
-                        <input type="number" step="any" id="input-k" oninput="updateLiveEquation()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none font-mono text-center">
-                    </div>
-                </div>
+ <div class="grid grid-cols-3 gap-4 mb-6">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1">Paramètre a</label>
+ <input type="number" step="any" id="input-a" oninput="updateLiveEquation()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none font-mono text-center">
+ </div>
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1">Paramètre h</label>
+ <input type="number" step="any" id="input-h" oninput="updateLiveEquation()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none font-mono text-center">
+ </div>
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1">Paramètre k</label>
+ <input type="number" step="any" id="input-k" oninput="updateLiveEquation()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none font-mono text-center">
+ </div>
+ </div>
 
-                <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-6 flex items-center justify-center">
-                    <span class="text-slate-500 mr-3">Règle :</span>
-                    <span id="live-equation" class="text-xl font-bold text-blue-900 font-serif">f(x) = a|x - h| + k</span>
-                </div>
+ <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-6 flex items-center justify-center">
+ <span class="text-slate-500 mr-3">Règle :</span>
+ <span id="live-equation" class="text-xl font-bold text-blue-900 font-serif">f(x) = a|x - h| + k</span>
+ </div>
 
-                <div class="flex gap-3">
-                    <button onclick="checkAnswer()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-xl transition-colors shadow-sm">
-                        Valider la réponse
-                    </button>
-                    <button onclick="toggleSolution()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 px-4 rounded-xl transition-colors shadow-sm">
-                        Voir la démarche
-                    </button>
-                </div>
+ <div class="flex gap-3">
+ <button onclick="checkAnswer()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-xl transition-colors shadow-sm">
+ Valider la réponse
+ </button>
+ <button onclick="toggleSolution()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 px-4 rounded-xl transition-colors shadow-sm">
+ Voir la démarche
+ </button>
+ </div>
 
-                <!-- Feedback Message -->
-                <div id="feedback-msg" class="hidden mt-4 p-4 rounded-lg font-medium text-center"></div>
+ <!-- Feedback Message -->
+ <div id="feedback-msg" class="hidden mt-4 p-4 rounded-lg font-medium text-center"></div>
 
-                <div id="submit-status" class="hidden mt-3 text-xs text-center font-medium"></div>
-            </div>
+ <div id="submit-status" class="hidden mt-3 text-xs text-center font-medium"></div>
+ </div>
 
-            <!-- Solution Area (Hidden by default) -->
-            <div id="solution-area" class="hidden flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col">
-                <h2 class="text-lg font-semibold mb-4 text-emerald-800 flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Démarche mathématique
-                </h2>
-                <div id="solution-content" class="solution-scroll overflow-y-auto pr-2 text-sm text-slate-700 space-y-3 flex-1 h-[250px]">
-                    <!-- Dynamically populated -->
-                </div>
-            </div>
+ <!-- Solution Area (Hidden by default) -->
+ <div id="solution-area" class="hidden flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col">
+ <h2 class="text-lg font-semibold mb-4 text-emerald-800 flex items-center gap-2">
+ <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+ Démarche mathématique
+ </h2>
+ <div id="solution-content" class="solution-scroll overflow-y-auto pr-2 text-sm text-slate-700 space-y-3 flex-1 h-[250px]">
+ <!-- Dynamically populated -->
+ </div>
+ </div>
 
-        </div>
-    </div>
+ </div>
+ </div>
 </div>
 
 <script>
-    // --- State Variables ---
-    let currentMode = '2pts'; // '2pts' or '3pts'
-    let solutionVisible = false;
-    
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyF0krfpVAQNt-7_EYpZ0QFwUThJvw9E8IqMj_DL0kOTHyD8hb8gkRf76WkPWkBc8L9/exec";
-    
-    // Grid settings
-    const GRID_SIZE = 25; // 25px per unit
-    const CANVAS_SIZE = 500;
-    const ORIGIN = CANVAS_SIZE / 2; // (250, 250)
-    
-    // Mathematical parameters
-    let true_a, true_h, true_k;
-    let points = []; // Array of {x, y, isVertex, label}
+ // --- State Variables ---
+ let currentMode = '2pts'; // '2pts' or '3pts'
+ let solutionVisible = false;
+ 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyF0krfpVAQNt-7_EYpZ0QFwUThJvw9E8IqMj_DL0kOTHyD8hb8gkRf76WkPWkBc8L9/exec";
+ 
+// Grid settings
+ const GRID_SIZE = 25; // 25px per unit
+ const CANVAS_SIZE = 500;
+ const ORIGIN = CANVAS_SIZE / 2; // (250, 250)
+ 
+// Mathematical parameters
+ let true_a, true_h, true_k;
+ let points = []; // Array of {x, y, isVertex, label}
 
-    // --- Initialization ---
-    window.onload = () => {
-        setupCanvasStyles();
-        generateProblem();
-    };
+ // --- Initialization ---
+ window.onload = () => {
+ setupCanvasStyles();
+ generateProblem();
+ };
 
-    function setupCanvasStyles() {
-        const canvas = document.getElementById('mathCanvas');
-        // Align background grid with our coordinate system
-        canvas.style.backgroundPosition = `${ORIGIN}px ${ORIGIN}px`;
-    }
+ function setupCanvasStyles() {
+ const canvas = document.getElementById('mathCanvas');
+ // Align background grid with our coordinate system
+ canvas.style.backgroundPosition = `${ORIGIN}px${ORIGIN}px`;
+ }
 
-    function setMode(mode) {
-        currentMode = mode;
-        
-        // Update UI buttons
-        const btn2 = document.getElementById('mode-2pts');
-        const btn3 = document.getElementById('mode-3pts');
-        
-        if(mode === '2pts') {
-            btn2.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-blue-600";
-            btn3.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors text-slate-600 hover:text-slate-900";
-        } else {
-            btn3.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-blue-600";
-            btn2.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors text-slate-600 hover:text-slate-900";
-        }
-        
-        generateProblem();
-    }
+ function setMode(mode) {
+ currentMode = mode;
+ 
+// Update UI buttons
+ const btn2 = document.getElementById('mode-2pts');
+ const btn3 = document.getElementById('mode-3pts');
+ 
+if(mode === '2pts') {
+ btn2.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-blue-600";
+ btn3.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors text-slate-600 hover:text-slate-900";
+ } else {
+ btn3.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-blue-600";
+ btn2.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors text-slate-600 hover:text-slate-900";
+ }
+ 
+generateProblem();
+ }
 
-    // --- Math Logic & Generation ---
-    function generateProblem() {
-        // Reset UI
-        document.getElementById('input-a').value = '';
-        document.getElementById('input-h').value = '';
-        document.getElementById('input-k').value = '';
-        updateLiveEquation();
-        document.getElementById('feedback-msg').classList.add('hidden');
-        if(solutionVisible) toggleSolution();
-        
-        // 1. Randomize parameters
-        // h, k between -5 and 5
-        true_h = Math.floor(Math.random() * 11) - 5; 
-        true_k = Math.floor(Math.random() * 11) - 5;
-        
-        // a is from a specific readable set: {-3, -2, -1, -0.5, 0.5, 1, 2, 3}
-        const a_values = [-3, -2, -1, -0.5, 0.5, 1, 2, 3];
-        true_a = a_values[Math.floor(Math.random() * a_values.length)];
-        
-        points = [];
+ // --- Math Logic & Generation ---
+ function generateProblem() {
+ // Reset UI
+ document.getElementById('input-a').value = '';
+ document.getElementById('input-h').value = '';
+ document.getElementById('input-k').value = '';
+ updateLiveEquation();
+ document.getElementById('feedback-msg').classList.add('hidden');
+ if(solutionVisible) toggleSolution();
+ 
+// 1. Randomize parameters
+ // h, k between -5 and 5
+ true_h = Math.floor(Math.random() * 11) - 5; 
+true_k = Math.floor(Math.random() * 11) - 5;
+ 
+// a is from a specific readable set: {-3, -2, -1, -0.5, 0.5, 1, 2, 3}
+ const a_values = [-3, -2, -1, -0.5, 0.5, 1, 2, 3];
+ true_a = a_values[Math.floor(Math.random() * a_values.length)];
+ 
+points = [];
 
-        if (currentMode === '2pts') {
-            // Case 1: Vertex + 1 Point
-            points.push({ x: true_h, y: true_k, isVertex: true, label: `Sommet` });
-            
-            // Generate a second point (x2)
-            // Ensure integer coordinates if a = 0.5 (x must be even distance from h)
-            let dx = (Math.abs(true_a) === 0.5) ? 2 * (Math.floor(Math.random() * 3) + 1) : (Math.floor(Math.random() * 4) + 1);
-            let dir = Math.random() > 0.5 ? 1 : -1;
-            let x2 = true_h + (dx * dir);
-            
-            // Keep it within [-8, 8] for nice display
-            if (Math.abs(x2) > 8) x2 = true_h - (dx * dir); 
+ if (currentMode === '2pts') {
+ // Case 1: Vertex + 1 Point
+ points.push({ x: true_h, y: true_k, isVertex: true, label: `Sommet` });
+ 
+// Generate a second point (x2)
+ // Ensure integer coordinates if a = 0.5 (x must be even distance from h)
+ let dx = (Math.abs(true_a) === 0.5) ? 2 * (Math.floor(Math.random() * 3) + 1) : (Math.floor(Math.random() * 4) + 1);
+ let dir = Math.random() > 0.5 ? 1 : -1;
+ let x2 = true_h + (dx * dir);
+ 
+// Keep it within [-8, 8] for nice display
+ if (Math.abs(x2) > 8) x2 = true_h - (dx * dir); 
 
-            let y2 = true_a * Math.abs(x2 - true_h) + true_k;
-            points.push({ x: x2, y: y2, isVertex: false, label: `Point` });
-            
-        } else {
-            // Case 2: 3 Points (2 on one branch, 1 on the other)
-            // Branch 1 (left side, x < h)
-            let dx1 = (Math.abs(true_a) === 0.5) ? 2 : 1;
-            let dx2 = (Math.abs(true_a) === 0.5) ? 4 : 3;
-            
-            let x1 = true_h - dx1;
-            let x2 = true_h - dx2;
-            let y1 = true_a * Math.abs(x1 - true_h) + true_k;
-            let y2 = true_a * Math.abs(x2 - true_h) + true_k;
-            
-            // Branch 2 (right side, x > h)
-            let dx3 = (Math.abs(true_a) === 0.5) ? 2 : 2;
-            let x3 = true_h + dx3;
-            let y3 = true_a * Math.abs(x3 - true_h) + true_k;
-            
-            // Randomly swap so it's not always 2 on the left
-            if (Math.random() > 0.5) {
-                // 2 on the right, 1 on the left
-                x1 = true_h + dx1;
-                x2 = true_h + dx2;
-                x3 = true_h - dx3;
-                y1 = true_a * Math.abs(x1 - true_h) + true_k;
-                y2 = true_a * Math.abs(x2 - true_h) + true_k;
-                y3 = true_a * Math.abs(x3 - true_h) + true_k;
-            }
+let y2 = true_a * Math.abs(x2 - true_h) + true_k;
+ points.push({ x: x2, y: y2, isVertex: false, label: `Point` });
+ 
+} else {
+ // Case 2: 3 Points (2 on one branch, 1 on the other)
+ // Branch 1 (left side, x < h)
+ let dx1 = (Math.abs(true_a) === 0.5) ? 2 : 1;
+ let dx2 = (Math.abs(true_a) === 0.5) ? 4 : 3;
+ 
+let x1 = true_h - dx1;
+ let x2 = true_h - dx2;
+ let y1 = true_a * Math.abs(x1 - true_h) + true_k;
+ let y2 = true_a * Math.abs(x2 - true_h) + true_k;
+ 
+// Branch 2 (right side, x > h)
+ let dx3 = (Math.abs(true_a) === 0.5) ? 2 : 2;
+ let x3 = true_h + dx3;
+ let y3 = true_a * Math.abs(x3 - true_h) + true_k;
+ 
+// Randomly swap so it's not always 2 on the left
+ if (Math.random() > 0.5) {
+ // 2 on the right, 1 on the left
+ x1 = true_h + dx1;
+ x2 = true_h + dx2;
+ x3 = true_h - dx3;
+ y1 = true_a * Math.abs(x1 - true_h) + true_k;
+ y2 = true_a * Math.abs(x2 - true_h) + true_k;
+ y3 = true_a * Math.abs(x3 - true_h) + true_k;
+ }
 
-            // Shuffle slightly for drawing
-            points.push({ x: x1, y: y1, isVertex: false, label: `A` });
-            points.push({ x: x2, y: y2, isVertex: false, label: `B` });
-            points.push({ x: x3, y: y3, isVertex: false, label: `C` });
-        }
-        
-        generateSolutionText();
-        drawGraph();
-    }
+ // Shuffle slightly for drawing
+ points.push({ x: x1, y: y1, isVertex: false, label: `A` });
+ points.push({ x: x2, y: y2, isVertex: false, label: `B` });
+ points.push({ x: x3, y: y3, isVertex: false, label: `C` });
+ }
+ 
+generateSolutionText();
+ drawGraph();
+ }
 
-    // --- Drawing / Canvas ---
-    function coordToPixel(x, y) {
-        return {
-            px: ORIGIN + x * GRID_SIZE,
-            py: ORIGIN - y * GRID_SIZE // Y axis goes up
-        };
-    }
+ // --- Drawing / Canvas ---
+ function coordToPixel(x, y) {
+ return {
+ px: ORIGIN + x * GRID_SIZE,
+ py: ORIGIN - y * GRID_SIZE // Y axis goes up
+ };
+ }
 
-    function drawGraph() {
-        const canvas = document.getElementById('mathCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        
-        // Draw Axes
-        ctx.beginPath();
-        ctx.strokeStyle = '#94a3b8'; // slate-400
-        ctx.lineWidth = 2;
-        // X axis
-        ctx.moveTo(0, ORIGIN);
-        ctx.lineTo(CANVAS_SIZE, ORIGIN);
-        // Y axis
-        ctx.moveTo(ORIGIN, 0);
-        ctx.lineTo(ORIGIN, CANVAS_SIZE);
-        ctx.stroke();
+ function drawGraph() {
+ const canvas = document.getElementById('mathCanvas');
+ const ctx = canvas.getContext('2d');
+ 
+ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+ 
+// Draw Axes
+ ctx.beginPath();
+ ctx.strokeStyle = '#94a3b8'; // slate-400
+ ctx.lineWidth = 2;
+ // X axis
+ ctx.moveTo(0, ORIGIN);
+ ctx.lineTo(CANVAS_SIZE, ORIGIN);
+ // Y axis
+ ctx.moveTo(ORIGIN, 0);
+ ctx.lineTo(ORIGIN, CANVAS_SIZE);
+ ctx.stroke();
 
-        // Draw Ticks & Numbers
-        ctx.fillStyle = '#64748b'; // slate-500
-        ctx.font = '10px Inter';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        for (let i = -10; i <= 10; i++) {
-            if (i !== 0) {
-                // X ticks
-                let px = ORIGIN + i * GRID_SIZE;
-                ctx.fillRect(px - 1, ORIGIN - 3, 2, 6);
-                if (i % 2 === 0) ctx.fillText(i, px, ORIGIN + 12);
-                
-                // Y ticks
-                let py = ORIGIN - i * GRID_SIZE;
-                ctx.fillRect(ORIGIN - 3, py - 1, 6, 2);
-                if (i % 2 === 0) {
-                    ctx.textAlign = 'right';
-                    ctx.fillText(i, ORIGIN - 8, py);
-                    ctx.textAlign = 'center'; // reset
-                }
-            }
-        }
+ // Draw Ticks & Numbers
+ ctx.fillStyle = '#64748b'; // slate-500
+ ctx.font = '10px Inter';
+ ctx.textAlign = 'center';
+ ctx.textBaseline = 'middle';
+ 
+for (let i = -10; i <= 10; i++) {
+ if (i !== 0) {
+ // X ticks
+ let px = ORIGIN + i * GRID_SIZE;
+ ctx.fillRect(px - 1, ORIGIN - 3, 2, 6);
+ if (i % 2 === 0) ctx.fillText(i, px, ORIGIN + 12);
+ 
+// Y ticks
+ let py = ORIGIN - i * GRID_SIZE;
+ ctx.fillRect(ORIGIN - 3, py - 1, 6, 2);
+ if (i % 2 === 0) {
+ ctx.textAlign = 'right';
+ ctx.fillText(i, ORIGIN - 8, py);
+ ctx.textAlign = 'center'; // reset
+ }
+ }
+ }
 
-        // Draw Function (Absolute Value)
-        ctx.beginPath();
-        ctx.strokeStyle = '#3b82f6'; // blue-500
-        ctx.lineWidth = 2.5;
-        ctx.lineJoin = 'round';
-        
-        // Left edge of canvas (x = -10)
-        let xLeft = -10;
-        let yLeft = true_a * Math.abs(xLeft - true_h) + true_k;
-        let pLeft = coordToPixel(xLeft, yLeft);
-        
-        // Vertex
-        let pVertex = coordToPixel(true_h, true_k);
-        
-        // Right edge of canvas (x = 10)
-        let xRight = 10;
-        let yRight = true_a * Math.abs(xRight - true_h) + true_k;
-        let pRight = coordToPixel(xRight, yRight);
-        
-        ctx.moveTo(pLeft.px, pLeft.py);
-        ctx.lineTo(pVertex.px, pVertex.py);
-        ctx.lineTo(pRight.px, pRight.py);
-        ctx.stroke();
+ // Draw Function (Absolute Value)
+ ctx.beginPath();
+ ctx.strokeStyle = '#3b82f6'; // blue-500
+ ctx.lineWidth = 2.5;
+ ctx.lineJoin = 'round';
+ 
+// Left edge of canvas (x = -10)
+ let xLeft = -10;
+ let yLeft = true_a * Math.abs(xLeft - true_h) + true_k;
+ let pLeft = coordToPixel(xLeft, yLeft);
+ 
+// Vertex
+ let pVertex = coordToPixel(true_h, true_k);
+ 
+// Right edge of canvas (x = 10)
+ let xRight = 10;
+ let yRight = true_a * Math.abs(xRight - true_h) + true_k;
+ let pRight = coordToPixel(xRight, yRight);
+ 
+ctx.moveTo(pLeft.px, pLeft.py);
+ ctx.lineTo(pVertex.px, pVertex.py);
+ ctx.lineTo(pRight.px, pRight.py);
+ ctx.stroke();
 
-        // Draw Points
-        ctx.font = 'bold 12px Inter';
-        points.forEach(pt => {
-            let p = coordToPixel(pt.x, pt.y);
-            
-            // Draw dot
-            ctx.beginPath();
-            ctx.arc(p.px, p.py, 5, 0, 2 * Math.PI);
-            ctx.fillStyle = '#ef4444'; // red-500
-            ctx.fill();
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+ // Draw Points
+ ctx.font = 'bold 12px Inter';
+ points.forEach(pt => {
+ let p = coordToPixel(pt.x, pt.y);
+ 
+// Draw dot
+ ctx.beginPath();
+ ctx.arc(p.px, p.py, 5, 0, 2 * Math.PI);
+ ctx.fillStyle = '#ef4444'; // red-500
+ ctx.fill();
+ ctx.strokeStyle = '#ffffff';
+ ctx.lineWidth = 2;
+ ctx.stroke();
 
-            // Label text: e.g., "Sommet (3, 4)"
-            let text = `${pt.label} (${pt.x}, ${pt.y})`;
-            
-            // Measure text for background pill
-            let textWidth = ctx.measureText(text).width;
-            
-            // Positioning logic to avoid going off-screen
-            let textX = p.px;
-            let textY = p.py - 15;
-            if (pt.y > 6) textY = p.py + 20; // If too high, put text below
-            if (pt.x > 7) textX = p.px - textWidth/2; 
-            if (pt.x < -7) textX = p.px + textWidth/2;
-            
-            // White background for readability
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-            ctx.fillRect(textX - textWidth/2 - 4, textY - 8, textWidth + 8, 16);
-            
-            ctx.fillStyle = '#b91c1c'; // red-700
-            ctx.textAlign = 'center';
-            ctx.fillText(text, textX, textY);
-        });
-    }
+ // Label text: e.g., "Sommet (3, 4)"
+ let text = `${pt.label} (${pt.x}, ${pt.y})`;  // Measure text for background pill let textWidth = ctx.measureText(text).width;  // Positioning logic to avoid going off-screen let textX = p.px; let textY = p.py - 15; if (pt.y > 6) textY = p.py + 20; // If too high, put text below if (pt.x > 7) textX = p.px - textWidth/2; if (pt.x < -7) textX = p.px + textWidth/2;  // White background for readability ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'; ctx.fillRect(textX - textWidth/2 - 4, textY - 8, textWidth + 8, 16);  ctx.fillStyle = '#b91c1c'; // red-700 ctx.textAlign = 'center'; ctx.fillText(text, textX, textY); }); }  // --- Logic & Validation --- function updateLiveEquation() { const valA = document.getElementById('input-a').value; const valH = document.getElementById('input-h').value; const valK = document.getElementById('input-k').value;  const eqElement = document.getElementById('live-equation');  if (valA === '' && valH === '' && valK === '') { eqElement.innerHTML = 'f(x) = a\vert{}x - h\vert{} + k'; eqElement.classList.remove('text-blue-600', 'text-emerald-600'); eqElement.classList.add('text-slate-400'); return; }  let aStr = 'a'; if (valA !== '') { const numA = parseFloat(valA); if (numA === 1) aStr = ''; else if (numA === -1) aStr = '-'; else aStr = valA; }  let hStr = ' - h'; if (valH !== '') { const numH = parseFloat(valH); if (numH === 0) hStr = ''; else if (numH < 0) hStr = ` + ${Math.abs(numH)}`;
+ else hStr = ` - ${numH}`; }  let kStr = ' + k'; if (valK !== '') { const numK = parseFloat(valK); if (numK === 0) kStr = ''; else if (numK < 0) kStr = ` - ${Math.abs(numK)}`;
+ else kStr = ` + ${numK}`; }  eqElement.innerHTML = `f(x) = ${aStr}|x${hStr}\vert{}${kStr}`;
+ eqElement.classList.remove('text-slate-400', 'text-emerald-600');
+ eqElement.classList.add('text-blue-700');
+ }
 
-    // --- Logic & Validation ---
-    function updateLiveEquation() {
-        const valA = document.getElementById('input-a').value;
-        const valH = document.getElementById('input-h').value;
-        const valK = document.getElementById('input-k').value;
-        
-        const eqElement = document.getElementById('live-equation');
-        
-        if (valA === '' && valH === '' && valK === '') {
-            eqElement.innerHTML = 'f(x) = a|x - h| + k';
-            eqElement.classList.remove('text-blue-600', 'text-emerald-600');
-            eqElement.classList.add('text-slate-400');
-            return;
-        }
+ function checkAnswer() {
+ const valA = parseFloat(document.getElementById('input-a').value);
+ const valH = parseFloat(document.getElementById('input-h').value);
+ const valK = parseFloat(document.getElementById('input-k').value);
+ 
+const msgBox = document.getElementById('feedback-msg');
+ msgBox.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800', 'bg-amber-100', 'text-amber-800');
 
-        let aStr = 'a';
-        if (valA !== '') {
-            const numA = parseFloat(valA);
-            if (numA === 1) aStr = '';
-            else if (numA === -1) aStr = '-';
-            else aStr = valA;
-        }
+ if (isNaN(valA) || isNaN(valH) || isNaN(valK)) {
+ msgBox.classList.add('bg-amber-100', 'text-amber-800');
+ msgBox.innerHTML = "⚠️ Veuillez remplir les 3 paramètres (a, h, k).";
+ return;
+ }
 
-        let hStr = ' - h';
-        if (valH !== '') {
-            const numH = parseFloat(valH);
-            if (numH === 0) hStr = '';
-            else if (numH < 0) hStr = ` + ${Math.abs(numH)}`;
-            else hStr = ` - ${numH}`;
-        }
+ // Float comparison tolerance
+ const isCorrectA = Math.abs(valA - true_a) < 0.01;
+ const isCorrectH = Math.abs(valH - true_h) < 0.01;
+ const isCorrectK = Math.abs(valK - true_k) < 0.01;
+ const isCorrect = isCorrectA && isCorrectH && isCorrectK;
 
-        let kStr = ' + k';
-        if (valK !== '') {
-            const numK = parseFloat(valK);
-            if (numK === 0) kStr = '';
-            else if (numK < 0) kStr = ` - ${Math.abs(numK)}`;
-            else kStr = ` + ${numK}`;
-        }
+ if (isCorrect) {
+ msgBox.classList.add('bg-emerald-100', 'text-emerald-800');
+ msgBox.innerHTML = "🎉 Excellent ! Vous avez trouvé la bonne règle.";
+ document.getElementById('live-equation').classList.add('text-emerald-600');
+ } else {
+ msgBox.classList.add('bg-red-100', 'text-red-800');
+ let hints = [];
+ if (!isCorrectA) hints.push("Vérifiez la valeur de 'a' (pente ou orientation).");
+ if (!isCorrectH || !isCorrectK) hints.push("Le sommet (h, k) n'est pas correct.");
+ 
+msgBox.innerHTML = `❌ Ce n'est pas la bonne règle.<br><span class="text-sm mt-1 block">${hints.join(" ")}</span>`;
+ }
 
-        eqElement.innerHTML = `f(x) = ${aStr}|x${hStr}|${kStr}`;
-        eqElement.classList.remove('text-slate-400', 'text-emerald-600');
-        eqElement.classList.add('text-blue-700');
-    }
+ sendResultToGoogleScript({
+ mode: currentMode,
+ userA: valA,
+ userH: valH,
+ userK: valK,
+ trueA: true_a,
+ trueH: true_h,
+ trueK: true_k,
+ isCorrect: isCorrect,
+ timestamp: new Date().toISOString()
+ });
+ }
 
-    function checkAnswer() {
-        const studentName = document.getElementById('input-student-name').value.trim();
-        const valA = parseFloat(document.getElementById('input-a').value);
-        const valH = parseFloat(document.getElementById('input-h').value);
-        const valK = parseFloat(document.getElementById('input-k').value);
-        
-        const msgBox = document.getElementById('feedback-msg');
-        msgBox.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800', 'bg-amber-100', 'text-amber-800');
+ async function sendResultToGoogleScript(payload) {
+ const statusEl = document.getElementById('submit-status');
+ statusEl.classList.remove('hidden', 'text-red-600', 'text-emerald-600', 'text-slate-500');
+ statusEl.classList.add('text-slate-500');
+ statusEl.textContent = "⏳ Transmission du résultat à l'enseignant...";
 
-        if (!studentName) {
-            msgBox.classList.add('bg-amber-100', 'text-amber-800');
-            msgBox.innerHTML = "⚠️️ Veuillez inscrire votre nom et prénom avant de valider.";
-            document.getElementById('input-student-name').focus();
-            return;
-        }
+ try {
+ await fetch(GAS_URL, {
+ method: 'POST',
+ mode: 'no-cors',
+ headers: {
+ 'Content-Type': 'text/plain;charset=utf-8'
+ },
+ body: JSON.stringify(payload)
+ });
 
-        if (isNaN(valA) || isNaN(valH) || isNaN(valK)) {
-            msgBox.classList.add('bg-amber-100', 'text-amber-800');
-            msgBox.innerHTML = "⚠️ Veuillez remplir les 3 paramètres (a, h, k).";
-            return;
-        }
+ statusEl.classList.remove('text-slate-500');
+ statusEl.classList.add('text-emerald-600');
+ statusEl.textContent = "✅ Résultat transmis avec succès !";
+ } catch (err) {
+ console.error("Erreur lors de l'envoi des résultats:", err);
+ statusEl.classList.remove('text-slate-500');
+ statusEl.classList.add('text-red-600');
+ statusEl.textContent = "❌ Échec de la transmission du résultat.";
+ }
+ }
 
-        // Float comparison tolerance
-        const isCorrectA = Math.abs(valA - true_a) < 0.01;
-        const isCorrectH = Math.abs(valH - true_h) < 0.01;
-        const isCorrectK = Math.abs(valK - true_k) < 0.01;
-        const isCorrect = isCorrectA && isCorrectH && isCorrectK;
+ // --- Pedagogical Solution Generation ---
+ function toggleSolution() {
+ solutionVisible = !solutionVisible;
+ const solArea = document.getElementById('solution-area');
+ if (solutionVisible) {
+ solArea.classList.remove('hidden');
+ } else {
+ solArea.classList.add('hidden');
+ }
+ }
 
-        if (isCorrect) {
-            msgBox.classList.add('bg-emerald-100', 'text-emerald-800');
-            msgBox.innerHTML = "🎉 Excellent ! Vous avez trouvé la bonne règle.";
-            document.getElementById('live-equation').classList.add('text-emerald-600');
-        } else {
-            msgBox.classList.add('bg-red-100', 'text-red-800');
-            let hints = [];
-            if (!isCorrectA) hints.push("Vérifiez la valeur de 'a' (pente ou orientation).");
-            if (!isCorrectH || !isCorrectK) hints.push("Le sommet (h, k) n'est pas correct.");
-            
-            msgBox.innerHTML = `❌ Ce n'est pas la bonne règle.<br><span class="text-sm mt-1 block">${hints.join(" ")}</span>`;
-        }
+ function generateSolutionText() {
+ const content = document.getElementById('solution-content');
+ let html = "";
+ 
+if (currentMode === '2pts') {
+ const v = points.find(p => p.isVertex);
+ const pt = points.find(p => !p.isVertex);
+ 
+html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
+ <p class="font-semibold text-slate-800 mb-2">Étape 1 : Identifier le sommet (h, k)</p>
+ <p>Le graphique nous donne le sommet de la fonction : <br>
+ <b>(h, k) = (${v.x},${v.y})</b>.</p>
+ <p class="mt-1">L'équation partielle est donc : <b>f(x) = a|x ${v.x < 0 ? '+ ' + Math.abs(v.x) : '- ' + v.x}\vert{}${v.y < 0 ? '- ' + Math.abs(v.y) : '+ ' + v.y}</b></p>
+ </div>`;
 
-        sendResultToGoogleScript({
-            studentName: studentName,
-            mode: currentMode,
-            userA: valA,
-            userH: valH,
-            userK: valK,
-            trueA: true_a,
-            trueH: true_h,
-            trueK: true_k,
-            isCorrect: isCorrect,
-            timestamp: new Date().toISOString()
-        });
-    }
+ html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
+ <p class="font-semibold text-slate-800 mb-2">Étape 2 : Substituer le deuxième point pour trouver "a"</p>
+ <p>Nous utilisons le point donné <b>(${pt.x},${pt.y})</b> et nous remplaçons x et f(x) (ou y) dans l'équation :</p>
+ <ul class="list-disc ml-5 mt-2 space-y-1 font-serif">
+ <li>${pt.y} = a\vert{}${pt.x} ${v.x < 0 ? '+ ' + Math.abs(v.x) : '- ' + v.x}\vert{}${v.y < 0 ? '- ' + Math.abs(v.y) : '+ ' + v.y}</li>
+ <li>${pt.y} = a|${pt.x - v.x}\vert{}${v.y < 0 ? '- ' + Math.abs(v.y) : '+ ' + v.y}</li>
+ <li>${pt.y} = a(${Math.abs(pt.x - v.x)})${v.y < 0 ? '- ' + Math.abs(v.y) : '+ ' + v.y}</li>
+ </ul>
+ </div>`;
 
-    async function sendResultToGoogleScript(payload) {
-        const statusEl = document.getElementById('submit-status');
-        statusEl.classList.remove('hidden', 'text-red-600', 'text-emerald-600', 'text-slate-500');
-        statusEl.classList.add('text-slate-500');
-        statusEl.textContent = "⏳ Transmission du résultat à l'enseignant...";
+ html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
+ <p class="font-semibold text-slate-800 mb-2">Étape 3 : Isoler "a"</p>
+ <ul class="list-disc ml-5 space-y-1 font-serif">
+ <li>${pt.y} ${v.y > 0 ? '- ' + v.y : '+ ' + Math.abs(v.y)} =${Math.abs(pt.x - v.x)}a</li>
+ <li>${pt.y - v.y} =${Math.abs(pt.x - v.x)}a</li>
+ <li>a = ${(pt.y - v.y) / Math.abs(pt.x - v.x)}</li>
+ </ul>
+ </div>`;
+ 
+} else {
+ // 3 Points mode
+ // Find which two points are on the same branch
+ // In our generation, points[0] and points[1] are always on the same branch (Branch 1), points[2] on the other
+ const p1 = points[0];
+ const p2 = points[1];
+ const p3 = points[2];
+ 
+// Calculate slope of branch 1
+ const m1 = (p2.y - p1.y) / (p2.x - p1.x);
+ // Calculate b for line 1: y = mx + b -> b = y - mx
+ const b1 = p1.y - m1 * p1.x;
+ 
+// Slope of branch 2
+ const m2 = -m1;
+ const b2 = p3.y - m2 * p3.x;
 
-        try {
-            await fetch(GAS_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8'
-                },
-                body: JSON.stringify(payload)
-            });
-
-            statusEl.classList.remove('text-slate-500');
-            statusEl.classList.add('text-emerald-600');
-            statusEl.textContent = "✅ Résultat transmis avec succès !";
-        } catch (err) {
-            console.error("Erreur lors de l'envoi des résultats:", err);
-            statusEl.classList.remove('text-slate-500');
-            statusEl.classList.add('text-red-600');
-            statusEl.textContent = "❌ Échec de la transmission du résultat.";
-        }
-    }
-
-    // --- Pedagogical Solution Generation ---
-    function toggleSolution() {
-        solutionVisible = !solutionVisible;
-        const solArea = document.getElementById('solution-area');
-        if (solutionVisible) {
-            solArea.classList.remove('hidden');
-        } else {
-            solArea.classList.add('hidden');
-        }
-    }
-
-    function generateSolutionText() {
-        const content = document.getElementById('solution-content');
-        let html = "";
-        
-        if (currentMode === '2pts') {
-            const v = points.find(p => p.isVertex);
-            const pt = points.find(p => !p.isVertex);
-            
-            html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
-                <p class="font-semibold text-slate-800 mb-2">Étape 1 : Identifier le sommet (h, k)</p>
-                <p>Le graphique nous donne le sommet de la fonction : <br>
-                <b>(h, k) = (${v.x}, ${v.y})</b>.</p>
-                <p class="mt-1">L'équation partielle est donc : <b>f(x) = a|x ${v.x < 0 ? '+ ' + Math.abs(v.x) : '- ' + v.x}| ${v.y < 0 ? '- ' + Math.abs(v.y) : '+ ' + v.y}</b></p>
-            </div>`;
-
-            html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
-                <p class="font-semibold text-slate-800 mb-2">Étape 2 : Substituer le deuxième point pour trouver "a"</p>
-                <p>Nous utilisons le point donné <b>(${pt.x}, ${pt.y})</b> et nous remplaçons x et f(x) (ou y) dans l'équation :</p>
-                <ul class="list-disc ml-5 mt-2 space-y-1 font-serif">
-                    <li>${pt.y} = a|${pt.x} ${v.x < 0 ? '+ ' + Math.abs(v.x) : '- ' + v.x}| ${v.y < 0 ? '- ' + Math.abs(v.y) : '+ ' + v.y}</li>
-                    <li>${pt.y} = a|${pt.x - v.x}| ${v.y < 0 ? '- ' + Math.abs(v.y) : '+ ' + v.y}</li>
-                    <li>${pt.y} = a(${Math.abs(pt.x - v.x)}) ${v.y < 0 ? '- ' + Math.abs(v.y) : '+ ' + v.y}</li>
-                </ul>
-            </div>`;
-
-            html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
-                <p class="font-semibold text-slate-800 mb-2">Étape 3 : Isoler "a"</p>
-                <ul class="list-disc ml-5 space-y-1 font-serif">
-                    <li>${pt.y} ${v.y > 0 ? '- ' + v.y : '+ ' + Math.abs(v.y)} = ${Math.abs(pt.x - v.x)}a</li>
-                    <li>${pt.y - v.y} = ${Math.abs(pt.x - v.x)}a</li>
-                    <li>a = ${(pt.y - v.y) / Math.abs(pt.x - v.x)}</li>
-                </ul>
-            </div>`;
-            
-        } else {
-            // 3 Points mode
-            // Find which two points are on the same branch
-            // In our generation, points[0] and points[1] are always on the same branch (Branch 1), points[2] on the other
-            const p1 = points[0];
-            const p2 = points[1];
-            const p3 = points[2];
-            
-            // Calculate slope of branch 1
-            const m1 = (p2.y - p1.y) / (p2.x - p1.x);
-            // Calculate b for line 1: y = mx + b -> b = y - mx
-            const b1 = p1.y - m1 * p1.x;
-            
-            // Slope of branch 2
-            const m2 = -m1;
-            const b2 = p3.y - m2 * p3.x;
-
-            html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
-                <p class="font-semibold text-slate-800 mb-2">Étape 1 : Trouver l'équation des deux droites (branches)</p>
-                <p>Identifions les deux points sur la même branche : <b>A(${p1.x}, ${p1.y})</b> et <b>B(${p2.x}, ${p2.y})</b>.</p>
-                <p class="mt-2 text-sm text-blue-800 bg-blue-50 p-2 rounded">Pente (m₁) = (y₂ - y₁) / (x₂ - x₁) = (${p2.y} - ${p1.y}) / (${p2.x} - ${p1.x}) = <b>${m1}</b></p>
-                <p class="mt-2">L'équation de la droite 1 est y = ${m1}x + b₁. Trouvons b₁ avec le point A :</p>
-                <p class="font-serif ml-4">${p1.y} = ${m1}(${p1.x}) + b₁ ➔ b₁ = ${b1}</p>
-                <p class="mt-1"><b>Droite 1 : y = ${m1}x ${b1 >= 0 ? '+ '+b1 : '- '+Math.abs(b1)}</b></p>
-                
-                <hr class="my-3 border-slate-200">
-                <p>La pente de l'autre branche est opposée (m₂ = ${m2}). Elle passe par <b>C(${p3.x}, ${p3.y})</b>.</p>
-                <p class="font-serif ml-4">${p3.y} = ${m2}(${p3.x}) + b₂ ➔ b₂ = ${b2}</p>
-                <p class="mt-1"><b>Droite 2 : y = ${m2}x ${b2 >= 0 ? '+ '+b2 : '- '+Math.abs(b2)}</b></p>
-            </div>`;
-
-            html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
-                <p class="font-semibold text-slate-800 mb-2">Étape 2 : Trouver le sommet (h, k) (intersection)</p>
-                <p>On pose Droite 1 = Droite 2 :</p>
-                <ul class="list-disc ml-5 space-y-1 font-serif mt-2">
-                    <li>${m1}x ${b1 >= 0 ? '+ '+b1 : '- '+Math.abs(b1)} = ${m2}x ${b2 >= 0 ? '+ '+b2 : '- '+Math.abs(b2)}</li>
-                    <li>${m1 - m2}x = ${b2 - b1}</li>
-                    <li>x = ${true_h} ➔ <b>h = ${true_h}</b></li>
-                </ul>
-                <p class="mt-2">On remplace x dans la droite 1 : y = ${m1}(${true_h}) ${b1 >= 0 ? '+ '+b1 : '- '+Math.abs(b1)} = ${true_k} ➔ <b>k = ${true_k}</b></p>
-            </div>`;
-
-            html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
-                <p class="font-semibold text-slate-800 mb-2">Étape 3 : Déterminer le paramètre "a"</p>
-                <p>Dans la forme f(x) = a|x - h| + k, la valeur absolue de "a" correspond à la pente des branches. Le signe de "a" indique l'ouverture (positif vers le haut, négatif vers le bas).</p>
-                <p class="mt-2 bg-emerald-50 text-emerald-800 p-2 rounded">
-                Puisque la pente de la branche de droite (x > h) est de <b>${true_a}</b>, alors <b>a = ${true_a}</b>.
-                </p>
-            </div>`;
-        }
-        
-        let aFinalStr = true_a === 1 ? '' : (true_a === -1 ? '-' : true_a);
-        let hFinalStr = true_h === 0 ? '' : (true_h < 0 ? ` + ${Math.abs(true_h)}` : ` - ${true_h}`);
-        let kFinalStr = true_k === 0 ? '' : (true_k < 0 ? ` - ${Math.abs(true_k)}` : ` + ${true_k}`);
-        
-        html += `<div class="p-4 bg-slate-800 text-white rounded-lg text-center font-serif text-lg">
-            f(x) = ${aFinalStr}|x${hFinalStr}|${kFinalStr}
-        </div>`;
-
-        content.innerHTML = html;
-    }
-</script>
-</body>
-</html>
+ html += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
+ <p class="font-semibold text-slate-800 mb-2">Étape 1 : Trouver l'équation des deux droites (branches)</p>
+ <p>Identifions les deux points sur la même branche : <b>A(${p1.x},${p1.y})</b> et <b>B(${p2.x},${p2.y})</b>.</p>
+ <p class="mt-2 text-sm text-blue-800 bg-blue-50 p-2 rounded">Pente (m₁) = (y₂ - y₁) / (x₂ - x₁) = (${p2.y} - ${p1.y}) / (${p2.x} - ${p1.x}) = <b>${m1}</b></p>
+ <p class="mt-2">L'équation de la droite 1 est y = ${m1}x + b₁. Trouvons b₁ avec le point A :</p>
+ <p class="font-serif ml-4">${p1.y} =${m1}(${p1.x}) + b₁ ➔ b₁ = ${b1}</p>
+ <p class="mt-1"><b>Droite 1 : y = ${m1}x${b1 >= 0 ? '+ '+b1 : '- '+Math.abs(b1)}</b></p>
+ 
+<hr class="my-3 border-slate-200">
+ <p>La pente de l'autre branche est opposée (m₂ = ${m2}). Elle passe par <b>C(${p3.x},${p3.y})</b>.</p>
+ <p class="font-serif ml-4">${p3.y} = ${m2}(${p3.
