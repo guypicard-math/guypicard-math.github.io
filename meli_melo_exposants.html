@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Défis des lois des exposants - Sec 3</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+ <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+ <style>
+ body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+ .katex-display { margin: 0.5em 0; }
+ </style>
+</head>
+<body class="bg-indigo-50 min-h-screen p-4 md:p-8 text-slate-900">
+
+ <div class="max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-indigo-100">
+ 
+<!-- Header -->
+ <div class="bg-indigo-700 text-white p-8 text-center">
+ <h1 class="text-3xl font-extrabold mb-2 italic">LE MÉLI-MÉLO DES EXPOSANTS</h1>
+ <p class="text-indigo-200">Toutes les lois regroupées dans un seul défi !</p>
+ </div>
+
+ <div class="p-6 md:p-10">
+ 
+<!-- Niveau de difficulté -->
+ <div class="flex flex-col items-center mb-10">
+ <h3 class="font-bold text-slate-500 uppercase tracking-widest text-sm mb-4">Choisis ton intensité</h3>
+ <div class="flex p-1 bg-slate-100 rounded-2xl w-full max-w-md">
+ <label class="flex-1 cursor-pointer group">
+ <input type="radio" name="difficulte" value="doux" class="peer hidden" checked>
+ <div class="text-center py-3 rounded-xl transition-all peer-checked:bg-white peer-checked:shadow-md peer-checked:text-green-600 font-bold text-slate-500">
+ 🍏 Doux
+ </div>
+ </label>
+ <label class="flex-1 cursor-pointer group">
+ <input type="radio" name="difficulte" value="moyen" class="peer hidden">
+ <div class="text-center py-3 rounded-xl transition-all peer-checked:bg-white peer-checked:shadow-md peer-checked:text-yellow-600 font-bold text-slate-500">
+ 🌮 Moyen
+ </div>
+ </label>
+ <label class="flex-1 cursor-pointer group">
+ <input type="radio" name="difficulte" value="epice" class="peer hidden">
+ <div class="text-center py-3 rounded-xl transition-all peer-checked:bg-white peer-checked:shadow-md peer-checked:text-red-600 font-bold text-slate-500">
+ 🌶️ Épicé
+ </div>
+ </label>
+ </div>
+ </div>
+
+ <!-- Question Area -->
+ <div class="text-center mb-10">
+ <button id="btn-generer" class="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 px-10 rounded-2xl shadow-xl transition-all active:scale-95 mb-8 w-full md:w-auto">
+ NOUVEAU DÉFI COMBINÉ
+ </button>
+
+ <div class="min-h-[160px] flex flex-col items-center justify-center bg-slate-50 rounded-3xl border-4 border-dashed border-indigo-100 p-8 relative">
+ <span class="absolute -top-3 left-6 bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter italic">Simplifie l'expression :</span>
+ <div id="affichage-question" class="text-3xl md:text-5xl text-slate-800">
+ <span class="text-slate-300 text-lg italic">Prêt pour le défi ?</span>
+ </div>
+ </div>
+ </div>
+
+ <!-- Input Area -->
+ <div id="zone-saisie" class="hidden flex-col items-center space-y-6">
+ <div class="bg-indigo-50 p-6 rounded-3xl w-full border border-indigo-100">
+ <p class="text-sm text-center text-indigo-900 font-medium mb-4">Ta réponse (Exposants positifs seulement)</p>
+ 
+<div class="flex flex-col items-center max-w-xs mx-auto">
+ <input type="text" id="input-num" autocomplete="off" class="w-full text-center border-2 border-slate-200 rounded-xl p-3 text-xl font-bold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none transition-all" placeholder="Haut (Numérateur)">
+ <div class="w-full h-1 bg-slate-800 my-3 rounded-full"></div>
+ <input type="text" id="input-den" autocomplete="off" class="w-full text-center border-2 border-slate-200 rounded-xl p-3 text-xl font-bold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none transition-all" placeholder="Bas (Optionnel)">
+ </div>
+ </div>
+ 
+<button id="btn-verifier" class="w-full max-w-xs bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">
+ VÉRIFIER
+ </button>
+ 
+<p id="message-feedback" class="font-bold text-xl text-center px-4"></p>
+ </div>
+
+ <!-- Result Reveal -->
+ <div id="zone-reponse" class="hidden mt-6 flex-col items-center justify-center bg-emerald-50 rounded-3xl border-2 border-emerald-200 p-8 relative">
+ <span id="titre-reponse" class="absolute -top-3 left-6 bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase italic tracking-tighter">Correction</span>
+ <div id="affichage-reponse" class="text-3xl text-emerald-900 font-black"></div>
+ </div>
+
+ </div>
+ </div>
+
+ <script>
+ let reponseAttendue = { numPlain: "", denPlain: "", latexFormat: "" };
+ let tentatives = 0;
+ const MAX_TENTATIVES = 2;
+
+ function randomInt(min, max) {
+ return Math.floor(Math.random() * (max - min + 1)) + min;
+ }
+
+ function normaliser(str) {
+ if (!str) return "";
+ // Enlever les espaces et mettre en minuscules
+ let s = str.replace(/\s+/g, '').toLowerCase();
+
+ // Dictionnaire de conversion pour les exposants Unicode
+ const mapExp = { 
+     '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', 
+     '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-' 
+ };
+
+ // Convertir les suites d'exposants Unicode en format standard (^n)
+ // Le \^? permet de gérer le cas où l'élève aurait tapé a^⁴ (avec le chapeau et le caractère Unicode)
+ s = s.replace(/\^?([⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+)/g, function(match, p1) {
+     let normalNums = p1.split('').map(c => mapExp[c]).join('');
+     return '^' + normalNums;
+ });
+
+ // Transformer x^1 en x
+ s = s.replace(/([a-z])\^1(?!\d)/g, '$1');
+ return s;
+ }
+
+ // Formater un terme simple (coef, variables)
+ function formaterTerme(coef, var1, exp1, var2 = null, exp2 = 0) {
+ if (exp1 === 0 && exp2 === 0) return coef.toString();
+ let s = "";
+ if (coef === 1) s = "";
+ else if (coef === -1) s = "-";
+ else s = coef.toString();
+ 
+if (exp1 !== 0) s += exp1 === 1 ? var1 : `${var1}^{${exp1}}`;
+ if (var2 && exp2 !== 0) s += exp2 === 1 ? var2 : `${var2}^{${exp2}}`;
+ return s || "1";
+ }
+
+ // Générer le résultat final simplifié avec exposants positifs
+ function genererFinal(coef, var1, exp1, var2, exp2) {
+ let numVars = [], denVars = [];
+ 
+if (exp1 > 0) numVars.push(exp1 === 1 ? var1 : `${var1}^${exp1}`);
+ else if (exp1 < 0) denVars.push(exp1 === -1 ? var1 : `${var1}^${-exp1}`);
+ 
+if (var2) {
+ if (exp2 > 0) numVars.push(exp2 === 1 ? var2 : `${var2}^${exp2}`);
+ else if (exp2 < 0) denVars.push(exp2 === -1 ? var2 : `${var2}^${-exp2}`);
+ }
+
+ let numP = coef === 1 ? (numVars.length ? "" : "1") : (coef === -1 ? (numVars.length ? "-" : "-1") : coef.toString());
+ numP += numVars.join("");
+ if (numP === "" || numP === "-") numP += "1";
+ 
+let denP = denVars.join("");
+
+ // Format LaTeX
+ let latex = "";
+ if (denP === "") {
+ latex = numP.replace(/([a-z])\^(\d+)/g, '$1^{$2}');
+ } else {
+ let lNum = numP.replace(/([a-z])\^(\d+)/g, '$1^{$2}');
+ let lDen = denP.replace(/([a-z])\^(\d+)/g, '$1^{$2}');
+ latex = `\\frac{${lNum}}{${lDen}}`;
+ }
+
+ return { numPlain: numP, denPlain: denP, latex: latex };
+ }
+
+ function genererExercice(difficulte) {
+ const v1 = "a", v2 = "b";
+ let question = "", final_coef = 1, final_e1 = 0, final_e2 = 0;
+ let type = randomInt(1, 3); // Choisir 1 forme parmi 3 pour chaque difficulté
+
+ if (difficulte === "doux") {
+ if (type === 1) {
+ // Forme 1 : (a^n * a^m)^p / a^k
+ let n = randomInt(1, 4), m = randomInt(1, 4), p = randomInt(2, 3), k = randomInt(1, 8);
+ question = `\\frac{(${v1}^{${n}} \\cdot ${v1}^{${m}})^{${p}}}{${v1}^{${k}}}`;
+ final_e1 = (n + m) * p - k;
+ final_coef = 1;
+ } else if (type === 2) {
+ // Forme 2 : a^n * (a^m / a^k)^p
+ let n = randomInt(1, 4), m = randomInt(3, 6), k = randomInt(1, 2), p = randomInt(2, 3);
+ question = `${v1}^{${n}} \\cdot \\left(\\frac{${v1}^{${m}}}{${v1}^{${k}}}\\right)^{${p}}`;
+ final_e1 = n + (m - k) * p;
+ final_coef = 1;
+ } else {
+ // Forme 3 : (a^n / a^m) * (a^k)^p
+ let n = randomInt(3, 6), m = randomInt(1, 2), k = randomInt(1, 3), p = randomInt(2, 4);
+ question = `\\frac{${v1}^{${n}}}{${v1}^{${m}}} \\cdot (${v1}^{${k}})^{${p}}`;
+ final_e1 = (n - m) + (k * p);
+ final_coef = 1;
+ }
+ } 
+else if (difficulte === "moyen") {
+ if (type === 1) {
+ // Forme 1 : (coef * a^n * b^m)^p / (a^x * b^y)
+ let c = randomInt(2, 3), n = randomInt(1, 3), m = randomInt(1, 3), p = randomInt(2, 3);
+ let x = randomInt(1, 5), y = randomInt(1, 5);
+ question = `\\frac{(${c}${v1}^{${n}}${v2}^{${m}})^{${p}}}{${v1}^{${x}}${v2}^{${y}}}`;
+ final_coef = Math.pow(c, p);
+ final_e1 = n * p - x;
+ final_e2 = m * p - y;
+ } else if (type === 2) {
+ // Forme 2 : coef1 * a^n * b^m * (coef2 * a^x * b^y)^p
+ let c1 = randomInt(2, 4), n = randomInt(1, 3), m = randomInt(1, 3);
+ let c2 = randomInt(2, 3), x = randomInt(1, 3), y = randomInt(1, 3), p = randomInt(2, 3);
+ question = `${c1}${v1}^{${n}}${v2}^{${m}} \\cdot (${c2}${v1}^{${x}}${v2}^{${y}})^{${p}}`;
+ final_coef = c1 * Math.pow(c2, p);
+ final_e1 = n + x * p;
+ final_e2 = m + y * p;
+ } else {
+ // Forme 3 : (coef1 * a^n / b^m)^p * coef2 * b^y
+ let c1 = randomInt(2, 3), n = randomInt(2, 4), m = randomInt(1, 2), p = randomInt(2, 3);
+ let c2 = randomInt(2, 5), y = randomInt(1, 4);
+ question = `\\left(\\frac{${c1}${v1}^{${n}}}{${v2}^{${m}}}\\right)^{${p}} \\cdot ${c2}${v2}^{${y}}`;
+ final_coef = Math.pow(c1, p) * c2;
+ final_e1 = n * p;
+ final_e2 = -m * p + y;
+ }
+ } 
+else { // Épicé
+ if (type === 1) {
+ // Forme 1 : (coef * a^n / b^m)^p * (a^x * b^y)^k
+ let c = randomInt(2, 3); if(randomInt(0,1)) c *= -1;
+ let n = randomInt(-3, 3); if(n==0) n=1;
+ let m = randomInt(-3, 3); if(m==0) m=1;
+ let p = randomInt(2, 3);
+ let x = randomInt(-2, 2); if(x==0) x=1;
+ let y = randomInt(-2, 2); if(y==0) y=1;
+ let k = randomInt(-2, 2); if(k==0) k=-1;
+
+ let terme1 = `\\left(\\frac{${formaterTerme(c, v1, n)}}{${v2}^{${m}}}\\right)^{${p}}`;
+ let terme2 = `(${formaterTerme(1, v1, x, v2, y)})^{${k}}`;
+ question = `${terme1} \\cdot ${terme2}`;
+
+ final_coef = Math.pow(c, p);
+ final_e1 = (n * p) + (x * k);
+ final_e2 = (-m * p) + (y * k);
+ } else if (type === 2) {
+ // Forme 2 : ((coef1*a^n*b^m) / (coef2*a^x*b^y))^p
+ let c1 = randomInt(2, 4); if(randomInt(0,1)) c1 *= -1;
+ let c2 = randomInt(2, 4);
+ let n = randomInt(-2, 3); if(n==0) n=1;
+ let m = randomInt(-2, 3); if(m==0) m=1;
+ let x = randomInt(-2, 3); if(x==0) x=1;
+ let y = randomInt(-2, 3); if(y==0) y=1;
+ let p = randomInt(-3, -1); // Exposant négatif à l'extérieur
+
+ let num = formaterTerme(c1, v1, n, v2, m);
+ let den = formaterTerme(c2, v1, x, v2, y);
+ question = `\\left(\\frac{${num}}{${den}}\\right)^{${p}}`;
+
+ c2 = 1;
+ den = formaterTerme(c2, v1, x, v2, y);
+ p = randomInt(2, 3);
+ question = `\\left(\\frac{${num}}{${den}}\\right)^{${p}}`;
+ final_coef = Math.pow(c1, p);
+ final_e1 = (n - x) * p;
+ final_e2 = (m - y) * p;
+ } else {
+ // Forme 3 : (a^n)^p * (b^m)^q / (a^x * b^y)^k
+ let n = randomInt(-3, 3); if(n==0) n=1;
+ let p = randomInt(2, 4);
+ let m = randomInt(-3, 3); if(m==0) m=1;
+ let q = randomInt(2, 4);
+ let x = randomInt(-2, 3); if(x==0) x=1;
+ let y = randomInt(-2, 3); if(y==0) y=1;
+ let k = randomInt(-2, -1); // Exposant k négatif
+
+ question = `\\frac{(${v1}^{${n}})^{${p}} \\cdot (${v2}^{${m}})^{${q}}}{(${v1}^{${x}}${v2}^{${y}})^{${k}}}`;
+ final_coef = 1;
+ final_e1 = (n * p) - (x * k);
+ final_e2 = (m * q) - (y * k);
+ }
+ }
+
+ let res = genererFinal(final_coef, v1, final_e1, v2, final_e2);
+ return { question, ...res };
+ }
+
+ // UI Handlers
+ const btnGenerer = document.getElementById('btn-generer');
+ const btnVerifier = document.getElementById('btn-verifier');
+ const affichageQ = document.getElementById('affichage-question');
+ const inputNum = document.getElementById('input-num');
+ const inputDen = document.getElementById('input-den');
+ const feedback = document.getElementById('message-feedback');
+
+ btnGenerer.addEventListener('click', () => {
+ tentatives = 0;
+ const diff = document.querySelector('input[name="difficulte"]:checked').value;
+ reponseAttendue = genererExercice(diff);
+
+ // Reset UI
+ inputNum.value = ""; inputDen.value = "";
+ inputNum.disabled = false; inputDen.disabled = false;
+ btnVerifier.disabled = false;
+ feedback.classList.add('hidden');
+ document.getElementById('zone-saisie').classList.remove('hidden');
+ document.getElementById('zone-saisie').classList.add('flex');
+ document.getElementById('zone-reponse').classList.add('hidden');
+
+ katex.render(reponseAttendue.question, affichageQ, { displayMode: true });
+ });
+
+ btnVerifier.addEventListener('click', () => {
+ let uN = normaliser(inputNum.value);
+ let uD = normaliser(inputDen.value);
+ if (uD === '1') uD = '';
+
+ if (uN === normaliser(reponseAttendue.numPlain) && uD === normaliser(reponseAttendue.denPlain)) {
+ feedback.innerText = "EXCELLENT ! C'est exact. 🎯";
+ feedback.className = "font-bold text-xl text-center px-4 text-emerald-600";
+ feedback.classList.remove('hidden');
+ revelerReponse("Parfait !");
+ } else {
+ tentatives++;
+ if (tentatives >= MAX_TENTATIVES) {
+ feedback.innerText = "Pas tout à fait...";
+ feedback.className = "font-bold text-xl text-center px-4 text-red-500";
+ feedback.classList.remove('hidden');
+ revelerReponse("Voici la solution attendue");
+ } else {
+ feedback.innerText = "Réessaie encore ! Vérifie tes signes. 🔄";
+ feedback.className = "font-bold text-xl text-center px-4 text-orange-500";
+ feedback.classList.remove('hidden');
+ }
+ }
+ });
+
+ function revelerReponse(titre) {
+ inputNum.disabled = true; inputDen.disabled = true;
+ btnVerifier.disabled = true;
+ document.getElementById('titre-reponse').innerText = titre;
+ document.getElementById('zone-reponse').classList.remove('hidden');
+ document.getElementById('zone-reponse').classList.add('flex');
+ katex.render(reponseAttendue.latex, document.getElementById('affichage-reponse'), { displayMode: true });
+ }
+
+ // Allow "Enter" key
+ [inputNum, inputDen].forEach(el => {
+ el.addEventListener('keypress', (e) => { if(e.key === 'Enter') btnVerifier.click(); });
+ });
+
+ </script>
+</body>
+</html>
