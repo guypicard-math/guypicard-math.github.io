@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activité - Fonctions Racines Carrées (5SN)</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1f2937; }
+        .math-text { font-size: 1.15rem; }
+        .hidden-section { display: none; }
+        .active-section { display: block; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .input-box {
+            width: 90px; text-align: center; border: 2px solid #d1d5db; border-radius: 0.375rem; padding: 0.35rem; font-weight: bold; color: #1d4ed8; outline: none; background-color: #ffffff;
+        }
+        .input-box:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
+        .btn-check { transition: all 0.2s; }
+        .btn-check:hover { transform: scale(1.02); }
+        .btn-sym { font-size: 0.85rem; padding: 0.25rem 0.5rem; background-color: #e2e8f0; border-radius: 0.25rem; font-weight: 600; color: #334155; }
+        .btn-sym:hover { background-color: #cbd5e1; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- BARRE DE NAVIGATION -->
+    <nav class="bg-slate-800 text-white w-full md:w-64 p-6 shadow-xl z-10 flex-shrink-0">
+        <h1 class="text-2xl font-bold mb-1">Math 5SN</h1>
+        <p class="text-sm text-slate-400 mb-8 border-b border-slate-600 pb-4">Fonctions racines carrées</p>
+        
+        <ul class="space-y-3">
+            <li>
+                <button onclick="showSection('intro')" id="btn-intro" class="w-full text-left px-4 py-2.5 rounded-lg bg-blue-600 font-medium transition-colors">1. Introduction</button>
+            </li>
+            <li>
+                <button onclick="showSection('contraintes')" id="btn-contraintes" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-slate-700 transition-colors">2. Les Contraintes</button>
+            </li>
+            <li>
+                <button onclick="showSection('equations')" id="btn-equations" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-slate-700 transition-colors">3. Équations</button>
+            </li>
+            <li>
+                <button onclick="showSection('inequations')" id="btn-inequations" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-slate-700 transition-colors">4. Inéquations</button>
+            </li>
+            <li>
+                <button onclick="showSection('situation')" id="btn-situation" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-slate-700 transition-colors">5. Situation-Problème</button>
+            </li>
+        </ul>
+        
+        <div class="mt-12 pt-6 border-t border-slate-700">
+            <p class="text-xs text-slate-400">PFEQ - Secondaire 5 SN</p>
+            <p class="text-xs text-slate-500 mt-1">Développement des compétences</p>
+        </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-1 p-4 md:p-10 overflow-y-auto w-full">
+        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-10 min-h-[85vh]">
+            
+            <!-- SECTION 1: Introduction -->
+            <section id="intro" class="active-section">
+                <div class="flex items-center space-x-3 mb-6">
+                    <span class="bg-blue-100 text-blue-700 p-2.5 rounded-xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </span>
+                    <h2 class="text-3xl font-bold text-gray-800">Introduction</h2>
+                </div>
+                <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                    Bienvenue dans cette activité interactive ! La fonction racine carrée sous sa forme transformée, \( f(x) = a\sqrt{b(x-h)} + k \), présente une caractéristique importante : <strong>son domaine est restreint</strong>.
+                </p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-5 mb-6 rounded-r-xl">
+                    <h3 class="font-bold text-blue-900 text-lg mb-2">Rappel Théorique</h3>
+                    <p class="text-blue-900">Dans l'ensemble des nombres réels (\( \mathbb{R} \)), l'expression sous une racine carrée (le radicande) doit toujours être <strong>positive ou nulle</strong>.</p>
+                    <p class="text-blue-900 mt-3 font-mono bg-blue-100/80 px-3 py-1.5 rounded inline-block">Condition : \( b(x-h) \ge 0 \)</p>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Dans cette activité rejouable à volonté, vous allez :
+                </p>
+                <ul class="list-disc list-inside text-gray-600 space-y-2 mb-8 ml-2">
+                    <li>Déterminer les restrictions du domaine pour des paramètres aléatoires.</li>
+                    <li>Résoudre algébriquement des équations à racine carrée étape par étape.</li>
+                    <li>Résoudre des inéquations en maîtrisant les notations d'intervalles et l'infini (\( -\infty, +\infty \)).</li>
+                    <li>Résoudre une situation-problème contextualisée.</li>
+                </ul>
+                <button onclick="showSection('contraintes')" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-md">Commencer l'activité ➔</button>
+            </section>
+
+            <!-- SECTION 2: Contraintes (Domaine) -->
+            <section id="contraintes" class="hidden-section">
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-purple-100 text-purple-700 p-2.5 rounded-xl">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        </span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">1. Déterminer les contraintes</h2>
+                    </div>
+                    <button onclick="generateEx1()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-lg text-sm transition flex items-center gap-2 border border-slate-300">
+                        🔄 Nouvelles valeurs
+                    </button>
+                </div>
+
+                <p class="text-gray-600 mb-6 math-text">
+                    Considérons la fonction suivante générée aléatoirement : 
+                    <span id="ex1-func" class="block text-center my-5 text-2xl font-bold text-purple-900"></span>
+                </p>
+                
+                <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+                    <h3 class="font-bold text-gray-800 mb-3 text-lg">Exercice 1 : Quel est le domaine de cette fonction ?</h3>
+                    <p class="text-sm text-gray-600 mb-4">Étape 1 : Le radicande doit être supérieur ou égal à zéro : <span id="ex1-radicand" class="font-semibold text-purple-700"></span></p>
+
+                    <div class="flex items-center flex-wrap gap-3 text-lg my-6 bg-white p-4 rounded-xl border border-gray-200">
+                        <span>En isolant \( x \), on trouve la restriction : \( x \)</span>
+                        <select id="q1-sign" class="border-2 border-gray-300 rounded-lg p-1.5 outline-none focus:border-purple-500 font-semibold">
+                            <option value="">?</option>
+                            <option value=">=">&#8805; (≥)</option>
+                            <option value="<=">&#8804; (≤)</option>
+                        </select>
+                        <input type="number" id="q1-val" class="input-box" placeholder="valeur">
+                    </div>
+
+                    <div id="feedback-q1" class="mt-4 hidden p-4 rounded-xl font-medium border"></div>
+
+                    <div class="flex items-center gap-4 mt-6">
+                        <button onclick="checkQ1()" class="bg-purple-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-purple-700 transition shadow-md btn-check">Vérifier</button>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-right">
+                    <button onclick="showSection('equations')" class="text-blue-600 font-semibold hover:underline">Passer aux équations ➔</button>
+                </div>
+            </section>
+
+            <!-- SECTION 3: Équations -->
+            <section id="equations" class="hidden-section">
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-emerald-100 text-emerald-700 p-2.5 rounded-xl">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
+                        </span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">2. Résolution d'une équation</h2>
+                    </div>
+                    <button onclick="generateEx2()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-lg text-sm transition flex items-center gap-2 border border-slate-300">
+                        🔄 Nouvelles valeurs
+                    </button>
+                </div>
+                
+                <p class="text-gray-600 mb-4">Pour résoudre algébriquement une équation avec racine carrée : isoler le radical, élever au carré les deux membres, puis isoler la variable \( x \).</p>
+                
+                <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-800 mb-4 text-lg">Exercice 2 : Résolvez l'équation suivante</h3>
+                    <div id="ex2-eq" class="text-center text-2xl my-6 font-bold text-emerald-800"></div>
+                    
+                    <div class="space-y-5 bg-white p-5 rounded-xl border border-gray-200">
+                        <!-- Étape 1 -->
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                            <span class="font-bold text-emerald-700 w-28">Étape 1 :</span>
+                            <span class="text-gray-700">Isoler le radical : <span id="ex2-label-step1"></span> =</span>
+                            <input type="number" id="q2-step1" class="input-box" placeholder="?">
+                        </div>
+                        
+                        <!-- Étape 2 -->
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                            <span class="font-bold text-emerald-700 w-28">Étape 2 :</span>
+                            <span class="text-gray-700">Élever au carré : <span id="ex2-label-step2"></span> =</span>
+                            <input type="number" id="q2-step2" class="input-box" placeholder="?">
+                        </div>
+
+                        <!-- Étape 3 -->
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 bg-emerald-50/70 p-3 rounded-lg border border-emerald-200">
+                            <span class="font-bold text-emerald-800 w-28">Étape 3 :</span>
+                            <span class="text-gray-800 font-semibold">Solution finale : \( x = \)</span>
+                            <input type="number" id="q2-step3" class="input-box border-emerald-400 text-emerald-800" placeholder="?">
+                        </div>
+                    </div>
+
+                    <div id="feedback-q2" class="mt-4 hidden p-4 rounded-xl font-medium border"></div>
+
+                    <button onclick="checkQ2()" class="mt-6 bg-emerald-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-emerald-700 transition shadow-md btn-check">Vérifier la démarche</button>
+                </div>
+                
+                <div class="mt-8 text-right">
+                    <button onclick="showSection('inequations')" class="text-blue-600 font-semibold hover:underline">Passer aux inéquations ➔</button>
+                </div>
+            </section>
+
+            <!-- SECTION 4: Inéquations -->
+            <section id="inequations" class="hidden-section">
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-amber-100 text-amber-700 p-2.5 rounded-xl">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+                        </span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">3. Résolution d'une inéquation</h2>
+                    </div>
+                    <button onclick="generateEx3()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-lg text-sm transition flex items-center gap-2 border border-slate-300">
+                        🔄 Nouvelles valeurs
+                    </button>
+                </div>
+                
+                <p class="text-gray-600 mb-4">L'ensemble solution d'une inéquation est un intervalle délimité par la restriction du domaine (le point de départ) et/ou le point d'intersection.</p>
+
+                <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-6">
+                    <h3 class="font-bold text-gray-800 mb-3 text-lg">Exercice 3 : Résolvez l'inéquation</h3>
+                    <div id="ex3-ineq" class="text-center text-2xl my-6 font-bold text-amber-900"></div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-sm">
+                            <h4 class="font-bold text-amber-800 mb-2">A. La Restriction (Domaine)</h4>
+                            <p id="ex3-dom-step" class="text-gray-700 text-sm"></p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-sm">
+                            <h4 class="font-bold text-amber-800 mb-2">B. Point d'intersection (Égalité)</h4>
+                            <p id="ex3-eq-step" class="text-gray-700 text-sm"></p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                        <h4 class="font-bold text-gray-800 mb-3">Saisie de l'Ensemble Solution</h4>
+                        <p id="ex3-hint-variation" class="text-sm text-gray-600 mb-4"></p>
+
+                        <div class="flex items-center gap-2 flex-wrap text-lg">
+                            <span>\( x \in \)</span>
+                            <select id="q3-b1" class="border-2 border-gray-300 rounded-lg p-1 font-semibold">
+                                <option value="[">[</option>
+                                <option value="]">]</option>
+                            </select>
+                            
+                            <div class="flex flex-col items-center">
+                                <input type="text" id="q3-v1" class="input-box" placeholder="min">
+                                <div class="flex gap-1 mt-1">
+                                    <button type="button" onclick="insertSymbol('q3-v1', '-∞')" class="btn-sym">-∞</button>
+                                </div>
+                            </div>
+                            
+                            <span class="font-bold">,</span>
+                            
+                            <div class="flex flex-col items-center">
+                                <input type="text" id="q3-v2" class="input-box" placeholder="max">
+                                <div class="flex gap-1 mt-1">
+                                    <button type="button" onclick="insertSymbol('q3-v2', '+∞')" class="btn-sym">+∞</button>
+                                </div>
+                            </div>
+
+                            <select id="q3-b2" class="border-2 border-gray-300 rounded-lg p-1 font-semibold">
+                                <option value="[">[</option>
+                                <option value="]">]</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="feedback-q3" class="mt-4 hidden p-4 rounded-xl font-medium border"></div>
+                    
+                    <button onclick="checkQ3()" class="mt-6 bg-amber-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-amber-700 transition shadow-md btn-check">Vérifier l'intervalle</button>
+                </div>
+                
+                <div class="mt-8 text-right">
+                    <button onclick="showSection('situation')" class="text-blue-600 font-semibold hover:underline">Passer à la situation-problème ➔</button>
+                </div>
+            </section>
+
+            <!-- SECTION 5: Situation-Problème -->
+            <section id="situation" class="hidden-section">
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-rose-100 text-rose-700 p-2.5 rounded-xl">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        </span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">4. Situation-Problème : Le Drone</h2>
+                    </div>
+                    <button onclick="generateEx4()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-lg text-sm transition flex items-center gap-2 border border-slate-300">
+                        🔄 Nouvelles valeurs
+                    </button>
+                </div>
+                
+                <div class="bg-white border-2 border-rose-200 rounded-2xl p-6 shadow-md relative overflow-hidden">
+                    <h3 class="font-bold text-xl text-rose-900 mb-3">Contexte d'exploration</h3>
+                    <p class="text-gray-700 leading-relaxed mb-4">
+                        La profondeur \( P(t) \) d'un drone sous-marin (en mètres sous la surface) en fonction du temps \( t \) (en minutes) est modélisée par la fonction suivante :
+                    </p>
+                    
+                    <div id="ex4-func" class="text-center my-5 bg-rose-50 py-4 rounded-xl text-2xl font-bold text-rose-900 border border-rose-100"></div>
+                    
+                    <p id="ex4-context-text" class="text-gray-700 leading-relaxed mb-6"></p>
+
+                    <div class="border-t border-rose-100 pt-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Votre mission :</h4>
+                        <p class="text-gray-600 text-sm mb-4">Déterminez l'intervalle de temps \( t \) durant lequel l'équipe n'aura <strong>aucun signal radio</strong> avec le drone.</p>
+                        
+                        <div class="flex items-center gap-2 flex-wrap bg-gray-50 p-4 rounded-xl border border-gray-200 text-lg">
+                            <span class="text-gray-800 font-semibold">\( t \in \)</span>
+                            
+                            <select id="q4-b1" class="border-2 border-gray-300 rounded-lg p-1 font-semibold">
+                                <option value="]">] (exclu)</option>
+                                <option value="[">[ (inclus)</option>
+                            </select>
+                            
+                            <div class="flex flex-col items-center">
+                                <input type="text" id="q4-v1" class="input-box" placeholder="min">
+                            </div>
+                            
+                            <span class="font-bold">,</span>
+                            
+                            <div class="flex flex-col items-center">
+                                <input type="text" id="q4-v2" class="input-box" placeholder="max">
+                                <div class="flex gap-1 mt-1">
+                                    <button type="button" onclick="insertSymbol('q4-v2', '+∞')" class="btn-sym">+∞</button>
+                                </div>
+                            </div>
+
+                            <select id="q4-b2" class="border-2 border-gray-300 rounded-lg p-1 font-semibold">
+                                <option value="[">[ (exclu)</option>
+                                <option value="]">] (inclus)</option>
+                            </select>
+                        </div>
+                        
+                        <div id="feedback-q4" class="mt-4 hidden p-4 rounded-xl font-medium border"></div>
+
+                        <button onclick="checkQ4()" class="mt-6 bg-rose-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-rose-700 transition shadow-lg w-full sm:w-auto btn-check">Valider la solution</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- SCRIPT DE LOGIQUE MATHEMATIQUE -->
+    <script>
+        // Variables globales pour stocker les données générées
+        let d1 = {}, d2 = {}, d3 = {}, d4 = {};
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialisation de KaTeX
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '\\[', right: '\\]', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false}
+                ],
+                throwOnError : false
+            });
+
+            // Génération initiale des exercices
+            generateEx1();
+            generateEx2();
+            generateEx3();
+            generateEx4();
+        });
+
+        // Navigation entre sections
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(sec => {
+                sec.classList.remove('active-section');
+                sec.classList.add('hidden-section');
+            });
+            document.getElementById(sectionId).classList.remove('hidden-section');
+            document.getElementById(sectionId).classList.add('active-section');
+
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('hover:bg-slate-700');
+            });
+            let activeBtn = document.getElementById('btn-' + sectionId);
+            if (activeBtn) {
+                activeBtn.classList.remove('hover:bg-slate-700');
+                activeBtn.classList.add('bg-blue-600', 'text-white');
+            }
+        }
+
+        // Insertion facile de symboles d'infini dans les inputs
+        function insertSymbol(inputId, symbol) {
+            document.getElementById(inputId).value = symbol;
+        }
+
+        // Normalisation et analyse de la saisie de l'infini
+        function parseInputValue(str) {
+            if (!str) return null;
+            let s = str.trim().toLowerCase().replace(/\s+/g, '');
+            if (s === 'inf' || s === '+inf' || s === 'infini' || s === '+infini' || s === 'infty' || s === '\\infty' || s === '∞' || s === '+∞') {
+                return '+inf';
+            }
+            if (s === '-inf' || s === '-infini' || s === '-\\infty' || s === '-∞') {
+                return '-inf';
+            }
+            let num = parseFloat(s.replace(',', '.'));
+            return isNaN(num) ? null : num;
+        }
+
+        // Affichage des messages de rétroaction avec KaTeX (Modifié pour les indices et les solutions)
+        function showFeedback(elementId, status, message) {
+            const el = document.getElementById(elementId);
+            el.className = 'mt-4 p-4 rounded-xl font-medium border'; // Reset des classes
+            el.classList.remove('hidden');
+            
+            if (status === 'success') {
+                el.classList.add('bg-green-100', 'text-green-900', 'border-green-300');
+                el.innerHTML = `✅ <strong>Excellent !</strong> ${message}`;
+            } else if (status === 'hint') {
+                el.classList.add('bg-amber-100', 'text-amber-900', 'border-amber-300');
+                el.innerHTML = `⚠️ <strong>Besoin d'aide ?</strong> ${message}`;
+            } else if (status === 'error') {
+                el.classList.add('bg-red-100', 'text-red-900', 'border-red-300');
+                el.innerHTML = `❌ <strong>Attention !</strong> ${message}`;
+            } else if (status === 'solution') {
+                el.classList.add('bg-blue-100', 'text-blue-900', 'border-blue-400', 'shadow-inner');
+                el.innerHTML = `💡 <strong>Solution dévoilée :</strong> ${message}`;
+            }
+            
+            renderMathInElement(el);
+        }
+
+        /* -------------------------------------------------------------------
+           EXERCICE 1 : GENERATION ET VALIDATION (CONTRAINTES)
+        ------------------------------------------------------------------- */
+        function generateEx1() {
+            const aList = [-5, -4, -3, -2, 2, 3, 4, 5];
+            const bList = [-4, -3, -2, -1, 1, 2, 3, 4];
+            const hList = [-8, -6, -4, -2, 2, 4, 6, 8];
+            const kList = [-5, -2, 1, 3, 7];
+
+            d1.a = aList[Math.floor(Math.random() * aList.length)];
+            d1.b = bList[Math.floor(Math.random() * bList.length)];
+            d1.h = hList[Math.floor(Math.random() * hList.length)];
+            d1.k = kList[Math.floor(Math.random() * kList.length)];
+            d1.errors = 0; // Initialisation du compteur d'erreurs
+
+            let bPart = d1.b === 1 ? `(x ${d1.h >= 0 ? '- ' + d1.h : '+ ' + Math.abs(d1.h)})` :
+                        d1.b === -1 ? `-(x ${d1.h >= 0 ? '- ' + d1.h : '+ ' + Math.abs(d1.h)})` :
+                        `${d1.b}(x ${d1.h >= 0 ? '- ' + d1.h : '+ ' + Math.abs(d1.h)})`;
+
+            let kPart = d1.k >= 0 ? `+ ${d1.k}` : `- ${Math.abs(d1.k)}`;
+            let aPart = d1.a === 1 ? "" : d1.a === -1 ? "-" : d1.a;
+
+            d1.bPartStr = bPart; // Sauvegarde pour la démarche
+
+            document.getElementById('ex1-func').innerHTML = `\\( f(x) = ${aPart}\\sqrt{${bPart}} ${kPart} \\)`;
+            document.getElementById('ex1-radicand').innerHTML = `\\( ${bPart} \\ge 0 \\)`;
+
+            document.getElementById('q1-sign').value = "";
+            document.getElementById('q1-val').value = "";
+            document.getElementById('feedback-q1').classList.add('hidden');
+
+            renderMathInElement(document.getElementById('contraintes'));
+        }
+
+        function checkQ1() {
+            const sign = document.getElementById('q1-sign').value;
+            const val = parseFloat(document.getElementById('q1-val').value);
+            
+            const expectedSign = d1.b > 0 ? ">=" : "<=";
+            const expectedVal = d1.h;
+
+            if (sign === expectedSign && val === expectedVal) {
+                let intervalStr = d1.b > 0 ? `\\( [${d1.h}, +\\infty[ \\)` : `\\( ]-\\infty, ${d1.h}] \\)`;
+                let explanation = d1.b < 0 
+                    ? "Comme le paramètre \\( b \\) est négatif, la division par un nombre négatif inverse le sens de l'inégalité." 
+                    : "Comme le paramètre \\( b \\) est positif, le sens de l'inégalité est conservé.";
+                
+                showFeedback('feedback-q1', 'success', `Le domaine de la fonction est ${intervalStr}. ${explanation}`);
+            } else {
+                d1.errors++;
+                if (d1.errors === 1) {
+                    showFeedback('feedback-q1', 'hint', `Indice 1 : L'expression sous la racine doit être positive. Résolvez l'inéquation \\( ${d1.bPartStr} \\ge 0 \\).`);
+                } else if (d1.errors === 2) {
+                    let sens = d1.b < 0 ? "négatif, n'oubliez pas d'inverser le symbole de l'inégalité !" : "positif, le symbole d'inégalité reste le même.";
+                    showFeedback('feedback-q1', 'hint', `Indice 2 : Isolez \\( x \\). Vous divisez par \\( ${d1.b} \\) qui est ${sens}`);
+                } else {
+                    document.getElementById('q1-sign').value = expectedSign;
+                    document.getElementById('q1-val').value = expectedVal;
+                    
+                    let signStr = expectedSign === ">=" ? "\\ge" : "\\le";
+                    let stepByStep = `<br><br>Vous avez atteint 3 erreurs. Voici la démarche attendue :
+                    <ul class="list-disc list-inside mt-2 ml-2 text-gray-700">
+                        <li>On pose le radicande plus grand ou égal à zéro : \\( ${d1.bPartStr} \\ge 0 \\)</li>
+                        <li>On divise de chaque côté par \\( ${d1.b} \\) ${d1.b < 0 ? "<strong>(ce qui inverse le sens de l'inégalité)</strong>" : ""}</li>
+                        <li>On obtient la restriction finale : \\( x ${signStr} ${expectedVal} \\)</li>
+                    </ul>`;
+                    
+                    showFeedback('feedback-q1', 'solution', stepByStep);
+                }
+            }
+        }
+
+        /* -------------------------------------------------------------------
+           EXERCICE 2 : GENERATION ET VALIDATION (EQUATIONS)
+        ------------------------------------------------------------------- */
+        function generateEx2() {
+            const U = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+            const b = [1, 2, 3, 4][Math.floor(Math.random() * 4)];
+            const m = (U * U) / b; 
+            
+            const cleanU = Number.isInteger(m) ? U : 4;
+            const cleanB = Number.isInteger(m) ? b : 2;
+            const cleanM = (cleanU * cleanU) / cleanB;
+
+            const h = [-6, -4, -2, 0, 3, 5][Math.floor(Math.random() * 6)];
+            const a = [-4, -3, -2, 2, 3, 4][Math.floor(Math.random() * 6)];
+            const k = -a * cleanU;
+
+            d2 = { a, b: cleanB, h, k, U: cleanU, step1: cleanU, step2: cleanU * cleanU, step3: h + cleanM, errors: 0 };
+
+            let bStr = d2.b === 1 ? `(x ${d2.h >= 0 ? '- ' + d2.h : '+ ' + Math.abs(d2.h)})` : `${d2.b}(x ${d2.h >= 0 ? '- ' + d2.h : '+ ' + Math.abs(d2.h)})`;
+            let aStr = d2.a === 1 ? "" : d2.a === -1 ? "-" : d2.a;
+            let kStr = d2.k >= 0 ? `+ ${d2.k}` : `- ${Math.abs(d2.k)}`;
+
+            d2.aStr = aStr;
+            d2.bStr = bStr;
+            d2.kStr = kStr;
+
+            document.getElementById('ex2-eq').innerHTML = `\\( ${aStr}\\sqrt{${bStr}} ${kStr} = 0 \\)`;
+            document.getElementById('ex2-label-step1').innerHTML = `\\( \\sqrt{${bStr}} \\)`;
+            document.getElementById('ex2-label-step2').innerHTML = `\\( ${bStr} \\)`;
+
+            document.getElementById('q2-step1').value = "";
+            document.getElementById('q2-step2').value = "";
+            document.getElementById('q2-step3').value = "";
+            document.getElementById('feedback-q2').classList.add('hidden');
+
+            renderMathInElement(document.getElementById('equations'));
+        }
+
+        function checkQ2() {
+            const s1 = parseFloat(document.getElementById('q2-step1').value);
+            const s2 = parseFloat(document.getElementById('q2-step2').value);
+            const s3 = parseFloat(document.getElementById('q2-step3').value);
+
+            if (s1 === d2.step1 && s2 === d2.step2 && s3 === d2.step3) {
+                showFeedback('feedback-q2', 'success', `Excellente résolution ! La valeur \\( x = ${d2.step3} \\) satisfait bien la restriction du domaine.`);
+            } else {
+                d2.errors++;
+                if (d2.errors === 1) {
+                    showFeedback('feedback-q2', 'hint', `Indice 1 : Étape 1, isolez la racine. Débarrassez-vous du terme constant (\\( ${d2.k} \\)) en l'envoyant de l'autre côté, puis divisez par \\( ${d2.a} \\).`);
+                } else if (d2.errors === 2) {
+                    showFeedback('feedback-q2', 'hint', `Indice 2 : Étape 2, élevez les deux côtés de l'égalité au carré pour détruire la racine. Ensuite, isolez \\( x \\) à l'étape 3.`);
+                } else {
+                    document.getElementById('q2-step1').value = d2.step1;
+                    document.getElementById('q2-step2').value = d2.step2;
+                    document.getElementById('q2-step3').value = d2.step3;
+                    
+                    let stepByStep = `<br><br>Vous avez atteint 3 erreurs. Voici la démarche complète :
+                    <ul class="list-disc list-inside mt-2 ml-2 text-gray-700">
+                        <li><strong>Étape 1 (Isoler) :</strong> \\( ${d2.aStr}\\sqrt{${d2.bStr}} = ${-d2.k} \\implies \\sqrt{${d2.bStr}} = ${d2.step1} \\)</li>
+                        <li><strong>Étape 2 (Au carré) :</strong> \\( (\\sqrt{${d2.bStr}})^2 = (${d2.step1})^2 \\implies ${d2.bStr} = ${d2.step2} \\)</li>
+                        <li><strong>Étape 3 (Isoler x) :</strong> \\( x ${d2.h >= 0 ? '- '+d2.h : '+ '+Math.abs(d2.h)} = ${d2.step2 / d2.b} \\implies x = ${d2.step3} \\)</li>
+                    </ul>`;
+                    showFeedback('feedback-q2', 'solution', stepByStep);
+                }
+            }
+        }
+
+        /* -------------------------------------------------------------------
+           EXERCICE 3 : GENERATION ET VALIDATION (INEQUATIONS)
+        ------------------------------------------------------------------- */
+        function generateEx3() {
+            const U = [2, 3, 4][Math.floor(Math.random() * 3)];
+            const b = [1, 2][Math.floor(Math.random() * 2)];
+            const m = (U * U) / b;
+            const h = [-4, -2, 0, 2, 4][Math.floor(Math.random() * 5)];
+            const a = [-3, -2, 2, 3][Math.floor(Math.random() * 4)];
+            const k = [-4, -1, 2, 5][Math.floor(Math.random() * 4)];
+            
+            const C = a * U + k;
+            const isLess = Math.random() > 0.5; // <= ou >=
+            const x_int = h + m;
+
+            d3 = { a, b, h, k, C, isLess, x_int, U, errors: 0 };
+
+            let bStr = d3.b === 1 ? `(x ${d3.h >= 0 ? '- ' + d3.h : '+ ' + Math.abs(d3.h)})` : `${d3.b}(x ${d3.h >= 0 ? '- ' + d3.h : '+ ' + Math.abs(d3.h)})`;
+            let aStr = d3.a === 1 ? "" : d3.a === -1 ? "-" : d3.a;
+            let kStr = d3.k >= 0 ? `+ ${d3.k}` : `- ${Math.abs(d3.k)}`;
+            let opStr = isLess ? "\\le" : "\\ge";
+
+            document.getElementById('ex3-ineq').innerHTML = `\\( ${aStr}\\sqrt{${bStr}} ${kStr} ${opStr} ${C} \\)`;
+            document.getElementById('ex3-dom-step').innerHTML = `Le radicande implique que \\( x \\ge ${h} \\). Domaine = \\( [${h}, +\\infty[ \\).`;
+            document.getElementById('ex3-eq-step').innerHTML = `En posant l'égalité, l'intersection se situe à \\( x = ${x_int} \\).`;
+
+            let behavior = (a > 0) ? "croissante" : "décroissante";
+            document.getElementById('ex3-hint-variation').innerHTML = `Note : Le paramètre \\( a = ${a} \\) indique que la fonction est <strong>${behavior}</strong>.`;
+
+            document.getElementById('q3-v1').value = "";
+            document.getElementById('q3-v2').value = "";
+            document.getElementById('feedback-q3').classList.add('hidden');
+
+            renderMathInElement(document.getElementById('inequations'));
+        }
+
+        function checkQ3() {
+            const b1 = document.getElementById('q3-b1').value;
+            const v1 = parseInputValue(document.getElementById('q3-v1').value);
+            const v2 = parseInputValue(document.getElementById('q3-v2').value);
+            const b2 = document.getElementById('q3-b2').value;
+
+            let targetB1 = "[", targetV1 = null, targetV2 = null, targetB2 = "[";
+
+            if (d3.a > 0) {
+                if (d3.isLess) { targetB1 = "["; targetV1 = d3.h; targetV2 = d3.x_int; targetB2 = "]"; } 
+                else { targetB1 = "["; targetV1 = d3.x_int; targetV2 = "+inf"; targetB2 = "["; }
+            } else {
+                if (d3.isLess) { targetB1 = "["; targetV1 = d3.x_int; targetV2 = "+inf"; targetB2 = "["; } 
+                else { targetB1 = "["; targetV1 = d3.h; targetV2 = d3.x_int; targetB2 = "]"; }
+            }
+
+            const isV1Correct = (targetV1 === "+inf" || targetV1 === "-inf") ? v1 === targetV1 : v1 === targetV1;
+            const isV2Correct = (targetV2 === "+inf" || targetV2 === "-inf") ? v2 === targetV2 : v2 === targetV2;
+
+            if (b1 === targetB1 && isV1Correct && isV2Correct && b2 === targetB2) {
+                let strV1 = targetV1 === "+inf" ? "+\\infty" : targetV1;
+                let strV2 = targetV2 === "+inf" ? "+\\infty" : targetV2;
+                showFeedback('feedback-q3', 'success', `L'ensemble solution est bien \\( ${targetB1}${strV1}, ${strV2}${targetB2} \\).`);
+            } else {
+                d3.errors++;
+                if (d3.errors === 1) {
+                    showFeedback('feedback-q3', 'hint', `Indice 1 : Observez la restriction (Domaine : \\( x \\ge ${d3.h} \\)) et l'intersection (\\( x = ${d3.x_int} \\)). L'intervalle solution se situe soit entre ces valeurs, soit il va de l'intersection vers l'infini.`);
+                } else if (d3.errors === 2) {
+                    showFeedback('feedback-q3', 'hint', `Indice 2 : La fonction est ${d3.a > 0 ? "croissante" : "décroissante"}. Testez une valeur de \\( x \\) de chaque côté de ${d3.x_int} pour voir où l'inéquation est respectée. Faites attention au sens des crochets (inclus/exclus pour l'infini).`);
+                } else {
+                    document.getElementById('q3-b1').value = targetB1;
+                    document.getElementById('q3-v1').value = targetV1 === "+inf" ? "+∞" : (targetV1 === "-inf" ? "-∞" : targetV1);
+                    document.getElementById('q3-v2').value = targetV2 === "+inf" ? "+∞" : (targetV2 === "-inf" ? "-∞" : targetV2);
+                    document.getElementById('q3-b2').value = targetB2;
+                    
+                    let strV1 = targetV1 === "+inf" ? "+\\infty" : targetV1;
+                    let strV2 = targetV2 === "+inf" ? "+\\infty" : targetV2;
+                    let stepByStep = `<br><br>Vous avez atteint 3 erreurs. L'ensemble solution est : <strong>\\( ${targetB1}${strV1}, ${strV2}${targetB2} \\)</strong>.
+                    <br><strong>Démarche logique :</strong>
+                    <ul class="list-disc list-inside mt-2 ml-2 text-gray-700">
+                        <li>La restriction de départ est \\( x \\ge ${d3.h} \\).</li>
+                        <li>L'égalité donne \\( x = ${d3.x_int} \\).</li>
+                        <li>La fonction étant ${d3.a > 0 ? "croissante" : "décroissante"}, elle est ${d3.isLess ? "inférieure ou égale" : "supérieure ou égale"} à ${d3.C} sur l'intervalle \\( ${targetB1}${strV1}, ${strV2}${targetB2} \\).</li>
+                    </ul>`;
+                    
+                    showFeedback('feedback-q3', 'solution', stepByStep);
+                }
+            }
+        }
+
+        /* -------------------------------------------------------------------
+           EXERCICE 4 : GENERATION ET VALIDATION (SITUATION-PROBLEME)
+        ------------------------------------------------------------------- */
+        function generateEx4() {
+            const h = [1, 2, 3, 4][Math.floor(Math.random() * 4)];
+            const a = [-5, -4, -3, -2][Math.floor(Math.random() * 4)];
+            const b = [1, 2, 4][Math.floor(Math.random() * 3)];
+            const U = [3, 4, 5, 6][Math.floor(Math.random() * 4)];
+            
+            const m = (U * U) / b;
+            const cleanM = Number.isInteger(m) ? m : (U * U);
+            const cleanB = Number.isInteger(m) ? b : 1;
+            
+            const k = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+            const targetDepth = k + a * U; 
+
+            const t_critical = h + cleanM;
+
+            d4 = { a, b: cleanB, h, k, U, targetDepth, t_critical, errors: 0 };
+
+            let bStr = d4.b === 1 ? `(t - ${d4.h})` : `${d4.b}(t - ${d4.h})`;
+            let aStr = d4.a === -1 ? "-" : d4.a;
+            let kStr = d4.k >= 0 ? `+ ${d4.k}` : `- ${Math.abs(d4.k)}`;
+
+            d4.aStr = aStr;
+            d4.bStr = bStr;
+            d4.kStr = kStr;
+
+            document.getElementById('ex4-func').innerHTML = `\\( P(t) = ${aStr}\\sqrt{${bStr}} ${kStr} \\)`;
+            document.getElementById('ex4-context-text').innerHTML = 
+                `L'équipe de surface perd la communication radio dès que le drone s'enfonce à une profondeur <strong>strictement inférieure à ${d4.targetDepth} mètres</strong> (c'est-à-dire plus profond que ${Math.abs(d4.targetDepth)} mètres sous l'eau).`;
+
+            document.getElementById('q4-v1').value = "";
+            document.getElementById('q4-v2').value = "";
+            document.getElementById('feedback-q4').classList.add('hidden');
+
+            renderMathInElement(document.getElementById('situation'));
+        }
+
+        function checkQ4() {
+            const b1 = document.getElementById('q4-b1').value;
+            const v1 = parseInputValue(document.getElementById('q4-v1').value);
+            const v2 = parseInputValue(document.getElementById('q4-v2').value);
+            const b2 = document.getElementById('q4-b2').value;
+
+            const isB1Correct = b1.includes("]");
+            const isV1Correct = v1 === d4.t_critical;
+            const isV2Correct = v2 === "+inf";
+            const isB2Correct = b2.includes("[");
+
+            if (isB1Correct && isV1Correct && isV2Correct && isB2Correct) {
+                showFeedback('feedback-q4', 'success', `Félicitations ! Le signal est perdu pour tout temps \\( t \\in \\, ]${d4.t_critical}, +\\infty[ \\) minutes.`);
+            } else {
+                d4.errors++;
+                if (d4.errors === 1) {
+                    showFeedback('feedback-q4', 'hint', `Indice 1 : Commencez par poser l'inéquation \\( P(t) < ${d4.targetDepth} \\). Isolez ensuite la racine carrée (soustrayez \\( ${d4.k} \\) puis divisez par \\( ${d4.a} \\)).`);
+                } else if (d4.errors === 2) {
+                    showFeedback('feedback-q4', 'hint', `Indice 2 : Attention ! En divisant par \\( ${d4.a} \\) (qui est négatif), l'inégalité " < " devient " > ". Continuez à isoler le temps \\( t \\) et vérifiez l'exclusion des crochets car le texte dit "strictement".`);
+                } else {
+                    document.getElementById('q4-b1').value = "]";
+                    document.getElementById('q4-v1').value = d4.t_critical;
+                    document.getElementById('q4-v2').value = "+∞";
+                    document.getElementById('q4-b2').value = "[";
+                    
+                    let stepByStep = `<br><br>Vous avez atteint 3 erreurs. La réponse finale est <strong>\\( t \\in \\, ]${d4.t_critical}, +\\infty[ \\)</strong>.
+                    <br><strong>Voici comment y arriver pas-à-pas :</strong>
+                    <ul class="list-disc list-inside mt-2 ml-2 text-gray-700">
+                        <li><strong>Modélisation :</strong> \\( ${d4.aStr}\\sqrt{${d4.bStr}} ${d4.kStr} < ${d4.targetDepth} \\)</li>
+                        <li><strong>Isoler la racine :</strong> \\( ${d4.aStr}\\sqrt{${d4.bStr}} < ${d4.targetDepth - d4.k} \\)</li>
+                        <li><strong>Inverser le signe :</strong> \\( \\sqrt{${d4.bStr}} > ${(d4.targetDepth - d4.k) / d4.a} \\) (Division par un négatif)</li>
+                        <li><strong>Élever au carré :</strong> \\( ${d4.bStr} > ${Math.pow((d4.targetDepth - d4.k)/d4.a, 2)} \\implies t > ${d4.t_critical} \\)</li>
+                    </ul>`;
+                    
+                    showFeedback('feedback-q4', 'solution', stepByStep);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
