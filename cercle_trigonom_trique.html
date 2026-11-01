@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Cercle Trigonométrique - Math SN5</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax v3 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        canvas { touch-action: none; background-color: #ffffff; }
+        .solution-list { list-style: none; padding: 0; counter-reset: step; }
+        .solution-list li {
+            counter-increment: step;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            line-height: 1.6;
+            color: #334155;
+        }
+        .solution-list li::before {
+            content: counter(step) ".";
+            font-weight: 700;
+            color: #1e293b;
+            width: 1.25rem;
+            text-align: right;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8">
+
+<div class="max-w-7xl mx-auto space-y-6">
+ 
+    <!-- En-tête principal -->
+    <header class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Le Cercle Trigonométrique</h1>
+            <p class="text-slate-500 text-sm mt-1 font-medium">Mathématiques — Secondaire 5 SN (Coordonnées et transformations)</p>
+        </div>
+        
+        <!-- Sélecteur de niveau -->
+        <div class="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-inner">
+            <button id="btn-doux" onclick="setLevel('doux')" class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white shadow-sm text-blue-600">
+                🌱 Doux (Angle remarquable)
+            </button>
+            <button id="btn-moyen" onclick="setLevel('moyen')" class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all text-slate-600 hover:text-slate-900">
+                🌶️ Moyen (Transformations)
+            </button>
+        </div>
+    </header>
+
+    <!-- Layout principal 2 colonnes (50/50) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+ 
+        <!-- COLONNE GAUCHE: Cercle Trigonométrique -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 md:p-8 flex flex-col items-center">
+            <div class="w-full flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    Représentation visuelle
+                </h2>
+                <button onclick="generateQuestion()" class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-semibold transition-colors flex items-center gap-2 border border-slate-200 shadow-sm active:scale-95">
+                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Nouvel exemple
+                </button>
+            </div>
+
+            <!-- Conteneur Canvas adaptatif -->
+            <div class="relative w-full aspect-square max-w-[520px] border border-slate-100 rounded-3xl overflow-hidden shadow-inner flex items-center justify-center bg-slate-50/50">
+                <canvas id="trigoCanvas" width="520" height="520" class="w-full h-full block"></canvas>
+            </div>
+            
+            <!-- Légende -->
+            <div class="flex flex-wrap justify-center gap-6 text-sm font-medium text-slate-600 mt-6">
+                <span class="flex items-center gap-2">
+                    <span class="w-3.5 h-3.5 rounded-full bg-blue-500 inline-block ring-2 ring-blue-200"></span> 
+                    Angle de base ($\theta$)
+                </span>
+                <span id="legend-target" class="flex items-center gap-2 hidden">
+                    <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block ring-2 ring-emerald-200"></span> 
+                    Point transformé $P(\theta')$
+                </span>
+            </div>
+        </div>
+
+        <!-- COLONNE DROITE: Question, Sélection et Explication -->
+        <div class="flex flex-col gap-6">
+ 
+            <!-- Boîte de Question et Choix -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-4">Question</h2>
+                
+                <!-- Enoncé de la question -->
+                <div id="question-box" class="bg-blue-50/80 border border-blue-100 rounded-2xl p-5 mb-6 text-center shadow-inner min-h-[90px] flex flex-col justify-center items-center">
+                    <!-- Injecté par JS avec rendu MathJax -->
+                </div>
+
+                <!-- Grilles de choix des coordonnées -->
+                <div class="space-y-5 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Abscisse : $x = \cos(\text{angle})$</label>
+                        <div id="grid-x" class="grid grid-cols-3 gap-2">
+                            <!-- Choix X injectés en JS -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Ordonnée : $y = \sin(\text{angle})$</label>
+                        <div id="grid-y" class="grid grid-cols-3 gap-2">
+                            <!-- Choix Y injectés en JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aperçu des coordonnées sélectionnées -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 text-center shadow-inner">
+                    <span class="text-xs text-slate-500 block mb-1 font-medium">Coordonnées sélectionnées :</span>
+                    <span id="selected-coord-display" class="text-xl font-bold text-slate-900 inline-flex items-center justify-center gap-1 min-h-[32px]">
+                        ( ? , ? )
+                    </span>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="flex gap-3">
+                    <button onclick="checkAnswer()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-2xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]">
+                        Valider
+                    </button>
+                    <button id="btn-solution" onclick="toggleSolution()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-5 rounded-2xl transition-all border border-slate-200 active:scale-[0.98]">
+                        Démarche
+                    </button>
+                </div>
+
+                <!-- Message de retour/feedback -->
+                <div id="feedback-msg" class="hidden mt-5 p-4 rounded-2xl font-semibold text-center text-sm shadow-sm transition-all"></div>
+            </div>
+
+            <!-- Bloc Démarche Pédagogique Pas-à-Pas -->
+            <div id="solution-area" class="hidden bg-white rounded-3xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-4">
+                <div class="flex items-center gap-3 text-emerald-800 font-bold text-lg border-b border-slate-100 pb-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    Explication pas-à-pas
+                </div>
+                
+                <ol id="solution-content" class="solution-list text-base">
+                    <!-- Explication dynamique insérée ici -->
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Données Trigonométriques remarquables [0, 2pi[ ---
+    const REMARKABLE_ANGLES = [
+        { radStr: "0", val: 0, xStr: "1", yStr: "0", xNum: 1, yNum: 0 },
+        { radStr: "\\frac{\\pi}{6}", val: Math.PI/6, xStr: "\\frac{\\sqrt{3}}{2}", yStr: "\\frac{1}{2}", xNum: Math.sqrt(3)/2, yNum: 0.5 },
+        { radStr: "\\frac{\\pi}{4}", val: Math.PI/4, xStr: "\\frac{\\sqrt{2}}{2}", yStr: "\\frac{\\sqrt{2}}{2}", xNum: Math.sqrt(2)/2, yNum: Math.sqrt(2)/2 },
+        { radStr: "\\frac{\\pi}{3}", val: Math.PI/3, xStr: "\\frac{1}{2}", yStr: "\\frac{\\sqrt{3}}{2}", xNum: 0.5, yNum: Math.sqrt(3)/2 },
+        { radStr: "\\frac{\\pi}{2}", val: Math.PI/2, xStr: "0", yStr: "1", xNum: 0, yNum: 1 },
+        { radStr: "\\frac{2\\pi}{3}", val: 2*Math.PI/3, xStr: "-\\frac{1}{2}", yStr: "\\frac{\\sqrt{3}}{2}", xNum: -0.5, yNum: Math.sqrt(3)/2 },
+        { radStr: "\\frac{3\\pi}{4}", val: 3*Math.PI/4, xStr: "-\\frac{\\sqrt{2}}{2}", yStr: "\\frac{\\sqrt{2}}{2}", xNum: -Math.sqrt(2)/2, yNum: Math.sqrt(2)/2 },
+        { radStr: "\\frac{5\\pi}{6}", val: 5*Math.PI/6, xStr: "-\\frac{\\sqrt{3}}{2}", yStr: "\\frac{1}{2}", xNum: -Math.sqrt(3)/2, yNum: 0.5 },
+        { radStr: "\\pi", val: Math.PI, xStr: "-1", yStr: "0", xNum: -1, yNum: 0 },
+        { radStr: "\\frac{7\\pi}{6}", val: 7*Math.PI/6, xStr: "-\\frac{\\sqrt{3}}{2}", yStr: "-\\frac{1}{2}", xNum: -Math.sqrt(3)/2, yNum: -0.5 },
+        { radStr: "\\frac{5\\pi}{4}", val: 5*Math.PI/4, xStr: "-\\frac{\\sqrt{2}}{2}", yStr: "-\\frac{\\sqrt{2}}{2}", xNum: -Math.sqrt(2)/2, yNum: -Math.sqrt(2)/2 },
+        { radStr: "\\frac{4\\pi}{3}", val: 4*Math.PI/3, xStr: "-\\frac{1}{2}", yStr: "-\\frac{\\sqrt{3}}{2}", xNum: -0.5, yNum: -Math.sqrt(3)/2 },
+        { radStr: "\\frac{3\\pi}{2}", val: 3*Math.PI/2, xStr: "0", yStr: "-1", xNum: 0, yNum: -1 },
+        { radStr: "\\frac{5\\pi}{3}", val: 5*Math.PI/3, xStr: "\\frac{1}{2}", yStr: "-\\frac{\\sqrt{3}}{2}", xNum: 0.5, yNum: -Math.sqrt(3)/2 },
+        { radStr: "\\frac{7\\pi}{4}", val: 7*Math.PI/4, xStr: "\\frac{\\sqrt{2}}{2}", yStr: "-\\frac{\\sqrt{2}}{2}", xNum: Math.sqrt(2)/2, yNum: -Math.sqrt(2)/2 },
+        { radStr: "\\frac{11\\pi}{6}", val: 11*Math.PI/6, xStr: "\\frac{\\sqrt{3}}{2}", yStr: "-\\frac{1}{2}", xNum: Math.sqrt(3)/2, yNum: -0.5 }
+    ];
+
+    // Liste des choix de coordonnées pour les boutons
+    const COORD_VALUES = [
+        { str: "1", num: 1 },
+        { str: "\\frac{\\sqrt{3}}{2}", num: Math.sqrt(3)/2 },
+        { str: "\\frac{\\sqrt{2}}{2}", num: Math.sqrt(2)/2 },
+        { str: "\\frac{1}{2}", num: 0.5 },
+        { str: "0", num: 0 },
+        { str: "-\\frac{1}{2}", num: -0.5 },
+        { str: "-\\frac{\\sqrt{2}}{2}", num: -Math.sqrt(2)/2 },
+        { str: "-\\frac{\\sqrt{3}}{2}", num: -Math.sqrt(3)/2 },
+        { str: "-1", num: -1 }
+    ];
+
+    // --- État de l'application ---
+    let currentLevel = 'doux';
+    let currentProblem = {};
+    let selectedX = null;
+    let selectedY = null;
+    let showTargetAngleOnCanvas = false;
+    let solutionVisible = false;
+
+    // Initialisation au chargement de la page
+    window.onload = () => {
+        renderCoordButtons();
+        setLevel('doux');
+        window.addEventListener('resize', drawCircle);
+    };
+
+    function triggerMathJax() {
+        if (window.MathJax && MathJax.typesetPromise) {
+            MathJax.typesetPromise();
+        }
+    }
+
+    function setLevel(lvl) {
+        currentLevel = lvl;
+        const btnDoux = document.getElementById('btn-doux');
+        const btnMoyen = document.getElementById('btn-moyen');
+        
+        if (lvl === 'doux') {
+            btnDoux.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white shadow-sm text-blue-600";
+            btnMoyen.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all text-slate-600 hover:text-slate-900";
+        } else {
+            btnMoyen.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white shadow-sm text-blue-600";
+            btnDoux.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all text-slate-600 hover:text-slate-900";
+        }
+        
+        generateQuestion();
+    }
+
+    // Génération d'un nouveau problème
+    function generateQuestion() {
+        selectedX = null;
+        selectedY = null;
+        showTargetAngleOnCanvas = false;
+        solutionVisible = false;
+        
+        document.getElementById('legend-target').classList.add('hidden');
+        document.getElementById('feedback-msg').classList.add('hidden');
+        document.getElementById('solution-area').classList.add('hidden');
+        updateSelectedDisplay();
+        highlightButtons();
+
+        if (currentLevel === 'doux') {
+            // Niveau Doux : Sélection directe d'un angle remarquable
+            const baseObj = REMARKABLE_ANGLES[Math.floor(Math.random() * REMARKABLE_ANGLES.length)];
+            currentProblem = {
+                baseAngleObj: baseObj,
+                targetAngleRad: baseObj.val,
+                displayExpr: baseObj.radStr,
+                correctX: baseObj.xStr,
+                correctY: baseObj.yStr,
+                correctXNum: baseObj.xNum,
+                correctYNum: baseObj.yNum,
+                explanationSteps: [
+                    `Angle remarquable au cercle trigonométrique : $\\theta = ${baseObj.radStr}$.`,
+                    `Le cosinus correspond à l'abscisse : $x = \\cos\\left(${baseObj.radStr}\\right) = ${baseObj.xStr}$.`,
+                    `Le sinus correspond à l'ordonnée : $y = \\sin\\left(${baseObj.radStr}\\right) = ${baseObj.yStr}$.`,
+                    `Les coordonnées exactes sont $P\\left(${baseObj.radStr}\\right) = \\left(${baseObj.xStr}, ${baseObj.yStr}\\right)$.`
+                ]
+            };
+            showTargetAngleOnCanvas = true;
+        } else {
+            // Niveau Moyen : Angle de base + transformation trigonométrique
+            const baseObj = REMARKABLE_ANGLES[Math.floor(Math.random() * REMARKABLE_ANGLES.length)];
+            const transformTypes = [
+                { str: "\\theta + \\frac{\\pi}{2}", calc: b => b + Math.PI/2 },
+                { str: "\\theta + \\pi", calc: b => b + Math.PI },
+                { str: "\\theta - \\frac{\\pi}{2}", calc: b => b - Math.PI/2 },
+                { str: "\\pi - \\theta", calc: b => Math.PI - b },
+                { str: "\\frac{\\pi}{2} - \\theta", calc: b => Math.PI/2 - b },
+                { str: "-\\theta", calc: b => -b }
+            ];
+
+            const trans = transformTypes[Math.floor(Math.random() * transformTypes.length)];
+            let rawRad = trans.calc(baseObj.val);
+            let normalizedRad = (rawRad % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+            
+            // Trouver le point cible équivalent
+            const targetObj = REMARKABLE_ANGLES.find(a => Math.abs(a.val - normalizedRad) < 0.001) || REMARKABLE_ANGLES[0];
+
+            currentProblem = {
+                baseAngleObj: baseObj,
+                targetAngleRad: normalizedRad,
+                displayExpr: trans.str,
+                thetaDisplay: baseObj.radStr,
+                correctX: targetObj.xStr,
+                correctY: targetObj.yStr,
+                correctXNum: targetObj.xNum,
+                correctYNum: targetObj.yNum,
+                explanationSteps: [
+                    `Angle de départ : $\\theta = ${baseObj.radStr}$ de coordonnées $\\left(${baseObj.xStr}, ${baseObj.yStr}\\right)$.`,
+                    `Application de la transformation : $t = ${trans.str}$.`,
+                    `En substituant $\\theta$, on obtient l'angle résultant $t = ${targetObj.radStr}$.`,
+                    `Les coordonnées du point transformé sont $P\\left(${targetObj.radStr}\\right) = \\left(${targetObj.xStr}, ${targetObj.yStr}\\right)$.`
+                ]
+            };
+        }
+
+        renderQuestionUI();
+        drawCircle();
+    }
+
+    // Affichage de l'énoncé de la question
+    function renderQuestionUI() {
+        const qBox = document.getElementById('question-box');
+        if (currentLevel === 'doux') {
+            qBox.innerHTML = `
+                <span class="text-xs text-blue-600 font-bold uppercase tracking-wider mb-1">Trouver les coordonnées du point</span>
+                <span class="text-2xl font-extrabold text-slate-900">$P\\left(${currentProblem.displayExpr}\\right)$</span>
+            `;
+        } else {
+            qBox.innerHTML = `
+                <span class="text-xs text-blue-600 font-bold uppercase tracking-wider mb-1">Coordonnées après transformation</span>
+                <span class="text-xl font-extrabold text-slate-900 mb-1">Point : $P\\left(${currentProblem.displayExpr}\\right)$</span>
+                <span class="text-sm text-slate-600">avec $\\theta = ${currentProblem.thetaDisplay}$</span>
+            `;
+        }
+        triggerMathJax();
+    }
+
+    // Rendu des boutons de coordonnées X et Y
+    function renderCoordButtons() {
+        const gridX = document.getElementById('grid-x');
+        const gridY = document.getElementById('grid-y');
+
+        let htmlX = "", htmlY = "";
+        COORD_VALUES.forEach((item, index) => {
+            // Passe l'index (entier) au lieu de la chaîne de caractères LaTeX pour éviter l'erreur d'input
+            htmlX += `<button onclick="selectVal('x', ${index})" id="btn-x-${index}" class="btn-coord p-2.5 text-sm bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all text-center">$${item.str}$</button>`;
+            htmlY += `<button onclick="selectVal('y', ${index})" id="btn-y-${index}" class="btn-coord p-2.5 text-sm bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all text-center">$${item.str}$</button>`;
+        });
+
+        gridX.innerHTML = htmlX;
+        gridY.innerHTML = htmlY;
+        triggerMathJax();
+    }
+
+    function selectVal(axis, index) {
+        if (axis === 'x') selectedX = index;
+        if (axis === 'y') selectedY = index;
+        updateSelectedDisplay();
+        highlightButtons();
+    }
+
+    function updateSelectedDisplay() {
+        const disp = document.getElementById('selected-coord-display');
+        const xText = selectedX !== null ? `$${COORD_VALUES[selectedX].str}$` : " ? ";
+        const yText = selectedY !== null ? `$${COORD_VALUES[selectedY].str}$` : " ? ";
+        disp.innerHTML = `( ${xText} , ${yText} )`;
+        triggerMathJax();
+    }
+
+    function highlightButtons() {
+        COORD_VALUES.forEach((item, index) => {
+            const btnX = document.getElementById(`btn-x-${index}`);
+            const btnY = document.getElementById(`btn-y-${index}`);
+            
+            if (selectedX === index) {
+                btnX.className = "btn-coord p-2.5 text-sm bg-blue-600 text-white font-bold border border-blue-600 rounded-xl shadow-md";
+            } else {
+                btnX.className = "btn-coord p-2.5 text-sm bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all text-center";
+            }
+
+            if (selectedY === index) {
+                btnY.className = "btn-coord p-2.5 text-sm bg-blue-600 text-white font-bold border border-blue-600 rounded-xl shadow-md";
+            } else {
+                btnY.className = "btn-coord p-2.5 text-sm bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all text-center";
+            }
+        });
+    }
+
+    // Validation de la réponse de l'élève
+    function checkAnswer() {
+        const msgBox = document.getElementById('feedback-msg');
+        msgBox.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-red-100', 'text-red-900', 'bg-amber-100', 'text-amber-900');
+
+        if (selectedX === null || selectedY === null) {
+            msgBox.classList.add('bg-amber-100', 'text-amber-900');
+            msgBox.innerHTML = "⚠️ Veuillez sélectionner une valeur pour l'abscisse et l'ordonnée.";
+            return;
+        }
+
+        const valX = COORD_VALUES[selectedX].str;
+        const valY = COORD_VALUES[selectedY].str;
+        const isCorrect = (valX === currentProblem.correctX && valY === currentProblem.correctY);
+
+        showTargetAngleOnCanvas = true;
+        document.getElementById('legend-target').classList.remove('hidden');
+        drawCircle();
+
+        if (isCorrect) {
+            msgBox.classList.add('bg-emerald-100', 'text-emerald-900');
+            msgBox.innerHTML = `🎉 Bravo ! Les coordonnées sont exactement $\\left(${currentProblem.correctX}, ${currentProblem.correctY}\\right)$.`;
+        } else {
+            msgBox.classList.add('bg-red-100', 'text-red-900');
+            msgBox.innerHTML = `❌ Pas tout à fait. La bonne réponse était $\\left(${currentProblem.correctX}, ${currentProblem.correctY}\\right)$. Clique sur <strong>Démarche</strong> pour revoir le calcul !`;
+        }
+        triggerMathJax();
+    }
+
+    // Affichage/Masquage de la démarche pédagogique
+    function toggleSolution() {
+        solutionVisible = !solutionVisible;
+        const area = document.getElementById('solution-area');
+        const content = document.getElementById('solution-content');
+
+        if (solutionVisible) {
+            content.innerHTML = "";
+            currentProblem.explanationSteps.forEach(step => {
+                const li = document.createElement("li");
+                li.innerHTML = step;
+                content.appendChild(li);
+            });
+
+            area.classList.remove('hidden');
+            showTargetAngleOnCanvas = true;
+            document.getElementById('legend-target').classList.remove('hidden');
+            drawCircle();
+            triggerMathJax();
+        } else {
+            area.classList.add('hidden');
+        }
+    }
+
+    // --- Rendu Canvas 2D (Support Retina / HDPI) ---
+    function drawCircle() {
+        const canvas = document.getElementById('trigoCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        
+        // Adaptation résolution écran (High DPI / Retina)
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        const size = Math.min(rect.width || 520, 520);
+        
+        canvas.width = size * dpr;
+        canvas.height = size * dpr;
+        ctx.scale(dpr, dpr);
+
+        const center = size / 2;
+        const radius = size * 0.38;
+
+        ctx.clearRect(0, 0, size, size);
+
+        // Grille d'arrière-plan
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        const step = 25;
+        for (let x = 0; x < size; x += step) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, size); ctx.stroke();
+        }
+        for (let y = 0; y < size; y += step) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(size, y); ctx.stroke();
+        }
+
+        // Axes cartésiens
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(25, center); ctx.lineTo(size - 25, center);
+        ctx.moveTo(center, 25); ctx.lineTo(center, size - 25);
+        ctx.stroke();
+
+        // Flèches sur les axes
+        ctx.fillStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.triangle = (x, y, dx1, dy1, dx2, dy2) => {
+            ctx.moveTo(x, y); ctx.lineTo(x + dx1, y + dy1); ctx.lineTo(x + dx2, y + dy2); ctx.closePath();
+        };
+        ctx.triangle(size - 25, center, -8, -4, -8, 4); ctx.fill();
+        ctx.triangle(center, 25, -4, 8, 4, 8); ctx.fill();
+
+        // Noms des axes
+        ctx.font = '600 13px Inter';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText("x (cos)", size - 55, center + 20);
+        ctx.fillText("y (sin)", center + 12, 38);
+
+        // Le Cercle Trigonométrique principal
+        ctx.beginPath();
+        ctx.arc(center, center, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Points remarquables (repères discrets)
+        REMARKABLE_ANGLES.forEach(pt => {
+            const px = center + radius * pt.xNum;
+            const py = center - radius * pt.yNum;
+            ctx.beginPath();
+            ctx.arc(px, py, 2.5, 0, 2 * Math.PI);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fill();
+        });
+
+        // 1. Rayon et point de l'angle de base (Bleu)
+        const baseRad = currentProblem.baseAngleObj.val;
+        const baseX = center + radius * currentProblem.baseAngleObj.xNum;
+        const baseY = center - radius * currentProblem.baseAngleObj.yNum;
+
+        // Arc d'angle de base
+        ctx.beginPath();
+        ctx.arc(center, center, 32, 0, -baseRad, true);
+        ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Rayon de base
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.lineTo(baseX, baseY);
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Marqueur point de base
+        ctx.beginPath();
+        ctx.arc(baseX, baseY, 6, 0, 2 * Math.PI);
+        ctx.fillStyle = '#3b82f6';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Étiquette θ
+        ctx.fillStyle = '#1d4ed8';
+        ctx.font = 'bold 13px Inter';
+        let offsetTextX = baseX >= center ? 12 : -22;
+        let offsetTextY = baseY >= center ? 18 : -10;
+        ctx.fillText("θ", baseX + offsetTextX, baseY + offsetTextY);
+
+        // 2. Rayon et point transformé (Vert Émeraude) - si révélé
+        if (showTargetAngleOnCanvas && currentLevel === 'moyen') {
+            const targetRad = currentProblem.targetAngleRad;
+            const targetX = center + radius * currentProblem.correctXNum;
+            const targetY = center - radius * currentProblem.correctYNum;
+
+            // Arc d'angle transformé
+            ctx.beginPath();
+            ctx.arc(center, center, 44, 0, -targetRad, true);
+            ctx.strokeStyle = 'rgba(16, 185, 129, 0.5)';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // Rayon transformé
+            ctx.beginPath();
+            ctx.moveTo(center, center);
+            ctx.lineTo(targetX, targetY);
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // Marqueur du point transformé
+            ctx.beginPath();
+            ctx.arc(targetX, targetY, 7, 0, 2 * Math.PI);
+            ctx.fillStyle = '#10b981';
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+        }
+    }
+</script>
+
+</body>
+</html>
