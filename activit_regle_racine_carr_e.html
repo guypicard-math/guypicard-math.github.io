@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activité - Règle de la fonction racine carrée</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .math-font { font-family: 'Cambria Math', 'Times New Roman', serif; }
+        
+        /* Masquer les flèches des champs numériques */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen p-4 sm:p-8 flex flex-col items-center justify-start">
+
+    <!-- Retrait de "overflow-hidden" et "max-h" pour permettre l'expansion naturelle du contenu -->
+    <div class="max-w-6xl w-full bg-white rounded-2xl shadow-xl border border-slate-200 flex flex-col mb-12">
+        
+        <!-- En-tête -->
+        <header class="bg-teal-700 text-white p-6 rounded-t-2xl">
+            <h1 class="text-2xl sm:text-3xl font-bold mb-2">Découvre la règle de la fonction racine carrée</h1>
+            <p class="text-teal-100 leading-relaxed">
+                Identifie le sommet et utilise l'orientation ainsi que les bonds géométriques pour trouver une règle équivalente de la forme <br>
+                <span class="font-mono bg-teal-800 px-2 py-0.5 rounded shadow-sm text-sm inline-block mt-2">f(x) = a√(b(x - h)) + k</span>.
+            </p>
+        </header>
+
+        <!-- Conteneur Principal (Flexbox Gauche/Droite) -->
+        <div class="p-6 flex flex-col md:flex-row gap-8 items-start">
+            
+            <!-- GAUCHE : Graphique (md:w-1/2) -->
+            <div class="w-full md:w-1/2 flex flex-col items-center bg-slate-50 p-4 rounded-xl border border-slate-200 sticky top-6">
+                <div class="flex justify-between w-full mb-3 text-sm font-semibold text-slate-600 px-2">
+                    <span>Repère cartésien [-10, 10]</span>
+                    <div class="flex gap-3">
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-rose-500"></span> Sommet</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-amber-500"></span> Point</span>
+                    </div>
+                </div>
+                <!-- Canvas rendu responsive via CSS -->
+                <canvas id="graphCanvas" width="500" height="500" class="w-full max-w-[500px] aspect-square bg-white rounded-lg border border-slate-300 shadow-sm"></canvas>
+            </div>
+
+            <!-- DROITE : Contrôles et Rétroaction (md:w-1/2) -->
+            <div class="w-full md:w-1/2 flex flex-col gap-6">
+                
+                <!-- Prévisualisation en direct -->
+                <div class="bg-teal-50 border border-teal-100 rounded-xl p-4 text-center shadow-sm">
+                    <h2 class="text-xs font-bold text-teal-800 mb-2 uppercase tracking-wider">Ton équation</h2>
+                    <div id="preview-equation" class="text-2xl font-bold text-teal-950 math-font flex items-center justify-center flex-wrap gap-y-2">
+                        <!-- Affichage dynamique avec le symbole racine -->
+                        f(x) = a<span class="text-2xl ml-1 mr-0.5">&radic;</span><span class="border-t-2 border-teal-950 pt-0.5 px-1">b(x - h)</span> + k
+                    </div>
+                </div>
+
+                <!-- Champs de saisie -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex items-center justify-between bg-white p-2 sm:p-3 rounded-lg border border-slate-200 shadow-sm hover:border-teal-300 transition-colors">
+                        <label for="input-a" class="font-semibold text-slate-700">Param. <span class="text-teal-600 font-bold text-lg">a</span> :</label>
+                        <input type="number" id="input-a" step="any" placeholder="a" class="w-16 sm:w-20 h-10 border-2 border-slate-300 rounded-md text-center text-lg font-bold focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition">
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-2 sm:p-3 rounded-lg border border-slate-200 shadow-sm hover:border-teal-300 transition-colors">
+                        <label for="input-b" class="font-semibold text-slate-700">Param. <span class="text-teal-600 font-bold text-lg">b</span> :</label>
+                        <input type="number" id="input-b" step="any" placeholder="b" class="w-16 sm:w-20 h-10 border-2 border-slate-300 rounded-md text-center text-lg font-bold focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition">
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-2 sm:p-3 rounded-lg border border-slate-200 shadow-sm hover:border-teal-300 transition-colors">
+                        <label for="input-h" class="font-semibold text-slate-700">Param. <span class="text-teal-600 font-bold text-lg">h</span> :</label>
+                        <input type="number" id="input-h" step="any" placeholder="h" class="w-16 sm:w-20 h-10 border-2 border-slate-300 rounded-md text-center text-lg font-bold focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition">
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-2 sm:p-3 rounded-lg border border-slate-200 shadow-sm hover:border-teal-300 transition-colors">
+                        <label for="input-k" class="font-semibold text-slate-700">Param. <span class="text-teal-600 font-bold text-lg">k</span> :</label>
+                        <input type="number" id="input-k" step="any" placeholder="k" class="w-16 sm:w-20 h-10 border-2 border-slate-300 rounded-md text-center text-lg font-bold focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Boutons -->
+                <div class="flex gap-3">
+                    <button onclick="verifier()" id="btn-verifier" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg shadow transition">
+                        Vérifier ma réponse
+                    </button>
+                    <button onclick="nouvelleFonction()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-lg shadow transition">
+                        Nouveau
+                    </button>
+                </div>
+
+                <!-- ZONE DE RÉTROACTION (S'ajuste dynamiquement à la hauteur du contenu) -->
+                <div id="feedback-section" class="hidden rounded-xl border border-slate-100 bg-slate-50 p-2 sm:p-4 mt-2">
+                    <div id="feedback-alert" class="p-4 rounded-xl mb-4 font-semibold text-base border"></div>
+                    
+                    <!-- Démarche complète géométrique (Essai 3) -->
+                    <div id="explanation-box" class="hidden space-y-4">
+                        <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 h-auto">
+                            <h4 class="font-bold text-rose-900 mb-2">1. Le Sommet (h, k)</h4>
+                            <p class="text-slate-700 text-sm">Le point d'origine de la courbe (le point rose) se trouve aux coordonnées :</p>
+                            <p class="font-bold text-teal-800 mt-2 text-lg">h = <span id="exp-h"></span> et k = <span id="exp-k"></span></p>
+                        </div>
+
+                        <!-- Boîte corrigée pour l'orientation des signes -->
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 h-auto">
+                            <h4 class="font-bold text-blue-900 mb-2">2. L'orientation (Signes de a et b)</h4>
+                            <p class="text-slate-700 text-sm mb-3">L'orientation du graphique nous indique directement les signes de <strong>a</strong> et <strong>b</strong> :</p>
+                            <ul class="text-sm text-slate-800 list-none space-y-3">
+                                <li class="flex items-start gap-2 bg-white p-3 rounded shadow-sm border border-blue-100">
+                                    <span class="text-blue-500 mt-0.5">➡️</span> 
+                                    <div>La courbe va vers <strong id="exp-dir-b" class="text-blue-700"></strong> horizontalement, ce qui signifie que <strong id="exp-sign-b" class="text-blue-900 bg-blue-100 px-1 rounded"></strong>.</div>
+                                </li>
+                                <li class="flex items-start gap-2 bg-white p-3 rounded shadow-sm border border-blue-100">
+                                    <span class="text-blue-500 mt-0.5">⬆️</span>
+                                    <div>La courbe va vers <strong id="exp-dir-a" class="text-blue-700"></strong> verticalement, ce qui signifie que <strong id="exp-sign-a" class="text-blue-900 bg-blue-100 px-1 rounded"></strong>.</div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 h-auto">
+                            <h4 class="font-bold text-amber-900 mb-2">3. L'étirement (Valeurs de a et b)</h4>
+                            <p class="text-slate-700 text-sm mb-3">Analysons les bonds entre le sommet <strong id="exp-pt1"></strong> et le deuxième point <strong id="exp-pt2"></strong>.</p>
+                            
+                            <div class="grid grid-cols-2 gap-2 mb-4">
+                                <div class="bg-white p-2 rounded shadow-sm border border-amber-100 text-center text-sm">
+                                    Bond horizontal<br><strong class="text-blue-600 text-lg">Δx = <span id="exp-dx"></span></strong>
+                                </div>
+                                <div class="bg-white p-2 rounded shadow-sm border border-amber-100 text-center text-sm">
+                                    Bond vertical<br><strong class="text-blue-600 text-lg">Δy = <span id="exp-dy"></span></strong>
+                                </div>
+                            </div>
+                            
+                            <div class="text-slate-700 text-sm space-y-2">
+                                <p>Fixons arbitrairement la valeur du paramètre <strong class="bg-amber-100 px-1 rounded">b à +1 ou -1</strong> (selon son signe trouvé à l'étape 2).</p>
+                                <p>Dans la fonction de base, pour un déplacement horizontal de <span id="exp-abs-dx" class="font-bold"></span>, le déplacement vertical standard serait de <strong>√<span id="exp-abs-dx-2"></span> = <span id="exp-sqrt"></span></strong>.</p>
+                                <p>Le <strong>vrai déplacement vertical</strong> sur notre graphique est de <strong id="exp-dy-2"></strong>.</p>
+                            </div>
+                            
+                            <div class="bg-white p-3 rounded-lg border border-amber-300 text-sm text-center text-amber-950 mt-4 shadow-sm">
+                                On trouve <strong>a</strong> en divisant le vrai bond par le bond de base :<br>
+                                <div class="font-bold font-mono text-lg mt-2 bg-amber-100 inline-block px-3 py-1 rounded">a = <span id="exp-dy-3"></span> / <span id="exp-sqrt-2"></span> = <span id="exp-val-a"></span></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 text-center h-auto">
+                            <span class="text-emerald-900 font-semibold">Une règle équivalente possible est : </span>
+                            <div id="exp-regle-finale" class="text-2xl font-bold text-emerald-800 math-font mt-3 flex justify-center flex-wrap gap-y-2"></div>
+                            <p class="text-xs text-emerald-700 mt-3 bg-emerald-100 p-2 rounded inline-block">Note : Il existe une infinité d'autres combinaisons valides de <i>a</i> et <i>b</i> !</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIQUE MATHÉMATIQUE ET ÉTAT ---
+        let currentA, currentB, currentH, currentK;
+        let pointSecX, pointSecY;
+        let errorCount = 0;
+        let isSuccess = false;
+
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+        const GRID_SIZE = 10; 
+
+        window.onload = () => {
+            ['input-a', 'input-b', 'input-h', 'input-k'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updatePreview);
+            });
+            nouvelleFonction();
+        };
+
+        function nouvelleFonction() {
+            errorCount = 0;
+            isSuccess = false;
+            
+            const btnVerify = document.getElementById('btn-verifier');
+            btnVerify.disabled = false;
+            btnVerify.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            // Génération de paramètres
+            const signs = [-1, 1];
+            let signA = signs[Math.floor(Math.random() * 2)];
+            let signB = signs[Math.floor(Math.random() * 2)];
+            
+            // a entier (1 à 3), |b| fixé à 1
+            currentA = signA * (Math.floor(Math.random() * 3) + 1);
+            currentB = signB * 1; 
+            currentH = Math.floor(Math.random() * 9) - 4; // [-4, 4]
+            currentK = Math.floor(Math.random() * 9) - 4; // [-4, 4]
+
+            // Point secondaire clair. Si on fixe |b|=1, un Δx de 4 donne √(4) = 2.
+            let dx = 4 * signB; 
+            
+            if (currentH + dx > 10 || currentH + dx < -10) {
+                dx = 1 * signB; // Si Δx=4 sort du cadre, on prend Δx=1
+            }
+
+            pointSecX = currentH + dx;
+            pointSecY = currentA * Math.sqrt(currentB * dx) + currentK;
+
+            // Réinitialiser les inputs
+            ['input-a', 'input-b', 'input-h', 'input-k'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('feedback-section').classList.add('hidden');
+            document.getElementById('explanation-box').classList.add('hidden');
+            
+            updatePreview();
+            dessinerGraphique();
+        }
+
+        // --- DESSIN DU GRAPHIQUE ---
+        function toCanvasX(x) {
+            const padding = 20;
+            return padding + ((x + GRID_SIZE) / (2 * GRID_SIZE)) * (canvas.width - 2 * padding);
+        }
+
+        function toCanvasY(y) {
+            const padding = 20;
+            return canvas.height - (padding + ((y + GRID_SIZE) / (2 * GRID_SIZE)) * (canvas.height - 2 * padding));
+        }
+
+        function dessinerGraphique() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Quadrillage
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            for (let i = -GRID_SIZE; i <= GRID_SIZE; i++) {
+                ctx.beginPath(); ctx.moveTo(toCanvasX(i), toCanvasY(-GRID_SIZE)); ctx.lineTo(toCanvasX(i), toCanvasY(GRID_SIZE)); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(toCanvasX(-GRID_SIZE), toCanvasY(i)); ctx.lineTo(toCanvasX(GRID_SIZE), toCanvasY(i)); ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(toCanvasX(-GRID_SIZE), toCanvasY(0)); ctx.lineTo(toCanvasX(GRID_SIZE), toCanvasY(0)); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(toCanvasX(0), toCanvasY(-GRID_SIZE)); ctx.lineTo(toCanvasX(0), toCanvasY(GRID_SIZE)); ctx.stroke();
+
+            // Numérotation
+            ctx.fillStyle = '#64748b';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+            for (let i = -GRID_SIZE; i <= GRID_SIZE; i += 2) {
+                if (i !== 0) {
+                    ctx.fillText(i.toString(), toCanvasX(i), toCanvasY(0) + 5);
+                    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+                    ctx.fillText(i.toString(), toCanvasX(0) - 5, toCanvasY(i));
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+                }
+            }
+
+            // Courbe
+            ctx.strokeStyle = '#0f766e'; // Teal-700
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            let isFirst = true;
+            
+            let startX = currentB > 0 ? currentH : -GRID_SIZE;
+            let endX = currentB > 0 ? GRID_SIZE : currentH;
+            
+            for (let x = startX; x <= endX; x += 0.1) {
+                let inside = currentB * (x - currentH);
+                if (inside >= 0) {
+                    let y = currentA * Math.sqrt(inside) + currentK;
+                    if (y >= -GRID_SIZE - 2 && y <= GRID_SIZE + 2) { 
+                        if (isFirst) { ctx.moveTo(toCanvasX(x), toCanvasY(y)); isFirst = false; } 
+                        else { ctx.lineTo(toCanvasX(x), toCanvasY(y)); }
+                    } else {
+                        isFirst = true; 
+                    }
+                }
+            }
+            ctx.stroke();
+
+            // Point Sommet (Rose)
+            ctx.fillStyle = '#f43f5e';
+            ctx.beginPath(); ctx.arc(toCanvasX(currentH), toCanvasY(currentK), 6, 0, 2 * Math.PI); ctx.fill();
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+            
+            // Point Secondaire (Ambre)
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath(); ctx.arc(toCanvasX(pointSecX), toCanvasY(pointSecY), 6, 0, 2 * Math.PI); ctx.fill();
+            ctx.stroke();
+        }
+
+        // --- INTERFACE ET VALIDATION ---
+        function updatePreview() {
+            const vA = document.getElementById('input-a').value;
+            const vB = document.getElementById('input-b').value;
+            const vH = document.getElementById('input-h').value;
+            const vK = document.getElementById('input-k').value;
+
+            let strA = vA === '' ? 'a' : (vA == 1 ? '' : (vA == -1 ? '-' : vA));
+            let strB = vB === '' ? 'b' : (vB == 1 ? '' : (vB == -1 ? '-' : vB));
+            let strH = vH === '' ? 'h' : (vH == 0 ? '' : (vH > 0 ? `- ${vH}` : `+ ${Math.abs(vH)}`));
+            let strK = vK === '' ? 'k' : (vK == 0 ? '' : (vK > 0 ? `+ ${vK}` : `- ${Math.abs(vK)}`));
+
+            let innerH = strH ? `x ${strH}` : 'x';
+            let innerContent = '';
+            
+            if (vH === '0' || vH === '') {
+                innerContent = strB === '' ? 'x' : (strB === '-' ? '-x' : `${strB}x`);
+            } else {
+                innerContent = strB === '' ? innerH : (strB === '-' ? `-(${innerH})` : `${strB}(${innerH})`);
+            }
+
+            if (!vA && !vB && !vH && !vK) {
+                innerContent = 'b(x - h)';
+            }
+
+            document.getElementById('preview-equation').innerHTML = `
+                f(x) = ${strA}
+                <span class="text-2xl ml-1 mr-0.5" style="transform: translateY(2px);">&radic;</span>
+                <span class="border-t-[3px] border-teal-950 pt-[3px] px-1">${innerContent}</span> 
+                ${strK ? ' ' + strK : ''}
+            `;
+        }
+
+        function verifier() {
+            if (isSuccess) return;
+
+            const valA = parseFloat(document.getElementById('input-a').value);
+            const valB = parseFloat(document.getElementById('input-b').value);
+            const valH = parseFloat(document.getElementById('input-h').value);
+            const valK = parseFloat(document.getElementById('input-k').value);
+
+            const section = document.getElementById('feedback-section');
+            const alertBox = document.getElementById('feedback-alert');
+            const expBox = document.getElementById('explanation-box');
+            
+            section.classList.remove('hidden');
+
+            const aOk = !isNaN(valA);
+            const bOk = !isNaN(valB) && valB !== 0; // b ne peut pas être 0
+            const hOk = !isNaN(valH) && Math.abs(valH - currentH) < 0.001;
+            const kOk = !isNaN(valK) && Math.abs(valK - currentK) < 0.001;
+
+            // Vérification des équivalences (a*sqrt(b) === currentA*sqrt(currentB))
+            let isMathCorrect = false;
+            if (aOk && bOk && hOk && kOk) {
+                let signAMatch = Math.sign(valA) === Math.sign(currentA) || valA === 0;
+                let signBMatch = Math.sign(valB) === Math.sign(currentB) || valB === 0;
+                let magMatch = Math.abs((valA * valA * Math.abs(valB)) - (currentA * currentA * Math.abs(currentB))) < 0.001;
+                
+                if (signAMatch && signBMatch && magMatch) {
+                    isMathCorrect = true;
+                }
+            }
+
+            if (isMathCorrect) {
+                isSuccess = true;
+                alertBox.className = "p-4 rounded-xl mb-4 font-semibold text-emerald-900 bg-emerald-100 border border-emerald-300 flex items-center gap-3";
+                alertBox.innerHTML = `<span class="text-2xl">🎉</span> <span>Bravo ! La règle est parfaitement équivalente au graphique !</span>`;
+                
+                document.getElementById('btn-verifier').disabled = true;
+                document.getElementById('btn-verifier').classList.add('opacity-50', 'cursor-not-allowed');
+                
+                afficherDemarcheGéométrique();
+                expBox.classList.remove('hidden');
+            } else {
+                errorCount++;
+                
+                if (errorCount < 3) {
+                    let hint = "";
+                    if (!hOk || !kOk) {
+                        hint = "Vérifie les coordonnées de ton sommet (le point rose). C'est le point d'origine de ta courbe, correspondant à h et k.";
+                    } else if (!aOk || !bOk) {
+                        hint = "Tu dois fournir des valeurs numériques non nulles pour les paramètres a et b.";
+                    } else if (Math.sign(valA) !== Math.sign(currentA) || Math.sign(valB) !== Math.sign(currentB)) {
+                        hint = "Examine l'orientation de la courbe :<br>• Si elle va vers la gauche, 'b' est négatif.<br>• Si elle va vers le bas, 'a' est négatif.";
+                    } else {
+                        hint = "Vérifie tes bonds à partir du sommet. Quel est l'écart horizontal (Δx) et l'écart vertical (Δy) jusqu'au point ambre ? Réfléchis à l'étirement.";
+                    }
+
+                    alertBox.className = "p-4 rounded-xl mb-4 text-amber-900 bg-amber-50 border border-amber-300 flex items-start gap-3 shadow-sm";
+                    alertBox.innerHTML = `<span class="text-xl mt-0.5">💡</span> <div><strong class="text-amber-800">Essai ${errorCount}/2 :</strong><br>${hint}</div>`;
+                } else {
+                    alertBox.className = "p-4 rounded-xl mb-4 text-rose-900 bg-rose-50 border border-rose-300 flex items-start gap-3 shadow-sm";
+                    alertBox.innerHTML = `<span class="text-xl mt-0.5">📝</span> <div><strong class="text-rose-800">Voici une démarche détaillée</strong> basée sur l'observation stricte des bonds géométriques.</div>`;
+                    
+                    afficherDemarcheGéométrique();
+                    expBox.classList.remove('hidden');
+                    
+                    document.getElementById('btn-verifier').disabled = true;
+                    document.getElementById('btn-verifier').classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            }
+        }
+
+        // --- EXPLICATION STRICTEMENT GÉOMÉTRIQUE ---
+        function afficherDemarcheGéométrique() {
+            document.getElementById('exp-h').innerText = currentH;
+            document.getElementById('exp-k').innerText = currentK;
+            document.getElementById('exp-pt1').innerText = `(${currentH}, ${currentK})`;
+            document.getElementById('exp-pt2').innerText = `(${pointSecX}, ${pointSecY})`;
+
+            // Orientation
+            document.getElementById('exp-dir-b').innerText = currentB > 0 ? "la droite" : "la gauche";
+            document.getElementById('exp-sign-b').innerText = currentB > 0 ? "b > 0" : "b < 0";
+            
+            document.getElementById('exp-dir-a').innerText = currentA > 0 ? "le haut" : "le bas";
+            document.getElementById('exp-sign-a').innerText = currentA > 0 ? "a > 0" : "a < 0";
+
+            // Calculs géométriques
+            let dx = pointSecX - currentH;
+            let dy = pointSecY - currentK;
+            let absDx = Math.abs(dx);
+            
+            document.getElementById('exp-dx').innerText = dx > 0 ? `+${dx}` : dx;
+            document.getElementById('exp-dy').innerText = dy > 0 ? `+${dy}` : dy;
+            
+            document.getElementById('exp-abs-dx').innerText = absDx;
+            document.getElementById('exp-abs-dx-2').innerText = absDx;
+            
+            let sqrtDx = Math.sqrt(absDx);
+            document.getElementById('exp-sqrt').innerText = sqrtDx;
+            document.getElementById('exp-sqrt-2').innerText = sqrtDx;
+            
+            document.getElementById('exp-dy-2').innerText = dy;
+            document.getElementById('exp-dy-3').innerText = dy;
+            
+            // a calculé avec |b|=1
+            let finalA = dy / sqrtDx;
+            document.getElementById('exp-val-a').innerText = finalA;
+
+            // Affichage de la règle finale
+            let strA = finalA == 1 ? '' : (finalA == -1 ? '-' : finalA);
+            let strB = currentB == 1 ? '' : (currentB == -1 ? '-' : currentB);
+            let strH = currentH == 0 ? '' : (currentH > 0 ? `- ${currentH}` : `+ ${Math.abs(currentH)}`);
+            let strK = currentK == 0 ? '' : (currentK > 0 ? ` + ${currentK}` : ` - ${Math.abs(currentK)}`);
+
+            let innerH = strH ? `x ${strH}` : 'x';
+            let innerContent = currentH === 0 ? (strB === '' ? 'x' : (strB === '-' ? '-x' : `${strB}x`)) : (strB === '' ? innerH : (strB === '-' ? `-(${innerH})` : `${strB}(${innerH})`));
+
+            document.getElementById('exp-regle-finale').innerHTML = `
+                f(x) = ${strA}
+                <span class="text-3xl ml-1 mr-0.5" style="transform: translateY(2px);">&radic;</span>
+                <span class="border-t-[3px] border-emerald-800 pt-[3px] px-1">${innerContent}</span> 
+                ${strK ? ' ' + strK : ''}
+            `;
+        }
+    </script>
+</body>
+</html>
