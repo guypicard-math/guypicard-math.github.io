@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision : Le Théorème de Pythagore</title>
+    <!-- Chargement de Tailwind CSS pour le style -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-100 flex items-center justify-center p-4 font-sans text-slate-800">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg max-w-2xl w-full border-t-8 border-blue-600">
+        
+        <!-- Entête du jeu -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-blue-700">Révision : Le Théorème de Pythagore</h1>
+            <div class="text-lg font-semibold bg-blue-100 text-blue-800 px-4 py-2 rounded-full">
+                Score : <span id="scoreDisplay">0</span>
+            </div>
+        </div>
+
+        <!-- ZONE DE JEU -->
+        <div id="gameArea">
+            <div class="mb-4 text-sm font-medium text-slate-500 uppercase tracking-widest" id="questionCount">
+                Question 1 sur 10
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 mb-6">
+                <h2 class="text-xl font-semibold mb-3" id="questionTitle">Titre</h2>
+                <p class="text-lg leading-relaxed mb-4" id="questionText">Texte de la question</p>
+                <div class="text-sm bg-yellow-50 text-yellow-800 p-3 rounded border border-yellow-200 flex items-center gap-2">
+                    <strong>Attention :</strong> Arrondis ta réponse au centième près (2 décimales) si nécessaire.
+                </div>
+            </div>
+
+            <!-- Zone de réponse -->
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                <input
+                    type="text"
+                    id="answerInput"
+                    placeholder="Ex : 12.34"
+                    class="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+                />
+                <button
+                    id="validateBtn"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+                >
+                    Valider
+                </button>
+                <button
+                    id="nextBtn"
+                    class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+                >
+                    Question Suivante ➔
+                </button>
+            </div>
+
+            <!-- Affichage des retours -->
+            <div id="feedbackBox" class="hidden p-4 rounded-lg font-medium whitespace-pre-line border"></div>
+            
+            <!-- Barre de progression des essais -->
+            <div id="mistakesArea" class="mt-4 flex items-center justify-between text-sm text-slate-500">
+                <span>Essais utilisés : <span id="mistakeText">0</span> / 3</span>
+                <div class="flex gap-1">
+                    <div id="dot1" class="w-3 h-3 rounded-full bg-slate-300"></div>
+                    <div id="dot2" class="w-3 h-3 rounded-full bg-slate-300"></div>
+                    <div id="dot3" class="w-3 h-3 rounded-full bg-slate-300"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉCRAN DE FIN -->
+        <div id="endScreen" class="hidden text-center py-12">
+            <h2 class="text-3xl font-bold text-slate-800 mb-4">Activité terminée ! 🎉</h2>
+            <p class="text-xl mb-8">Ton score final est de <span id="finalScoreDisplay" class="font-bold text-blue-600">0</span> / 30.</p>
+            <button
+                id="restartBtn"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors text-lg"
+            >
+                Recommencer avec de nouvelles valeurs
+            </button>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT JAVASCRIPT -->
+    <script>
+        // --- LOGIQUE DE GÉNÉRATION DES QUESTIONS ---
+        const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+        const generateQuestions = () => {
+            const questions = [];
+
+            // Q1
+            const q1_a = rand(3, 12); const q1_b = rand(3, 12);
+            questions.push({
+                title: "1. Le triangle de base",
+                text: `Un triangle rectangle possède des cathètes (les côtés formant l'angle droit) qui mesurent ${q1_a} cm et ${q1_b} cm. Quelle est la mesure de son hypoténuse ?`,
+                answer: Math.sqrt(q1_a * q1_a + q1_b * q1_b),
+                hint1: "La formule de Pythagore est : a² + b² = c² (où c est l'hypoténuse).",
+                hint2: "Démarche : Élève chacune des deux cathètes au carré, additionne ces deux résultats, puis calcule la racine carrée du total pour obtenir l'hypoténuse."
+            });
+
+            // Q2
+            const q2_c = rand(10, 25); const q2_b = rand(5, q2_c - 2);
+            questions.push({
+                title: "2. Le côté manquant",
+                text: `Dans un triangle rectangle, l'hypoténuse mesure ${q2_c} m et une des cathètes mesure ${q2_b} m. Quelle est la mesure de l'autre cathète ?`,
+                answer: Math.sqrt(q2_c * q2_c - q2_b * q2_b),
+                hint1: "Si on cherche une cathète (a ou b), on utilise une soustraction : a² = c² - b².",
+                hint2: "Démarche : Élève l'hypoténuse au carré et la cathète connue au carré. Soustrais le carré de la cathète du carré de l'hypoténuse, puis prends la racine carrée du résultat."
+            });
+
+            // Q3
+            const q3_L = rand(5, 12); const q3_D = rand(2, q3_L - 2);
+            questions.push({
+                title: "3. L'échelle contre le mur",
+                text: `Une échelle de ${q3_L} m est appuyée contre un mur. Le pied de l'échelle est à ${q3_D} m du mur. À quelle hauteur l'échelle touche-t-elle le mur ?`,
+                answer: Math.sqrt(q3_L * q3_L - q3_D * q3_D),
+                hint1: "L'échelle est l'hypoténuse. Le sol et le mur forment l'angle droit.",
+                hint2: "Démarche : Tu cherches une cathète (la hauteur du mur). Soustrais le carré de la distance au sol du carré de la longueur de l'échelle, puis calcule la racine carrée."
+            });
+
+            // Q4
+            const q4_W = rand(30, 80); const q4_H = rand(20, q4_W - 5);
+            questions.push({
+                title: "4. L'écran de télévision",
+                text: `Un écran d'ordinateur rectangulaire a une largeur de ${q4_W} cm et une hauteur de ${q4_H} cm. Quelle est la mesure de sa diagonale ?`,
+                answer: Math.sqrt(q4_W * q4_W + q4_H * q4_H),
+                hint1: "La diagonale d'un rectangle coupe celui-ci en deux triangles rectangles.",
+                hint2: "Démarche : La largeur et la hauteur sont les deux cathètes et la diagonale est l'hypoténuse. Additionne le carré de la largeur et le carré de la hauteur, puis trouve la racine carrée."
+            });
+
+            // Q5
+            const q5_L = rand(10, 20); const q5_D = q5_L + rand(2, 10);
+            const q5_W = Math.sqrt(q5_D * q5_D - q5_L * q5_L);
+            questions.push({
+                title: "5. Le périmètre du terrain",
+                text: `Un terrain rectangulaire a une longueur de ${q5_L} m et une diagonale de ${q5_D} m. Quel est le PÉRIMÈTRE de ce terrain ?`,
+                answer: 2 * (q5_L + q5_W),
+                hint1: "Utilise Pythagore pour trouver la largeur du terrain en premier (c'est une cathète).",
+                hint2: "Démarche : Trouve d'abord la largeur en faisant la racine carrée de (diagonale² - longueur²). Une fois la largeur obtenue, calcule le périmètre en faisant : (2 × longueur) + (2 × largeur)."
+            });
+
+            // Q6
+            const q6_hyp = rand(15, 30); const q6_cat1 = rand(8, q6_hyp - 2);
+            const q6_cat2 = Math.sqrt(q6_hyp * q6_hyp - q6_cat1 * q6_cat1);
+            questions.push({
+                title: "6. L'aire du triangle",
+                text: `Un triangle rectangle a une hypoténuse de ${q6_hyp} cm et une base de ${q6_cat1} cm. Quelle est l'AIRE de ce triangle ?`,
+                answer: (q6_cat1 * q6_cat2) / 2,
+                hint1: "Il faut d'abord trouver la hauteur (l'autre cathète) avec le théorème de Pythagore.",
+                hint2: "Démarche : Isole la cathète manquante (la hauteur) en faisant la racine carrée de (hypoténuse² - base²). Calcule ensuite l'aire en multipliant la base par cette hauteur, puis divise le tout par 2."
+            });
+
+            // Q7
+            const q7_x1 = rand(1, 5); const q7_y1 = rand(1, 5);
+            const q7_x2 = rand(8, 15); const q7_y2 = rand(8, 15);
+            questions.push({
+                title: "7. Le plan cartésien",
+                text: `Quelle est la distance entre le point A(${q7_x1}, ${q7_y1}) et le point B(${q7_x2}, ${q7_y2}) ?`,
+                answer: Math.sqrt((q7_x2 - q7_x1)**2 + (q7_y2 - q7_y1)**2),
+                hint1: "Trace un triangle rectangle imaginaire. La différence des X est la base, la différence des Y est la hauteur.",
+                hint2: "Démarche : Trouve la longueur horizontale (x2 - x1) et la longueur verticale (y2 - y1). Ces deux valeurs sont tes cathètes. Fais la somme de leurs carrés et prends la racine carrée pour trouver la distance (l'hypoténuse)."
+            });
+
+            // Q8
+            const q8_d1 = rand(6, 15) * 2; const q8_d2 = rand(6, 15) * 2;
+            const q8_side = Math.sqrt((q8_d1 / 2) ** 2 + (q8_d2 / 2) ** 2);
+            questions.push({
+                title: "8. Le périmètre du losange",
+                text: `Un losange a des diagonales mesurant ${q8_d1} cm et ${q8_d2} cm. Quel est son PÉRIMÈTRE ?`,
+                answer: 4 * q8_side,
+                hint1: "Les diagonales d'un losange se croisent à angle droit et se coupent en leur milieu.",
+                hint2: "Démarche : Divise chaque diagonale par 2 pour obtenir les cathètes d'un des petits triangles rectangles internes. Utilise Pythagore (addition des carrés puis racine) pour trouver la longueur d'un côté du losange. Multiplie ce côté par 4 pour le périmètre."
+            });
+
+            // Q9
+            const q9_base = rand(5, 12) * 2; const q9_side = q9_base / 2 + rand(2, 10);
+            questions.push({
+                title: "9. La hauteur du toit isocèle",
+                text: `La façade d'un toit est un triangle isocèle. Sa base mesure ${q9_base} m et ses deux côtés égaux mesurent ${q9_side} m. Quelle est la hauteur du toit ?`,
+                answer: Math.sqrt(q9_side * q9_side - (q9_base / 2) ** 2),
+                hint1: "La hauteur sépare le triangle isocèle en DEUX triangles rectangles égaux.",
+                hint2: "Démarche : Coupe la base du toit en deux pour obtenir la base de ton triangle rectangle (une cathète). Le côté égal du toit est l'hypoténuse. Soustrais le carré de la demi-base du carré du côté, puis fais la racine carrée pour obtenir la hauteur."
+            });
+
+            // Q10
+            const q10_N = rand(15, 40); const q10_E = rand(15, 40);
+            questions.push({
+                title: "10. Le trajet en forêt",
+                text: `Un marcheur se déplace de ${q10_N} km vers le NORD, puis tourne à 90 degrés et marche ${q10_E} km vers l'EST. À quelle distance en ligne droite se trouve-t-il de son point de départ ?`,
+                answer: Math.sqrt(q10_N * q10_N + q10_E * q10_E),
+                hint1: "Ce trajet forme un L, qui correspond aux deux cathètes d'un triangle rectangle.",
+                hint2: "Démarche : La distance vers le Nord et la distance vers l'Est représentent les deux côtés perpendiculaires (cathètes). Calcule la somme de leurs carrés, puis effectue la racine carrée pour trouver la distance finale directe (l'hypoténuse)."
+            });
+
+            return questions;
+        };
+
+
+        // --- LOGIQUE DE L'APPLICATION ---
+        let questions = [];
+        let currentIdx = 0;
+        let mistakes = 0;
+        let score = 0;
+
+        // Références aux éléments du DOM
+        const elScore = document.getElementById('scoreDisplay');
+        const elFinalScore = document.getElementById('finalScoreDisplay');
+        const elQuestionCount = document.getElementById('questionCount');
+        const elQuestionTitle = document.getElementById('questionTitle');
+        const elQuestionText = document.getElementById('questionText');
+        const elInput = document.getElementById('answerInput');
+        const btnValidate = document.getElementById('validateBtn');
+        const btnNext = document.getElementById('nextBtn');
+        const btnRestart = document.getElementById('restartBtn');
+        const elFeedbackBox = document.getElementById('feedbackBox');
+        const elMistakesArea = document.getElementById('mistakesArea');
+        const elMistakeText = document.getElementById('mistakeText');
+        const elDot1 = document.getElementById('dot1');
+        const elDot2 = document.getElementById('dot2');
+        const elDot3 = document.getElementById('dot3');
+        const elGameArea = document.getElementById('gameArea');
+        const elEndScreen = document.getElementById('endScreen');
+
+        // Initialisation du jeu
+        function startNewGame() {
+            questions = generateQuestions();
+            currentIdx = 0;
+            score = 0;
+            elScore.innerText = score;
+            elGameArea.classList.remove('hidden');
+            elEndScreen.classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Charger la question actuelle
+        function loadQuestion() {
+            mistakes = 0;
+            elInput.value = "";
+            elInput.disabled = false;
+            
+            // Mise à jour du texte de la question
+            elQuestionCount.innerText = `Question ${currentIdx + 1} sur ${questions.length}`;
+            elQuestionTitle.innerText = questions[currentIdx].title;
+            elQuestionText.innerText = questions[currentIdx].text;
+            
+            // Gérer l'affichage des boutons et retours
+            btnValidate.classList.remove('hidden');
+            btnNext.classList.add('hidden');
+            elFeedbackBox.classList.add('hidden');
+            elMistakesArea.classList.remove('hidden');
+            updateDots();
+            
+            elInput.focus();
+        }
+
+        // Afficher un message de retour (succès, erreur, ou info finale)
+        function showFeedback(type, message) {
+            elFeedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'border-green-300', 'bg-red-100', 'text-red-800', 'border-red-300', 'bg-orange-100', 'text-orange-800', 'border-orange-300');
+            
+            if (type === 'success') {
+                elFeedbackBox.classList.add('bg-green-100', 'text-green-800', 'border-green-300');
+            } else if (type === 'final') {
+                elFeedbackBox.classList.add('bg-red-100', 'text-red-800', 'border-red-300');
+            } else {
+                elFeedbackBox.classList.add('bg-orange-100', 'text-orange-800', 'border-orange-300');
+            }
+            
+            elFeedbackBox.innerText = message;
+        }
+
+        // Mettre à jour les indicateurs visuels des erreurs
+        function updateDots() {
+            elMistakeText.innerText = mistakes;
+            elDot1.className = `w-3 h-3 rounded-full ${mistakes >= 1 ? 'bg-red-400' : 'bg-slate-300'}`;
+            elDot2.className = `w-3 h-3 rounded-full ${mistakes >= 2 ? 'bg-red-400' : 'bg-slate-300'}`;
+            elDot3.className = `w-3 h-3 rounded-full ${mistakes >= 3 ? 'bg-red-400' : 'bg-slate-300'}`;
+        }
+
+        // Valider la réponse de l'utilisateur
+        function handleValidation() {
+            const userAnswer = elInput.value.replace(',', '.');
+            
+            if (!userAnswer || isNaN(userAnswer)) {
+                showFeedback('error', "Veuillez entrer un nombre valide.");
+                return;
+            }
+
+            const numericAnswer = parseFloat(userAnswer);
+            const actualAnswer = questions[currentIdx].answer;
+            
+            // Marge de tolérance pour les arrondis
+            const isCorrect = Math.abs(numericAnswer - actualAnswer) <= 0.05;
+
+            if (isCorrect) {
+                const points = 3 - mistakes;
+                score += points;
+                elScore.innerText = score;
+                showFeedback('success', `Bonne réponse ! (+${points} point${points > 1 ? 's' : ''})`);
+                questionTerminee();
+            } else {
+                mistakes++;
+                updateDots();
+                
+                if (mistakes === 1) {
+                    showFeedback('error', "Faux ! Premier indice : " + questions[currentIdx].hint1);
+                } else if (mistakes === 2) {
+                    showFeedback('error', "Toujours pas ! Deuxième indice (Démarche) : " + questions[currentIdx].hint2);
+                } else {
+                    showFeedback('final', `Dommage, c'était ta 3e erreur ! La réponse exacte était ${actualAnswer.toFixed(2)}.`);
+                    questionTerminee();
+                }
+            }
+        }
+
+        // État de l'UI quand une question est réussie ou échouée 3 fois
+        function questionTerminee() {
+            elInput.disabled = true;
+            btnValidate.classList.add('hidden');
+            btnNext.classList.remove('hidden');
+            elMistakesArea.classList.add('hidden');
+            btnNext.focus();
+        }
+
+        // Passer à la question suivante ou à la fin
+        function handleNext() {
+            if (currentIdx + 1 < questions.length) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                elGameArea.classList.add('hidden');
+                elEndScreen.classList.remove('hidden');
+                elFinalScore.innerText = score;
+            }
+        }
+
+        // --- ÉVÉNEMENTS ---
+        btnValidate.addEventListener('click', handleValidation);
+        btnNext.addEventListener('click', handleNext);
+        btnRestart.addEventListener('click', startNewGame);
+        
+        // Permettre de valider en appuyant sur la touche "Entrée"
+        elInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !elInput.disabled) {
+                handleValidation();
+            }
+        });
+
+        // Démarrer la première partie au chargement
+        startNewGame();
+    </script>
+</body>
+</html>
