@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes de cours : La réfraction de la lumière</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax pour les formules mathématiques -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .reponse-manuscrite { font-family: 'Architects Daughter', cursive; }
+        @media print {
+            body { background-color: white !important; }
+            .shadow-sm { box-shadow: none !important; }
+            button { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 p-6">
+    <div class="max-w-4xl mx-auto">
+        <!-- Bouton Corrigé -->
+        <div class="flex justify-end mb-4">
+            <button id="btn-corrige" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition-colors">
+                Afficher tout le corrigé
+            </button>
+        </div>
+
+        <!-- En-tête -->
+        <header class="bg-white border rounded shadow-sm p-6 mb-6">
+            <h1 class="text-3xl font-bold text-center text-slate-900">La réfraction de la lumière</h1>
+        </header>
+
+        <!-- Section 1 : Concept -->
+        <section class="bg-white border rounded shadow-sm p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 border-b pb-2">1. Concept et indice de réfraction</h2>
+            <p class="mb-2">La <strong>réfraction</strong> est la déviation que subit un rayon lumineux lorsqu'il passe d'un milieu transparent à un autre. Elle est causée par un changement de vitesse de la lumière selon la densité optique du matériau.</p>
+            <p class="mb-4">Chaque milieu possède un <strong>indice de réfraction (\(n\))</strong>, une valeur sans unité. L'indice du vide (et approximativement celui de l'air) est de \(n = 1,00\).</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 border rounded bg-slate-50 cursor-pointer zone-reponse hover:bg-slate-100 transition-colors">
+                    <p class="font-semibold">Passage vers un milieu PLUS réfringent (\(n_2 > n_1\)) :</p>
+                    <p class="text-slate-500 text-sm italic mb-2 reponse-aide">(Cliquez pour révéler)</p>
+                    <p class="reponse-manuscrite text-blue-600 text-lg hidden">La lumière ralentit et le rayon <strong>se rapproche</strong> de la normale.</p>
+                </div>
+                <div class="p-4 border rounded bg-slate-50 cursor-pointer zone-reponse hover:bg-slate-100 transition-colors">
+                    <p class="font-semibold">Passage vers un milieu MOINS réfringent (\(n_2 < n_1\)) :</p>
+                    <p class="text-slate-500 text-sm italic mb-2 reponse-aide">(Cliquez pour révéler)</p>
+                    <p class="reponse-manuscrite text-blue-600 text-lg hidden">La lumière accélère et le rayon <strong>s'éloigne</strong> de la normale.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2 : Règles et erreurs -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-yellow-50 border border-yellow-200 rounded shadow-sm p-6">
+                <h2 class="text-xl font-bold text-yellow-800 mb-2">⭐ À retenir : Loi de Snell-Descartes</h2>
+                <p class="text-lg text-center my-4 font-semibold">\(n_1 \sin(\theta_1) = n_2 \sin(\theta_2)\)</p>
+                <ul class="list-disc pl-5 text-sm text-yellow-900">
+                    <li>\(n_1\) : Indice de réfraction du milieu incident</li>
+                    <li>\(\theta_1\) : Angle d'incidence</li>
+                    <li>\(n_2\) : Indice de réfraction du milieu réfracté</li>
+                    <li>\(\theta_2\) : Angle de réfraction</li>
+                </ul>
+            </div>
+            
+            <div class="bg-red-50 border border-red-200 rounded shadow-sm p-6">
+                <h2 class="text-xl font-bold text-red-800 mb-2">🛑 Erreur fatale</h2>
+                <p class="mb-2 text-red-900 font-semibold">Où doit-on mesurer les angles \(\theta_1\) et \(\theta_2\) ?</p>
+                <div class="cursor-pointer zone-reponse bg-white p-3 rounded border border-red-100 min-h-[80px] hover:bg-red-50 transition-colors">
+                    <p class="text-slate-400 text-sm italic mb-2 reponse-aide">(Cliquez pour révéler)</p>
+                    <p class="reponse-manuscrite text-blue-600 text-lg hidden">Les angles se mesurent TOUJOURS par rapport à la <strong>normale</strong> (la ligne imaginaire perpendiculaire à la surface), et JAMAIS par rapport à la surface elle-même !</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 : Exemple guidé -->
+        <section class="bg-white border rounded shadow-sm p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 border-b pb-2">2. Exemple guidé</h2>
+            <p class="mb-4">Un rayon lumineux voyageant dans l'air (\(n_1 = 1,00\)) frappe la surface d'un bloc de verre Crown (\(n_2 = 1,52\)) avec un angle d'incidence de \(40^\circ\). Calculez l'angle de réfraction.</p>
+            
+            <div class="cursor-pointer zone-reponse p-4 border-2 border-dashed border-slate-300 rounded min-h-[150px] bg-slate-50 relative hover:bg-slate-100 transition-colors">
+                <span class="absolute top-2 left-2 text-slate-400 text-sm italic reponse-aide">Cliquez pour voir la démarche...</span>
+                <div class="reponse-manuscrite text-blue-600 text-lg hidden mt-6 space-y-2">
+                    <p>\(n_1 \sin(\theta_1) = n_2 \sin(\theta_2)\)</p>
+                    <p>\(1,00 \cdot \sin(40^\circ) = 1,52 \cdot \sin(\theta_2)\)</p>
+                    <p>\(0,6428 = 1,52 \cdot \sin(\theta_2)\)</p>
+                    <p>\(\sin(\theta_2) = \frac{0,6428}{1,52} \approx 0,4229\)</p>
+                    <p>\(\theta_2 = \sin^{-1}(0,4229) \approx 25^\circ\)</p>
+                    <p class="mt-4 text-sm text-slate-600 font-sans italic">*Analyse : Le rayon s'est bien rapproché de la normale (\(25^\circ < 40^\circ\)) car il est passé dans un milieu plus réfringent.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4 : Pratique -->
+        <section class="bg-white border rounded shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4 border-b pb-2">3. Pratique</h2>
+            
+            <!-- Doux -->
+            <div class="mb-6">
+                <h3 class="font-bold text-lg mb-2">🍏 Doux</h3>
+                <p class="mb-2">Un rayon lumineux passe de l'eau (\(n = 1,33\)) vers l'air (\(n = 1,00\)). L'angle d'incidence dans l'eau est de \(30^\circ\). Quel est l'angle de réfraction dans l'air ?</p>
+                <div class="cursor-pointer zone-reponse p-3 border-b-2 border-dotted border-slate-300 min-h-[60px] relative hover:bg-slate-50 transition-colors">
+                     <span class="absolute top-1 text-slate-400 text-sm italic reponse-aide">Votre réponse ici...</span>
+                     <div class="reponse-manuscrite text-blue-600 hidden mt-4">
+                         \(1,33 \cdot \sin(30^\circ) = 1,00 \cdot \sin(\theta_2) \Rightarrow 1,33 \cdot 0,5 = \sin(\theta_2) \Rightarrow \sin(\theta_2) = 0,665 \Rightarrow \theta_2 \approx 41,7^\circ\)
+                     </div>
+                </div>
+            </div>
+
+            <!-- Moyen -->
+            <div class="mb-6">
+                <h3 class="font-bold text-lg mb-2">🌮 Moyen</h3>
+                <p class="mb-2">Un faisceau laser traverse un bloc de plastique inconnu pour ressortir dans l'air. L'angle mesuré <strong>entre le rayon incident et la surface</strong> du plastique est de \(50^\circ\). L'angle de réfraction dans l'air est de \(65^\circ\). Quel est l'indice de réfraction du plastique ?</p>
+                <div class="cursor-pointer zone-reponse p-3 border-b-2 border-dotted border-slate-300 min-h-[80px] relative hover:bg-slate-50 transition-colors">
+                     <span class="absolute top-1 text-slate-400 text-sm italic reponse-aide">Votre réponse ici...</span>
+                     <div class="reponse-manuscrite text-blue-600 hidden mt-6 space-y-1">
+                         <p>Attention au piège de l'angle ! L'angle d'incidence se mesure par rapport à la normale : \(\theta_1 = 90^\circ - 50^\circ = 40^\circ\).</p>
+                         <p>\(n_1 \cdot \sin(40^\circ) = 1,00 \cdot \sin(65^\circ)\)</p>
+                         <p>\(n_1 \cdot 0,6428 = 0,9063 \Rightarrow n_1 = \frac{0,9063}{0,6428} \approx 1,41\)</p>
+                     </div>
+                </div>
+            </div>
+            
+            <!-- Épicé -->
+            <div>
+                <h3 class="font-bold text-lg mb-2">🌶️ Épicé (Défi analytique)</h3>
+                <p class="mb-2">Un rayon lumineux incident dans l'air frappe une épaisse vitre rectangulaire (\(n = 1,50\)) avec un angle d'incidence de \(45^\circ\). Le rayon traverse la vitre et ressort de l'autre côté, de retour dans l'air. Démontrez par calcul mathématique que le rayon qui émerge de la vitre possède la même orientation que le rayon initial (c'est-à-dire que l'angle de réfraction final est aussi de \(45^\circ\)).</p>
+                <div class="cursor-pointer zone-reponse p-4 border-2 border-dashed border-slate-300 rounded min-h-[100px] bg-slate-50 relative hover:bg-slate-100 transition-colors">
+                     <span class="absolute top-2 left-2 text-slate-400 text-sm italic reponse-aide">Votre démarche ici...</span>
+                     <div class="reponse-manuscrite text-blue-600 hidden mt-6 space-y-2">
+                         <p><strong>Étape 1 : Interface Air \(\rightarrow\) Vitre</strong></p>
+                         <p>\(1,00 \cdot \sin(45^\circ) = 1,50 \cdot \sin(\theta_2)\)</p>
+                         <p>\(\sin(\theta_2) = \frac{0,7071}{1,50} \approx 0,4714 \Rightarrow \theta_2 \approx 28,1^\circ\)</p>
+                         <br>
+                         <p><strong>Étape 2 : Interface Vitre \(\rightarrow\) Air</strong></p>
+                         <p>Par géométrie (angles alternes-internes entre deux normales parallèles), l'angle d'incidence sur la 2e surface est égal à l'angle de réfraction de la 1ère surface. Donc \(\theta_3 = 28,1^\circ\).</p>
+                         <p>\(1,50 \cdot \sin(28,1^\circ) = 1,00 \cdot \sin(\theta_4)\)</p>
+                         <p>\(1,50 \cdot 0,4714 = \sin(\theta_4) \Rightarrow \sin(\theta_4) = 0,7071\)</p>
+                         <p>\(\theta_4 = \sin^{-1}(0,7071) = 45^\circ\). CQFD.</p>
+                     </div>
+                </div>
+            </div>
+            
+        </section>
+    </div>
+
+    <!-- Script pour l'interactivité -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const zonesReponse = document.querySelectorAll('.zone-reponse');
+            const btnCorrige = document.getElementById('btn-corrige');
+            let toutAffiche = false;
+
+            // Clic individuel pour chaque zone
+            zonesReponse.forEach(zone => {
+                zone.addEventListener('click', () => {
+                    const reponse = zone.querySelector('.reponse-manuscrite');
+                    const aide = zone.querySelector('.reponse-aide');
+                    
+                    if (reponse.classList.contains('hidden')) {
+                        reponse.classList.remove('hidden');
+                        if (aide) aide.classList.add('hidden');
+                    } else {
+                        reponse.classList.add('hidden');
+                        if (aide) aide.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // Bouton global pour basculer tout le corrigé
+            btnCorrige.addEventListener('click', () => {
+                toutAffiche = !toutAffiche;
+                btnCorrige.textContent = toutAffiche ? "Masquer le corrigé" : "Afficher tout le corrigé";
+                
+                zonesReponse.forEach(zone => {
+                    const reponse = zone.querySelector('.reponse-manuscrite');
+                    const aide = zone.querySelector('.reponse-aide');
+                    
+                    if (toutAffiche) {
+                        reponse.classList.remove('hidden');
+                        if (aide) aide.classList.add('hidden');
+                    } else {
+                        reponse.classList.add('hidden');
+                        if (aide) aide.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
