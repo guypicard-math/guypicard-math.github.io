@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes de cours : La réflexion totale interne</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax pour les formules mathématiques -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .reponse-manuscrite { font-family: 'Architects Daughter', cursive; }
+        @media print {
+            body { background-color: white !important; }
+            .shadow-sm { box-shadow: none !important; }
+            button { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 p-6">
+    <div class="max-w-4xl mx-auto">
+        <!-- Bouton Corrigé -->
+        <div class="flex justify-end mb-4">
+            <button id="btn-corrige" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition-colors">
+                Afficher tout le corrigé
+            </button>
+        </div>
+
+        <!-- En-tête -->
+        <header class="bg-white border rounded shadow-sm p-6 mb-6">
+            <h1 class="text-3xl font-bold text-center text-slate-900">La réflexion totale interne</h1>
+        </header>
+
+        <!-- Section 1 : Concept -->
+        <section class="bg-white border rounded shadow-sm p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 border-b pb-2">1. Concept : Angle critique</h2>
+            <p class="mb-4">Lorsque la lumière passe d'un milieu <strong>plus réfringent</strong> à un milieu <strong>moins réfringent</strong>, elle s'éloigne de la normale. Si on augmente l'angle d'incidence, l'angle de réfraction finit par atteindre \(90^\circ\). La lumière rase alors la surface de séparation.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 border rounded bg-slate-50 cursor-pointer zone-reponse hover:bg-slate-100 transition-colors">
+                    <p class="font-semibold">L'angle critique (\(\theta_c\)) :</p>
+                    <p class="text-slate-500 text-sm italic mb-2 reponse-aide">(Cliquez pour révéler)</p>
+                    <p class="reponse-manuscrite text-blue-600 text-lg hidden">C'est l'angle d'incidence exact qui produit un angle de réfraction de \(90^\circ\).</p>
+                </div>
+                <div class="p-4 border rounded bg-slate-50 cursor-pointer zone-reponse hover:bg-slate-100 transition-colors">
+                    <p class="font-semibold">La réflexion totale interne :</p>
+                    <p class="text-slate-500 text-sm italic mb-2 reponse-aide">(Cliquez pour révéler)</p>
+                    <p class="reponse-manuscrite text-blue-600 text-lg hidden">Si l'angle d'incidence dépasse l'angle critique (\(\theta_1 > \theta_c\)), la lumière ne sort plus : elle est 100% <strong>réfléchie</strong> à l'intérieur.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2 : Règles et erreurs -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-yellow-50 border border-yellow-200 rounded shadow-sm p-6">
+                <h2 class="text-xl font-bold text-yellow-800 mb-2">⭐ À retenir : L'angle critique</h2>
+                <p class="mb-2 text-sm text-yellow-900">En posant \(\theta_2 = 90^\circ\) dans la loi de Snell-Descartes (\(\sin(90^\circ) = 1\)), on obtient :</p>
+                <p class="text-xl text-center my-4 font-bold text-yellow-900">\(\sin(\theta_c) = \frac{n_2}{n_1}\)</p>
+                <p class="font-semibold text-yellow-900 text-center mt-2 border-t border-yellow-300 pt-2">
+                    ⚠️ Condition absolue : \(n_1 > n_2\)
+                </p>
+            </div>
+            
+            <div class="bg-red-50 border border-red-200 rounded shadow-sm p-6">
+                <h2 class="text-xl font-bold text-red-800 mb-2">🛑 Erreur fatale</h2>
+                <p class="mb-2 text-red-900 font-semibold">Que se passe-t-il si on tente de calculer un angle critique d'un milieu moins réfringent vers un plus réfringent (ex: Air vers Eau) ?</p>
+                <div class="cursor-pointer zone-reponse bg-white p-3 rounded border border-red-100 min-h-[80px] hover:bg-red-50 transition-colors">
+                    <p class="text-slate-400 text-sm italic mb-2 reponse-aide">(Cliquez pour révéler)</p>
+                    <div class="reponse-manuscrite text-blue-600 text-lg hidden space-y-1">
+                        <p>\(\sin(\theta_c) = \frac{1,33}{1,00} = 1,33\)</p>
+                        <p class="text-red-600 font-bold">Erreur "Math Error" !</p>
+                        <p class="text-sm font-sans text-slate-700">Le sinus d'un angle ne peut jamais dépasser 1. La réflexion totale est <strong>impossible</strong> de l'air vers l'eau.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 : Exemple guidé -->
+        <section class="bg-white border rounded shadow-sm p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 border-b pb-2">2. Exemple guidé</h2>
+            <p class="mb-4">Calculez l'angle critique pour un rayon lumineux passant d'un bloc de verre Crown (\(n_1 = 1,52\)) vers l'air (\(n_2 = 1,00\)).</p>
+            
+            <div class="cursor-pointer zone-reponse p-4 border-2 border-dashed border-slate-300 rounded min-h-[120px] bg-slate-50 relative hover:bg-slate-100 transition-colors">
+                <span class="absolute top-2 left-2 text-slate-400 text-sm italic reponse-aide">Cliquez pour voir la démarche...</span>
+                <div class="reponse-manuscrite text-blue-600 text-lg hidden mt-6 space-y-2">
+                    <p>\(\sin(\theta_c) = \frac{n_2}{n_1}\)</p>
+                    <p>\(\sin(\theta_c) = \frac{1,00}{1,52}\)</p>
+                    <p>\(\sin(\theta_c) \approx 0,6579\)</p>
+                    <p>\(\theta_c = \sin^{-1}(0,6579) \approx 41,1^\circ\)</p>
+                    <p class="mt-4 text-sm text-slate-600 font-sans italic">*Analyse : Si le rayon frappe l'air à plus de \(41,1^\circ\), il sera rebondira complètement dans le verre comme sur un miroir.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4 : Pratique -->
+        <section class="bg-white border rounded shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4 border-b pb-2">3. Pratique</h2>
+            
+            <!-- Doux -->
+            <div class="mb-6">
+                <h3 class="font-bold text-lg mb-2">🍏 Doux</h3>
+                <p class="mb-2">Le diamant a un indice de réfraction extrêmement élevé (\(n = 2,42\)), ce qui explique sa brillance. Quel est son angle critique lorsqu'il est entouré d'air (\(n = 1,00\)) ?</p>
+                <div class="cursor-pointer zone-reponse p-3 border-b-2 border-dotted border-slate-300 min-h-[60px] relative hover:bg-slate-50 transition-colors">
+                     <span class="absolute top-1 text-slate-400 text-sm italic reponse-aide">Votre réponse ici...</span>
+                     <div class="reponse-manuscrite text-blue-600 hidden mt-4">
+                         \(\sin(\theta_c) = \frac{1,00}{2,42} \approx 0,4132 \Rightarrow \theta_c = \sin^{-1}(0,4132) \approx 24,4^\circ\)
+                     </div>
+                </div>
+            </div>
+
+            <!-- Moyen -->
+            <div class="mb-6">
+                <h3 class="font-bold text-lg mb-2">🌮 Moyen</h3>
+                <p class="mb-2">Un rayon lumineux sous-marin tente de passer d'un prisme en verre (\(n = 1,50\)) vers l'eau (\(n = 1,33\)). L'angle d'incidence est de \(70^\circ\). Le rayon subira-t-il une réfraction ou une réflexion totale interne ? Prouvez-le.</p>
+                <div class="cursor-pointer zone-reponse p-3 border-b-2 border-dotted border-slate-300 min-h-[80px] relative hover:bg-slate-50 transition-colors">
+                     <span class="absolute top-1 text-slate-400 text-sm italic reponse-aide">Votre réponse ici...</span>
+                     <div class="reponse-manuscrite text-blue-600 hidden mt-6 space-y-1">
+                         <p>1) Calculons d'abord l'angle critique : \(\sin(\theta_c) = \frac{1,33}{1,50} \approx 0,8867 \Rightarrow \theta_c \approx 62,5^\circ\)</p>
+                         <p>2) Comparons : L'angle d'incidence (\(70^\circ\)) est plus grand que l'angle critique (\(62,5^\circ\)).</p>
+                         <p><strong>Conclusion :</strong> Il y aura une réflexion totale interne (aucune lumière ne passe dans l'eau).</p>
+                     </div>
+                </div>
+            </div>
+            
+            <!-- Épicé -->
+            <div>
+                <h3 class="font-bold text-lg mb-2">🌶️ Épicé (Application technologique)</h3>
+                <p class="mb-2">Dans une fibre optique, la lumière est guidée par réflexion totale interne. Le "cœur" de la fibre a un indice \(n = 1,48\) et il est entouré d'une "gaine" d'indice \(n = 1,44\). Quel est l'angle d'incidence <strong>minimum</strong> (à l'interface cœur-gaine) nécessaire pour que la lumière reste emprisonnée dans la fibre ?</p>
+                <div class="cursor-pointer zone-reponse p-4 border-2 border-dashed border-slate-300 rounded min-h-[100px] bg-slate-50 relative hover:bg-slate-100 transition-colors">
+                     <span class="absolute top-2 left-2 text-slate-400 text-sm italic reponse-aide">Votre démarche ici...</span>
+                     <div class="reponse-manuscrite text-blue-600 hidden mt-6 space-y-2">
+                         <p>Pour que la lumière soit emprisonnée, on cherche l'angle critique :</p>
+                         <p>\(\sin(\theta_c) = \frac{n_{gaine}}{n_{coeur}}\)</p>
+                         <p>\(\sin(\theta_c) = \frac{1,44}{1,48} \approx 0,9730\)</p>
+                         <p>\(\theta_c = \sin^{-1}(0,9730) \approx 76,7^\circ\)</p>
+                         <p><strong>Réponse :</strong> L'angle d'incidence doit être d'au moins \(76,7^\circ\) (tout angle supérieur produira une réflexion totale).</p>
+                     </div>
+                </div>
+            </div>
+            
+        </section>
+    </div>
+
+    <!-- Script pour l'interactivité -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const zonesReponse = document.querySelectorAll('.zone-reponse');
+            const btnCorrige = document.getElementById('btn-corrige');
+            let toutAffiche = false;
+
+            // Clic individuel pour chaque zone
+            zonesReponse.forEach(zone => {
+                zone.addEventListener('click', () => {
+                    const reponse = zone.querySelector('.reponse-manuscrite');
+                    const aide = zone.querySelector('.reponse-aide');
+                    
+                    if (reponse.classList.contains('hidden')) {
+                        reponse.classList.remove('hidden');
+                        if (aide) aide.classList.add('hidden');
+                    } else {
+                        reponse.classList.add('hidden');
+                        if (aide) aide.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // Bouton global pour basculer tout le corrigé
+            btnCorrige.addEventListener('click', () => {
+                toutAffiche = !toutAffiche;
+                btnCorrige.textContent = toutAffiche ? "Masquer le corrigé" : "Afficher tout le corrigé";
+                
+                zonesReponse.forEach(zone => {
+                    const reponse = zone.querySelector('.reponse-manuscrite');
+                    const aide = zone.querySelector('.reponse-aide');
+                    
+                    if (toutAffiche) {
+                        reponse.classList.remove('hidden');
+                        if (aide) aide.classList.add('hidden');
+                    } else {
+                        reponse.classList.add('hidden');
+                        if (aide) aide.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
