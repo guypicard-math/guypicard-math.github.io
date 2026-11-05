@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trouver la règle d'une fonction sinusoïdale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        /* Hauteur minimale garantie pour que le graphique soit toujours visible */
+        .canvas-container { position: relative; width: 100%; min-height: 500px; height: 100%; display: flex; flex-direction: column; }
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 0.5rem; background-color: white; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); }
+    </style>
+</head>
+<body class="text-slate-800 p-2 md:p-6 min-h-screen flex flex-col">
+
+    <div class="max-w-7xl mx-auto w-full bg-white rounded-2xl shadow-xl overflow-hidden flex-grow flex flex-col">
+        <!-- En-tête -->
+        <div class="bg-blue-600 text-white p-5 text-center">
+            <h1 class="text-2xl md:text-3xl font-bold">Règle de la fonction sinusoïdale</h1>
+            <p class="text-blue-100 mt-2">Trouve les paramètres a, b, h et k pour faire entrer exactement <b>UN CYCLE</b> dans la boîte.</p>
+        </div>
+
+        <div class="flex flex-col flex-grow p-4 gap-4 bg-slate-100">
+            <!-- Panneaux du haut (côte-à-côte) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                
+                <!-- Options (Configuration) -->
+                <div class="space-y-3 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-700 border-b pb-2">1. Configuration</h3>
+                    
+                    <div>
+                        <span class="block text-sm font-semibold text-slate-600 mb-1">Je veux utiliser un :</span>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="funcType" value="sin" checked class="form-radio text-blue-600 w-4 h-4" onchange="generateProblem()">
+                                <span class="ml-2">Sinus (sin)</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="funcType" value="cos" class="form-radio text-blue-600 w-4 h-4" onchange="generateProblem()">
+                                <span class="ml-2">Cosinus (cos)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <span class="block text-sm font-semibold text-slate-600 mb-1">Graduation de l'axe des x :</span>
+                        <div class="flex flex-col space-y-2">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="axisType" value="pi" checked class="form-radio text-blue-600 w-4 h-4" onchange="generateProblem()">
+                                <span class="ml-2">Multiples de π (ex: b = rationnel)</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="axisType" value="real" class="form-radio text-blue-600 w-4 h-4" onchange="generateProblem()">
+                                <span class="ml-2">Nombres réels (ex: b exprimé en π)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="generateProblem()" class="w-full mt-4 py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition duration-150">
+                        Nouvelle boîte (Nouveau problème)
+                    </button>
+                </div>
+
+                <!-- Réponses (Ma règle) -->
+                <div class="space-y-4 bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-col">
+                    <h3 class="font-bold text-slate-700 border-b pb-2">2. Ma règle</h3>
+                    
+                    <div class="bg-blue-50 p-2 rounded text-center mb-1">
+                        <span id="form-display" class="font-mono text-blue-700 font-bold text-lg">f(x) = a · sin(b(x - h)) + k</span>
+                    </div>
+
+                    <!-- Rétroaction et astuces EN HAUT -->
+                    <div id="feedback-zone" class="hidden p-3 rounded-lg border text-sm font-medium transition-all mb-1"></div>
+                    <p class="text-xs text-slate-600 bg-slate-50 border border-slate-100 p-2 rounded text-center">💡 <b>Astuce:</b> Écris "pi" pour π, ou des fractions (ex: 3pi/2, 1/2).</p>
+
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600">a =</label>
+                            <input type="text" id="input-a" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 p-2 border bg-slate-50" placeholder="ex: -2" oninput="liveUpdate()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600">b =</label>
+                            <input type="text" id="input-b" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 p-2 border bg-slate-50" placeholder="ex: pi/2" oninput="liveUpdate()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600">h =</label>
+                            <input type="text" id="input-h" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 p-2 border bg-slate-50" placeholder="ex: pi" oninput="liveUpdate()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600">k =</label>
+                            <input type="text" id="input-k" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 p-2 border bg-slate-50" placeholder="ex: 1" oninput="liveUpdate()">
+                        </div>
+                    </div>
+
+                    <button onclick="checkAnswer()" id="btn-verify" class="w-full mt-4 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition duration-200">
+                        Vérifier ma réponse
+                    </button>
+                </div>
+            </div>
+
+            <!-- Zone Graphique (En dessous) -->
+            <div class="w-full bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-col items-center flex-grow">
+                <div class="w-full border-4 border-slate-300 rounded-xl overflow-hidden shadow-sm flex flex-col" style="min-height: 500px; flex-grow: 1;">
+                    <div class="canvas-container flex-grow" id="canvas-container">
+                        <canvas id="mathCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="mt-4 flex space-x-6 text-sm text-slate-600">
+                    <span class="flex items-center"><span class="w-4 h-4 border-2 border-slate-300 border-dashed rounded-full mr-2"></span> Fonction de base</span>
+                    <span class="flex items-center"><span class="w-4 h-4 bg-indigo-200 border-2 border-indigo-500 mr-2"></span> Boîte cible</span>
+                    <span class="flex items-center"><span class="w-4 h-4 bg-orange-400 mr-2 rounded-full"></span> Ta fonction</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mathCanvas');
+        const container = document.getElementById('canvas-container');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        // État de l'application
+        let state = {
+            target: { xMin: 0, xMax: 0, yMin: 0, yMax: 0 }, // La boîte cible
+            a: 0, b: 0, h: 0, k: 0, // Paramètres secrets attendus (une des réponses possibles)
+            funcType: 'sin',
+            axisType: 'pi',
+            period: 0,
+            attempts: 0,
+            status: 'playing', // 'playing', 'success', 'failed'
+            studentParams: null,
+            view: { xMin: -10, xMax: 10, yMin: -10, yMax: 10 }
+        };
+
+        // Redimensionnement robuste du canvas
+        function resizeCanvas() {
+            if (!container) return;
+            const rect = container.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            width = canvas.width;
+            height = canvas.height;
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Parseur mathématique sécurisé
+        function parseMath(str) {
+            if (!str || str.trim() === '') return NaN;
+            let s = str.toLowerCase().replace(/,/g, '.').replace(/\s/g, '').replace(/π/g, 'pi');
+            s = s.replace(/(\d)(pi)/g, '$1*$2'); // "2pi" -> "2*pi"
+            s = s.replace(/(pi)(\d)/g, '$1*$2'); // "pi2" -> "pi*2"
+            s = s.replace(/pi/g, 'Math.PI');
+            try {
+                if (/^[0-9\.\+\-\*\/\(\)Math\.PI]+$/.test(s)) {
+                    let res = new Function('return ' + s)();
+                    return Number.isFinite(res) ? res : NaN;
+                }
+            } catch (e) {
+                return NaN;
+            }
+            return NaN;
+        }
+
+        function formatVal(val, isPiAxis) {
+            if (Math.abs(val) < 0.01) return "0";
+            if (isPiAxis) {
+                const piMult = val / Math.PI;
+                const rounded = Math.round(piMult * 24) / 24; 
+                
+                const fracs = [
+                    {d:1, m:1}, {d:2, m:1/2}, {d:3, m:1/3}, {d:4, m:1/4}, {d:6, m:1/6}, {d:8, m:1/8}
+                ];
+                
+                for(let f of fracs) {
+                    let num = Math.round(piMult * f.d);
+                    if (Math.abs(piMult - num/f.d) < 0.01) {
+                        let sign = num < 0 ? "-" : "";
+                        num = Math.abs(num);
+                        let nStr = num === 1 ? "" : num;
+                        if (f.d === 1) return `${sign}${nStr}π`;
+                        return `${sign}${nStr}π/${f.d}`;
+                    }
+                }
+                return (Math.round(piMult*100)/100) + "π";
+            } else {
+                return Math.round(val * 100) / 100;
+            }
+        }
+
+        // --- Logique métier ---
+
+        function generateProblem() {
+            state.funcType = document.querySelector('input[name="funcType"]:checked').value;
+            state.axisType = document.querySelector('input[name="axisType"]:checked').value;
+            
+            document.getElementById('form-display').innerHTML = `f(x) = a &middot; ${state.funcType}(b(x - h)) + k`;
+
+            // On génère une boîte aléatoire sensée
+            let possibleA = [1, 1.5, 2, 2.5, 3, 4];
+            let targetA = possibleA[Math.floor(Math.random() * possibleA.length)];
+            let targetK = Math.floor(Math.random() * 11) / 2 - 2.5; // [-2.5, 2.5]
+            
+            state.target.yMax = targetK + targetA;
+            state.target.yMin = targetK - targetA;
+
+            if (state.axisType === 'pi') {
+                // Axe en Pi. Période rationnelle de pi. (b = rationnel)
+                const periodMults = [0.5, 1, 1.5, 2, 3, 4];
+                let pMult = periodMults[Math.floor(Math.random() * periodMults.length)];
+                state.period = pMult * Math.PI;
+                
+                const hMults = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
+                let startH = hMults[Math.floor(Math.random() * hMults.length)] * Math.PI;
+                
+                state.target.xMin = startH;
+                state.target.xMax = startH + state.period;
+                
+                state.view = { xMin: -3.5 * Math.PI, xMax: 3.5 * Math.PI, yMin: -8, yMax: 8 };
+            } else {
+                // Axe réel. Période entière/rationnelle. (b = avec pi)
+                const periods = [1, 2, 3, 4, 6, 8];
+                state.period = periods[Math.floor(Math.random() * periods.length)];
+                
+                const hs = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
+                let startH = hs[Math.floor(Math.random() * hs.length)];
+                
+                state.target.xMin = startH;
+                state.target.xMax = startH + state.period;
+                
+                state.view = { xMin: -8, xMax: 8, yMin: -8, yMax: 8 };
+            }
+
+            // Calcul d'une réponse valide pour la correction
+            state.k = targetK;
+            state.a = targetA; // On assume a > 0 pour la correction de base
+            state.b = (2 * Math.PI) / state.period;
+            
+            // h dépend de la fonction
+            if (state.funcType === 'sin') {
+                state.h = state.target.xMin;
+            } else {
+                state.h = state.target.xMin; // Pour cosinus, ça part d'un sommet en haut, donc pareil si on garde a > 0
+            }
+
+            // Réinitialisation de l'interface
+            state.attempts = 0;
+            state.status = 'playing';
+            state.studentParams = null;
+            document.getElementById('input-a').value = '';
+            document.getElementById('input-b').value = '';
+            document.getElementById('input-h').value = '';
+            document.getElementById('input-k').value = '';
+            
+            const fb = document.getElementById('feedback-zone');
+            fb.classList.add('hidden');
+            
+            document.getElementById('btn-verify').disabled = false;
+            document.getElementById('btn-verify').classList.remove('opacity-50', 'cursor-not-allowed');
+
+            draw();
+        }
+
+        function liveUpdate() {
+            if (state.status !== 'playing') return;
+            const a_in = parseMath(document.getElementById('input-a').value);
+            const b_in = parseMath(document.getElementById('input-b').value);
+            const h_in = parseMath(document.getElementById('input-h').value);
+            const k_in = parseMath(document.getElementById('input-k').value);
+            
+            // On met à jour seulement s'il y a des valeurs partielles ou complètes valides
+            if (!isNaN(a_in) || !isNaN(b_in) || !isNaN(h_in) || !isNaN(k_in)) {
+                state.studentParams = { 
+                    a: isNaN(a_in) ? 1 : a_in, 
+                    b: isNaN(b_in) ? 1 : b_in, 
+                    h: isNaN(h_in) ? 0 : h_in, 
+                    k: isNaN(k_in) ? 0 : k_in,
+                    isComplete: !isNaN(a_in) && !isNaN(b_in) && !isNaN(h_in) && !isNaN(k_in)
+                };
+                draw();
+            } else {
+                state.studentParams = null;
+                draw();
+            }
+        }
+
+        function checkAnswer() {
+            if (state.status !== 'playing') return;
+
+            const a_in = parseMath(document.getElementById('input-a').value);
+            const b_in = parseMath(document.getElementById('input-b').value);
+            const h_in = parseMath(document.getElementById('input-h').value);
+            const k_in = parseMath(document.getElementById('input-k').value);
+
+            const fb = document.getElementById('feedback-zone');
+            fb.classList.remove('hidden');
+
+            if (isNaN(a_in) || isNaN(b_in) || isNaN(h_in) || isNaN(k_in)) {
+                fb.className = 'mb-2 p-3 rounded-lg border text-sm font-bold bg-yellow-50 text-yellow-800 border-yellow-300';
+                fb.innerHTML = "⚠️ Remplis les 4 cases avec des nombres ou des fractions (ex: 2pi/3).";
+                return;
+            }
+
+            state.studentParams = { a: a_in, b: b_in, h: h_in, k: k_in, isComplete: true };
+            state.attempts++;
+
+            // Validation géométrique
+            const targetAmp = (state.target.yMax - state.target.yMin) / 2;
+            const targetK = (state.target.yMax + state.target.yMin) / 2;
+            
+            const ampCorrect = Math.abs(Math.abs(a_in) - targetAmp) < 0.01;
+            const kCorrect = Math.abs(k_in - targetK) < 0.01;
+            
+            const studentPeriod = Math.abs(2 * Math.PI / b_in);
+            const periodCorrect = Math.abs(studentPeriod - state.period) < 0.01;
+
+            // Phase verification inside the box
+            let phaseCorrect = true;
+            // On vérifie que la fonction dessinée correspond exactement aux attentes dans la boîte
+            const testPoints = [
+                state.target.xMin, 
+                state.target.xMin + state.period/4, 
+                state.target.xMin + state.period/2, 
+                state.target.xMin + 3*state.period/4
+            ];
+            
+            // La "vraie" fonction pour vérifier dépend de si on fait un Sin ou un Cos
+            // Pour le corriger, on crée la fonction "parfaite" avec a>0
+            let evalTrue = (x) => targetAmp * Math[state.funcType]((2*Math.PI/state.period) * (x - state.target.xMin)) + targetK;
+            
+            for (let x of testPoints) {
+                let trueVal = evalTrue(x);
+                let studVal = a_in * Math[state.funcType](b_in * (x - h_in)) + k_in;
+                if (Math.abs(trueVal - studVal) > 0.05) {
+                    phaseCorrect = false;
+                    break;
+                }
+            }
+
+            // On s'assure aussi que le h de l'élève place bien LE DÉBUT de son cycle sur le bord de la boîte
+            // Si c'est un Sinus, x=xMin doit donner k
+            // Si c'est un Cosinus, x=xMin doit donner un extremum
+            let startsAtBox = false;
+            if (state.funcType === 'sin') {
+                // Le cycle commence quand b(x-h) = 0, pi, 2pi... Si a>0, ça monte.
+                // On veut que xMin corresponde au début du cycle.
+                // Donc b(xMin - h) doit être un multiple pair de Pi (si a>0) ou impair (si a<0).
+                let phaseAtMin = b_in * (state.target.xMin - h_in);
+                let modPhase = Math.abs(phaseAtMin % (2*Math.PI));
+                // Autoriser les décalages de période complète
+                if (a_in > 0 && (modPhase < 0.01 || Math.abs(modPhase - 2*Math.PI) < 0.01)) startsAtBox = true;
+                if (a_in < 0 && Math.abs(modPhase - Math.PI) < 0.01) startsAtBox = true;
+            } else {
+                let phaseAtMin = b_in * (state.target.xMin - h_in);
+                let modPhase = Math.abs(phaseAtMin % (2*Math.PI));
+                if (a_in > 0 && (modPhase < 0.01 || Math.abs(modPhase - 2*Math.PI) < 0.01)) startsAtBox = true;
+                if (a_in < 0 && Math.abs(modPhase - Math.PI) < 0.01) startsAtBox = true;
+            }
+
+
+            if (ampCorrect && kCorrect && periodCorrect && phaseCorrect && startsAtBox) {
+                // SUCCÈS
+                state.status = 'success';
+                fb.className = 'mb-2 p-3 rounded-lg border text-sm font-medium bg-green-50 text-green-800 border-green-300 shadow-sm';
+                fb.innerHTML = "🎉 <b>Excellent !</b> Ta fonction entre parfaitement dans la boîte !";
+                document.getElementById('btn-verify').disabled = true;
+                document.getElementById('btn-verify').classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                // ÉCHEC
+                if (state.attempts === 1) {
+                    fb.className = 'mb-2 p-3 rounded-lg border text-sm font-medium bg-orange-50 text-orange-800 border-orange-300';
+                    if (!ampCorrect || !kCorrect) {
+                        fb.innerHTML = `❌ <b>Essai 1 incorrect.</b><br><u>Indice :</u> Regarde la hauteur de la boîte pour trouver l'<b>amplitude (a)</b> et le centre vertical de la boîte pour l'axe de symétrie <b>(k)</b>.`;
+                    } else {
+                        fb.innerHTML = `❌ <b>Essai 1 incorrect.</b><br><u>Indice :</u> Ton 'a' et 'k' sont bons. Vérifie la largeur de la boîte pour calculer la période, puis déduis-en <b>'b'</b>.`;
+                    }
+                } else if (state.attempts === 2) {
+                    fb.className = 'mb-2 p-3 rounded-lg border text-sm font-medium bg-orange-50 text-orange-800 border-orange-300';
+                    fb.innerHTML = `❌ <b>Essai 2 incorrect.</b><br><u>Indice :</u> Pour faire entrer EXACTEMENT UN cycle, le début du cycle de ta fonction doit correspondre au bord gauche de la boîte (donc ton <b>'h'</b> devrait être ce point de départ).`;
+                } else {
+                    state.status = 'failed';
+                    fb.className = 'mb-2 p-3 rounded-lg border text-sm font-medium bg-red-50 text-red-800 border-red-300 shadow-sm';
+                    
+                    let sol_b = state.axisType === 'pi' ? state.b : `2π/${state.period}`;
+                    let sol_h = formatVal(state.h, state.axisType === 'pi');
+                    
+                    fb.innerHTML = `❌ <b>3 essais atteints.</b> Voici une règle possible :<br>
+                    <div class="mt-2 p-2 bg-white rounded font-mono text-center font-bold text-red-700">f(x) = ${state.a} · ${state.funcType}(${sol_b}(x - (${sol_h}))) + ${state.k}</div>
+                    La réponse attendue est tracée en rouge pointillé.`;
+                    document.getElementById('btn-verify').disabled = true;
+                    document.getElementById('btn-verify').classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            }
+            draw();
+        }
+
+        // --- Moteur de rendu graphique ---
+
+        function mapX(x) { return ((x - state.view.xMin) / (state.view.xMax - state.view.xMin)) * width; }
+        function mapY(y) { return height - ((y - state.view.yMin) / (state.view.yMax - state.view.yMin)) * height; }
+
+        function draw() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Grille et Axes
+            let xStep = state.axisType === 'pi' ? Math.PI / 2 : 1;
+            let yStep = 1;
+
+            ctx.textAlign = "center";
+            ctx.textBaseline = "top";
+            ctx.font = "12px Inter";
+            
+            // Lignes Verticales
+            for (let x = Math.ceil(state.view.xMin / xStep) * xStep; x <= state.view.xMax; x += xStep) {
+                let cx = mapX(x);
+                ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, height);
+                ctx.strokeStyle = Math.abs(x) < 0.01 ? "#475569" : "#f1f5f9"; // Axe Y plus foncé
+                ctx.lineWidth = Math.abs(x) < 0.01 ? 2 : 1;
+                ctx.stroke();
+
+                if (Math.abs(x) > 0.01) {
+                    ctx.fillStyle = "#64748b";
+                    ctx.fillText(formatVal(x, state.axisType === 'pi'), cx, mapY(0) + 6);
+                }
+            }
+
+            // Lignes Horizontales
+            ctx.textAlign = "right"; ctx.textBaseline = "middle";
+            for (let y = Math.ceil(state.view.yMin / yStep) * yStep; y <= state.view.yMax; y += yStep) {
+                let cy = mapY(y);
+                ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(width, cy);
+                ctx.strokeStyle = Math.abs(y) < 0.01 ? "#475569" : "#f1f5f9"; // Axe X plus foncé
+                ctx.lineWidth = Math.abs(y) < 0.01 ? 2 : 1;
+                ctx.stroke();
+
+                if (Math.abs(y) > 0.01) {
+                    ctx.fillStyle = "#64748b";
+                    ctx.fillText(y, mapX(0) - 6, cy);
+                }
+            }
+            
+            // Zéro central
+            ctx.fillStyle = "#64748b";
+            ctx.fillText("0", mapX(0) - 6, mapY(0) + 8);
+
+            // 2. Fonction de base (sin/cos pure) en arrière-plan pâle
+            ctx.beginPath();
+            ctx.setLineDash([4, 4]);
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.lineWidth = 2;
+            for (let px = 0; px <= width; px += 2) {
+                let mathX = state.view.xMin + (px / width) * (state.view.xMax - state.view.xMin);
+                let mathY = Math[state.funcType](mathX);
+                let py = mapY(mathY);
+                if (px === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 3. Dessin de la BOÎTE CIBLE
+            let pxMin = mapX(state.target.xMin);
+            let pxMax = mapX(state.target.xMax);
+            let pyMin = mapY(state.target.yMin); // Bas en px
+            let pyMax = mapY(state.target.yMax); // Haut en px
+            
+            ctx.fillStyle = "rgba(99, 102, 241, 0.1)"; // bg-indigo-500 avec opacité
+            ctx.fillRect(pxMin, pyMax, pxMax - pxMin, pyMin - pyMax);
+            ctx.strokeStyle = "#6366f1"; // border-indigo-500
+            ctx.lineWidth = 2;
+            ctx.strokeRect(pxMin, pyMax, pxMax - pxMin, pyMin - pyMax);
+
+            // Aide visuelle : ligne pointillée au centre de la boîte (l'axe k)
+            let pyMid = mapY((state.target.yMax + state.target.yMin) / 2);
+            ctx.beginPath();
+            ctx.setLineDash([2, 4]);
+            ctx.strokeStyle = "rgba(99, 102, 241, 0.4)";
+            ctx.moveTo(pxMin, pyMid); ctx.lineTo(pxMax, pyMid);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Fonction de tracé générique
+            const drawCurve = (params, color, lineWidth=3, dash=[]) => {
+                if(!params || isNaN(params.a) || isNaN(params.b) || isNaN(params.h) || isNaN(params.k)) return;
+                ctx.beginPath();
+                ctx.setLineDash(dash);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = lineWidth;
+                for (let px = 0; px <= width; px++) {
+                    let mathX = state.view.xMin + (px / width) * (state.view.xMax - state.view.xMin);
+                    let mathY = params.a * Math[state.funcType](params.b * (mathX - params.h)) + params.k;
+                    let py = mapY(mathY);
+                    if (px === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            };
+
+            // 4. Courbes de l'utilisateur ou solution
+            if (state.status === 'failed') {
+                // Dessiner la solution attendue en rouge pointillé
+                drawCurve({a: state.a, b: state.b, h: state.h, k: state.k}, "#ef4444", 3, [6, 4]);
+                // La dernière réponse de l'élève en rouge très transparent
+                if (state.studentParams) drawCurve(state.studentParams, "rgba(239, 68, 68, 0.3)", 2);
+            } 
+            else if (state.status === 'success' && state.studentParams) {
+                // Gagné : tracé vert épais
+                drawCurve(state.studentParams, "#22c55e", 4);
+            } 
+            else if (state.status === 'playing' && state.studentParams && state.studentParams.isComplete) {
+                // En cours de frappe : orange interactif
+                drawCurve(state.studentParams, "#f97316", 2);
+            }
+        }
+
+        // Initialisation lors du chargement complet du DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            resizeCanvas();
+            // Générer le problème initial avec un petit délai pour s'assurer du bon rendu des polices/tailles
+            setTimeout(() => {
+                resizeCanvas();
+                generateProblem();
+            }, 100);
+        });
+
+    </script>
+</body>
+</html>
