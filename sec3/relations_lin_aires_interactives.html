@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pratique des Relations Linéaires</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        .input-correct { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #166534; pointer-events: none; }
+        .input-error { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="text-slate-800 p-4 md:p-8 min-h-screen flex flex-col items-center">
+
+    <div class="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col">
+        
+        <!-- En-tête -->
+        <div class="bg-indigo-600 text-white p-6 text-center relative">
+            <h1 class="text-2xl md:text-3xl font-bold">🎯 Relations Linéaires (y = ax + b)</h1>
+            <p class="text-indigo-100 mt-2 text-sm md:text-base">Identifie les variables, le taux de variation, la valeur initiale et la règle.</p>
+        </div>
+
+        <div class="p-6">
+            <!-- Sélecteur de Niveau -->
+            <div class="flex flex-col md:flex-row justify-center gap-3 mb-8">
+                <button onclick="setLevel(1)" id="btn-lvl-1" class="lvl-btn flex-1 py-2 px-4 rounded-lg font-bold border-2 transition duration-200 bg-indigo-50 border-indigo-600 text-indigo-700">🍏 Niveau 1 (Doux)</button>
+                <button onclick="setLevel(2)" id="btn-lvl-2" class="lvl-btn flex-1 py-2 px-4 rounded-lg font-bold border-2 transition duration-200 border-slate-200 text-slate-500 hover:bg-slate-50">🌮 Niveau 2 (Moyen)</button>
+                <button onclick="setLevel(3)" id="btn-lvl-3" class="lvl-btn flex-1 py-2 px-4 rounded-lg font-bold border-2 transition duration-200 border-slate-200 text-slate-500 hover:bg-slate-50">🌶️ Niveau 3 (Épicé)</button>
+            </div>
+
+            <!-- Zone de Problème -->
+            <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 mb-8 shadow-sm relative">
+                <div class="absolute -top-3 -left-3 text-3xl" id="level-icon">🍏</div>
+                <h2 class="text-lg font-bold text-slate-700 mb-3 border-b pb-2">Mise en situation :</h2>
+                <div id="problem-display" class="text-lg text-slate-800 font-medium min-h-[80px] flex items-center justify-center text-center">
+                    <!-- Le texte ou le tableau s'affichera ici -->
+                </div>
+            </div>
+
+            <!-- Formulaire de réponses -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Var Indépendante -->
+                <div class="flex flex-col gap-2">
+                    <label class="font-bold text-slate-700">Variable Indépendante (x) :</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="in-indep" class="flex-1 p-3 rounded-lg border-2 border-slate-300 focus:border-indigo-500 focus:outline-none transition" placeholder="Ex: le temps, l'âge...">
+                        <button onclick="checkAnswer('indep')" id="btn-indep" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 rounded-lg transition">Vérifier</button>
+                    </div>
+                    <div id="msg-indep" class="text-sm font-medium hidden fade-in"></div>
+                </div>
+
+                <!-- Var Dépendante -->
+                <div class="flex flex-col gap-2">
+                    <label class="font-bold text-slate-700">Variable Dépendante (y) :</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="in-dep" class="flex-1 p-3 rounded-lg border-2 border-slate-300 focus:border-indigo-500 focus:outline-none transition" placeholder="Ex: le salaire, le coût...">
+                        <button onclick="checkAnswer('dep')" id="btn-dep" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 rounded-lg transition">Vérifier</button>
+                    </div>
+                    <div id="msg-dep" class="text-sm font-medium hidden fade-in"></div>
+                </div>
+
+                <!-- Taux de variation (a) -->
+                <div class="flex flex-col gap-2">
+                    <label class="font-bold text-slate-700">Taux de variation (a) :</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="in-a" class="flex-1 p-3 rounded-lg border-2 border-slate-300 focus:border-indigo-500 focus:outline-none transition" placeholder="Ex: 30">
+                        <button onclick="checkAnswer('a')" id="btn-a" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 rounded-lg transition">Vérifier</button>
+                    </div>
+                    <div id="msg-a" class="text-sm font-medium hidden fade-in"></div>
+                </div>
+
+                <!-- Valeur Initiale (b) -->
+                <div class="flex flex-col gap-2">
+                    <label class="font-bold text-slate-700">Valeur Initiale (b) :</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="in-b" class="flex-1 p-3 rounded-lg border-2 border-slate-300 focus:border-indigo-500 focus:outline-none transition" placeholder="Ex: 50">
+                        <button onclick="checkAnswer('b')" id="btn-b" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 rounded-lg transition">Vérifier</button>
+                    </div>
+                    <div id="msg-b" class="text-sm font-medium hidden fade-in"></div>
+                </div>
+
+                <!-- Règle Générale -->
+                <div class="flex flex-col gap-2 md:col-span-2 bg-indigo-50 p-4 rounded-xl border border-indigo-100 mt-2">
+                    <label class="font-bold text-indigo-900 text-lg">Règle de la fonction (y = ax + b) :</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="in-rule" class="flex-1 p-4 rounded-lg border-2 border-indigo-300 focus:border-indigo-600 focus:outline-none transition text-lg font-mono" placeholder="Ex: y = 30x + 50">
+                        <button onclick="checkAnswer('rule')" id="btn-rule" class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-6 rounded-lg transition shadow-md">Vérifier</button>
+                    </div>
+                    <div id="msg-rule" class="text-sm font-medium hidden fade-in mt-1"></div>
+                </div>
+            </div>
+
+            <!-- Bouton Recommencer / Message Victoire -->
+            <div id="victory-zone" class="hidden text-center mb-4 fade-in bg-green-100 p-4 rounded-xl border border-green-300">
+                <h3 class="text-xl font-bold text-green-800">🎉 Bravo ! Tu as tout trouvé !</h3>
+                <p class="text-green-700">Tu maîtrises parfaitement cette situation.</p>
+            </div>
+
+            <div class="text-center">
+                <button onclick="generateProblem()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3 px-8 rounded-full transition shadow-sm border border-slate-300">
+                    🔄 Générer un nouveau problème
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DONNÉES & CONTEXTES ---
+        const templates = [
+            {
+                indepKeywords: ["heure", "heures", "temps", "h"],
+                depKeywords: ["montant", "salaire", "coût", "cout", "facture", "prix", "argent", "$"],
+                tableHeaders: ["Temps de travail (h)", "Coût total ($)"],
+                lvl1: (a, b) => `Walid est électricien. Il demande ${b} $ pour ses déplacements et ${a} $ par heure travaillée.`,
+                lvl3: (a, b) => {
+                    let x1 = getRandomInt(2, 6); let y1 = a * x1 + b;
+                    let x2 = getRandomInt(7, 12); let y2 = a * x2 + b;
+                    return `M. Bertrand donne des cours. Mardi dernier, il a facturé ${y1} $ pour ${x1} heures de cours. La semaine suivante, il a facturé ${y2} $ pour ${x2} heures de cours.`;
+                }
+            },
+            {
+                indepKeywords: ["m2", "mètre", "metres", "superficie", "aire", "surface"],
+                depKeywords: ["montant", "facture", "coût", "cout", "prix", "$"],
+                tableHeaders: ["Superficie (m²)", "Montant ($)"],
+                lvl1: (a, b) => `L'entreprise PavéDoré charge un montant fixe de ${b} $ pour l'équipement, plus ${a} $ par mètre carré à couvrir.`,
+                lvl3: (a, b) => {
+                    let x1 = getRandomInt(10, 20); let y1 = a * x1 + b;
+                    let x2 = getRandomInt(25, 40); let y2 = a * x2 + b;
+                    return `Andréanne est peintre. Pour peindre ${x1} m², elle a facturé ${y1} $. Pour un autre client ayant ${x2} m² à peindre, la facture s'élevait à ${y2} $.`;
+                }
+            },
+            {
+                indepKeywords: ["jour", "jours", "temps"],
+                depKeywords: ["t-shirt", "t-shirts", "tshirt", "tshirts", "quantité", "nombre", "total"],
+                tableHeaders: ["Temps (jours)", "Quantité totale (t-shirts)"],
+                lvl1: (a, b) => `La compagnie BeauxDesign a déjà ${b} t-shirts de fabriqués en stock. Elle en produit ${a} de plus chaque jour.`,
+                lvl3: (a, b) => {
+                    let x1 = getRandomInt(3, 8); let y1 = a * x1 + b;
+                    let x2 = getRandomInt(10, 15); let y2 = a * x2 + b;
+                    return `Une usine fabrique des jouets. Après ${x1} jours, le stock total est de ${y1} jouets. Après ${x2} jours, le stock atteint ${y2} jouets.`;
+                }
+            },
+            {
+                indepKeywords: ["patient", "patients", "personne", "personnes", "client", "clients"],
+                depKeywords: ["salaire", "montant", "revenu", "paie", "paye", "$"],
+                tableHeaders: ["Nombre de patients", "Salaire ($)"],
+                lvl1: (a, b) => `Ludmila est psychologue. Son salaire de base (pour tâches administratives) est de ${b} $, et elle reçoit ${a} $ par patient rencontré.`,
+                lvl3: (a, b) => {
+                    let x1 = getRandomInt(5, 15); let y1 = a * x1 + b;
+                    let x2 = getRandomInt(20, 30); let y2 = a * x2 + b;
+                    return `Érica est vétérinaire. Un jour où elle a traité ${x1} animaux, son salaire était de ${y1} $. Un autre jour, après avoir traité ${x2} animaux, son salaire était de ${y2} $.`;
+                }
+            },
+            {
+                indepKeywords: ["sac", "sacs", "vente", "ventes", "article", "articles"],
+                depKeywords: ["salaire", "montant", "revenu", "commission", "$"],
+                tableHeaders: ["Sacs vendus", "Salaire ($)"],
+                lvl1: (a, b) => `Sara vend des sacs. Elle reçoit un montant de base de ${b} $ par semaine, plus une commission de ${a} $ par sac vendu.`,
+                lvl3: (a, b) => {
+                    let x1 = getRandomInt(10, 30); let y1 = a * x1 + b;
+                    let x2 = getRandomInt(40, 60); let y2 = a * x2 + b;
+                    return `Un vendeur reçoit un salaire qui dépend de ses ventes. S'il vend ${x1} articles, il gagne ${y1} $. S'il vend ${x2} articles, il gagne ${y2} $.`;
+                }
+            }
+        ];
+
+        // --- ÉTAT DE L'APPLICATION ---
+        let state = {
+            level: 1,
+            a: 0, b: 0,
+            context: null,
+            attempts: { indep: 0, dep: 0, a: 0, b: 0, rule: 0 },
+            correct: { indep: false, dep: false, a: false, b: false, rule: false }
+        };
+
+        const fields = ['indep', 'dep', 'a', 'b', 'rule'];
+
+        // --- UTILITAIRES ---
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function normalizeStr(str) {
+            return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        }
+
+        // --- GESTION DU NIVEAU ---
+        function setLevel(lvl) {
+            state.level = lvl;
+            
+            // UI update
+            document.querySelectorAll('.lvl-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-50', 'border-indigo-600', 'text-indigo-700');
+                btn.classList.add('border-slate-200', 'text-slate-500');
+            });
+            
+            let activeBtn = document.getElementById(`btn-lvl-${lvl}`);
+            activeBtn.classList.remove('border-slate-200', 'text-slate-500');
+            activeBtn.classList.add('bg-indigo-50', 'border-indigo-600', 'text-indigo-700');
+            
+            const icons = {1: '🍏', 2: '🌮', 3: '🌶️'};
+            document.getElementById('level-icon').innerText = icons[lvl];
+
+            generateProblem();
+        }
+
+        // --- GÉNÉRATION DU PROBLÈME ---
+        function generateProblem() {
+            // Choix aléatoire des paramètres
+            state.a = getRandomInt(12, 60);
+            
+            // Pour varier, b peut parfois être négatif au niveau 2 et 3
+            if (state.level > 1 && Math.random() > 0.7) {
+                state.b = getRandomInt(-200, -50);
+            } else {
+                state.b = getRandomInt(20, 250);
+            }
+
+            state.context = templates[Math.floor(Math.random() * templates.length)];
+            
+            // Réinitialisation de l'état des réponses
+            state.attempts = { indep: 0, dep: 0, a: 0, b: 0, rule: 0 };
+            state.correct = { indep: false, dep: false, a: false, b: false, rule: false };
+            
+            document.getElementById('victory-zone').classList.add('hidden');
+            
+            // Nettoyage UI
+            fields.forEach(f => {
+                let input = document.getElementById(`in-${f}`);
+                input.value = '';
+                input.className = input.className.replace('input-correct', '').replace('input-error', '');
+                
+                let btn = document.getElementById(`btn-${f}`);
+                btn.classList.remove('hidden');
+                
+                let msg = document.getElementById(`msg-${f}`);
+                msg.classList.add('hidden');
+                msg.innerText = '';
+            });
+
+            // Affichage du problème selon le niveau
+            const display = document.getElementById('problem-display');
+            if (state.level === 1) {
+                display.innerHTML = `<p>${state.context.lvl1(state.a, state.b)}</p>`;
+            } 
+            else if (state.level === 2) {
+                let x1 = getRandomInt(2, 5);
+                let x2 = x1 + getRandomInt(2, 5);
+                let x3 = x2 + getRandomInt(2, 5);
+                
+                let tableHtml = `
+                <table class="w-full max-w-md mx-auto bg-white border border-slate-300 rounded-lg overflow-hidden shadow-sm">
+                    <thead class="bg-slate-100">
+                        <tr>
+                            <th class="border-b border-slate-300 p-2">${state.context.tableHeaders[0]}</th>
+                            <th class="border-b border-slate-300 p-2">${state.context.tableHeaders[1]}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="border-b border-slate-200 p-2">${x1}</td><td class="border-b border-slate-200 p-2">${state.a * x1 + state.b}</td></tr>
+                        <tr><td class="border-b border-slate-200 p-2">${x2}</td><td class="border-b border-slate-200 p-2">${state.a * x2 + state.b}</td></tr>
+                        <tr><td class="border-b border-slate-200 p-2">${x3}</td><td class="border-b border-slate-200 p-2">${state.a * x3 + state.b}</td></tr>
+                    </tbody>
+                </table>
+                <p class="text-sm text-slate-500 mt-2 font-normal">Trouve les paramètres à partir de cette table de valeurs.</p>`;
+                display.innerHTML = tableHtml;
+            } 
+            else if (state.level === 3) {
+                display.innerHTML = `<p>${state.context.lvl3(state.a, state.b)}</p>`;
+            }
+        }
+
+        // --- SYSTÈME DE VÉRIFICATION ET INDICES ---
+        function checkAnswer(field) {
+            if (state.correct[field]) return;
+
+            let inputEl = document.getElementById(`in-${field}`);
+            let val = inputEl.value.trim();
+            let msgEl = document.getElementById(`msg-${field}`);
+            let btnEl = document.getElementById(`btn-${field}`);
+            
+            if (val === '') return;
+
+            let isCorrect = false;
+            let normVal = normalizeStr(val);
+
+            // Validation logique
+            switch(field) {
+                case 'indep':
+                    isCorrect = state.context.indepKeywords.some(kw => normVal.includes(normalizeStr(kw)));
+                    break;
+                case 'dep':
+                    isCorrect = state.context.depKeywords.some(kw => normVal.includes(normalizeStr(kw)));
+                    break;
+                case 'a':
+                    isCorrect = parseFloat(val) === state.a;
+                    break;
+                case 'b':
+                    isCorrect = parseFloat(val) === state.b;
+                    break;
+                case 'rule':
+                    let cleanRule = normVal.replace(/\s+/g, '');
+                    let expectedB = state.b >= 0 ? `+${state.b}` : `${state.b}`;
+                    let v1 = `y=${state.a}x${expectedB}`;
+                    let v2 = `${state.a}x${expectedB}`; // sans le y=
+                    let v3 = `y=${state.b}${state.a>=0?'+':''}${state.a}x`;
+                    isCorrect = (cleanRule === v1 || cleanRule === v2 || cleanRule === v3);
+                    break;
+            }
+
+            msgEl.classList.remove('hidden');
+            inputEl.classList.remove('input-error', 'input-correct');
+
+            if (isCorrect) {
+                // BONNE RÉPONSE
+                state.correct[field] = true;
+                inputEl.classList.add('input-correct');
+                btnEl.classList.add('hidden');
+                msgEl.className = "text-sm font-medium fade-in text-green-600 mt-1";
+                msgEl.innerText = "✅ Excellente réponse !";
+                checkVictory();
+            } else {
+                // MAUVAISE RÉPONSE
+                state.attempts[field]++;
+                inputEl.classList.add('input-error');
+                msgEl.className = "text-sm font-medium fade-in text-red-600 mt-1 p-2 bg-red-50 rounded border border-red-200";
+
+                let att = state.attempts[field];
+                
+                if (att === 1) {
+                    msgEl.innerHTML = `❌ Oups. <br><b>Indice 1 :</b> ${getHint(field, 1)}`;
+                } else if (att === 2) {
+                    msgEl.innerHTML = `❌ Toujours pas. <br><b>Indice 2 :</b> ${getHint(field, 2)}`;
+                } else {
+                    // Révélation au 3e échec
+                    state.correct[field] = true;
+                    inputEl.value = getReveal(field);
+                    inputEl.classList.remove('input-error');
+                    inputEl.classList.add('input-correct');
+                    btnEl.classList.add('hidden');
+                    msgEl.className = "text-sm font-medium fade-in text-amber-700 mt-1 p-2 bg-amber-50 rounded border border-amber-200";
+                    msgEl.innerHTML = `⚠️ <b>Voici la réponse attendue :</b> ${getReveal(field)}`;
+                    checkVictory();
+                }
+            }
+        }
+
+        function getHint(field, hintLevel) {
+            if (field === 'indep') {
+                return hintLevel === 1 ? "C'est la cause, ce qui fait varier le résultat." : "Regarde la colonne de gauche ou l'unité qui est multipliée (ex: par heure).";
+            }
+            if (field === 'dep') {
+                return hintLevel === 1 ? "C'est le résultat total ou final qu'on cherche à calculer." : "Regarde la colonne de droite (souvent un montant, un salaire, un total).";
+            }
+            if (field === 'a') {
+                if (state.level === 1) return hintLevel === 1 ? "C'est la valeur qui se multiplie." : "Cherche le montant qui est payé 'par' unité (ex: par heure, par kg).";
+                return hintLevel === 1 ? "C'est le bond (la différence) entre les y." : "Formule : (y2 - y1) ÷ (x2 - x1). Prends deux points pour calculer !";
+            }
+            if (field === 'b') {
+                if (state.level === 1) return hintLevel === 1 ? "C'est le montant de départ, fixe." : "Cherche le montant initial, pour le déplacement ou la base.";
+                return hintLevel === 1 ? "C'est la valeur de y quand x vaut 0." : "Si tu connais 'a', remplace un (x,y) dans y = ax + b pour isoler 'b'.";
+            }
+            if (field === 'rule') {
+                return hintLevel === 1 ? "Le format attendu est y = ax + b." : "Remplace 'a' et 'b' par les valeurs trouvées juste au-dessus. Garde les lettres y et x.";
+            }
+        }
+
+        function getReveal(field) {
+            if (field === 'indep') return state.context.tableHeaders[0].split('(')[0].trim();
+            if (field === 'dep') return state.context.tableHeaders[1].split('(')[0].trim();
+            if (field === 'a') return state.a.toString();
+            if (field === 'b') return state.b.toString();
+            if (field === 'rule') {
+                let expectedB = state.b >= 0 ? `+ ${state.b}` : `- ${Math.abs(state.b)}`;
+                return `y = ${state.a}x ${expectedB}`;
+            }
+        }
+
+        function checkVictory() {
+            if (Object.values(state.correct).every(v => v === true)) {
+                let vic = document.getElementById('victory-zone');
+                vic.classList.remove('hidden');
+            }
+        }
+
+        // --- INIT ---
+        window.onload = () => {
+            setLevel(1);
+        };
+    </script>
+</body>
+</html>
