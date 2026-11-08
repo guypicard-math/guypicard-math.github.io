@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes de cours : Les Vecteurs</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-handwriting { font-family: 'Architects Daughter', cursive; }
+        
+        /* Interactive Zones */
+        .interactive-zone { position: relative; display: inline-block; min-width: 4rem; }
+        .interactive-block { position: relative; }
+        
+        .answer-content { display: none; }
+        .hint-content { display: inline-block; }
+        
+        .revealed .answer-content { display: inline-block; }
+        .revealed.interactive-block .answer-content { display: block; }
+        .revealed .hint-content { display: none; }
+
+        @media print {
+            body { background-color: white !important; }
+            .shadow-sm { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+            button, .no-print { display: none !important; }
+            .interactive-zone, .interactive-block { border: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 p-6 md:p-12">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold text-slate-900 border-b-4 border-blue-500 pb-2 inline-block">Les Vecteurs</h1>
+            <button id="toggleAllBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition-colors no-print">
+                Afficher tout le corrigé
+            </button>
+        </div>
+
+        <!-- Section 1 : Exemple guidé -->
+        <div class="bg-white border rounded shadow-sm p-6 mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 mb-4">1. Le vocabulaire de base (Exemple guidé)</h2>
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <div class="flex-1">
+                    <p class="mb-4 leading-loose">
+                        Un vecteur est une flèche qui représente un déplacement. Il possède 3 caractéristiques :<br>
+                        1. Sa longueur est appelée la 
+                        <span class="interactive-zone cursor-pointer border-b-2 border-dashed border-gray-400 px-2 text-center" onclick="this.classList.toggle('revealed')">
+                            <span class="hint-content text-transparent">...........</span>
+                            <span class="answer-content text-blue-600 font-handwriting text-xl">norme</span>
+                        </span>.<br>
+                        
+                        2. L'inclinaison de la droite sur laquelle il repose est sa 
+                        <span class="interactive-zone cursor-pointer border-b-2 border-dashed border-gray-400 px-2 text-center" onclick="this.classList.toggle('revealed')">
+                            <span class="hint-content text-transparent">...........</span>
+                            <span class="answer-content text-blue-600 font-handwriting text-xl">direction</span>
+                        </span>.<br>
+                        
+                        3. Le côté vers lequel pointe la flèche est son 
+                        <span class="interactive-zone cursor-pointer border-b-2 border-dashed border-gray-400 px-2 text-center" onclick="this.classList.toggle('revealed')">
+                            <span class="hint-content text-transparent">...........</span>
+                            <span class="answer-content text-blue-600 font-handwriting text-xl">sens</span>
+                        </span>.
+                    </p>
+                    <p class="leading-loose">
+                        L'angle mesuré à partir de l'axe des \(x\) positif (dans le sens anti-horaire) s'appelle l' 
+                        <span class="interactive-zone cursor-pointer border-b-2 border-dashed border-gray-400 px-2 text-center" onclick="this.classList.toggle('revealed')">
+                            <span class="hint-content text-transparent">...............</span>
+                            <span class="answer-content text-blue-600 font-handwriting text-xl">orientation</span>
+                        </span> du vecteur.
+                    </p>
+                </div>
+                <div class="w-64 h-64 bg-slate-50 border rounded flex items-center justify-center p-4">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <!-- Axes -->
+                        <line x1="10" y1="90" x2="90" y2="90" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+                        <line x1="10" y1="90" x2="10" y2="10" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+                        <text x="85" y="85" font-size="6" fill="#64748b">x</text>
+                        <text x="15" y="15" font-size="6" fill="#64748b">y</text>
+                        <!-- Vector -->
+                        <defs>
+                            <marker id="arrowHead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                                <path d="M0,0 L6,3 L0,6 Z" fill="#2563eb" />
+                            </marker>
+                            <marker id="arrow" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+                                <path d="M0,0 L5,2.5 L0,5 Z" fill="#94a3b8" />
+                            </marker>
+                        </defs>
+                        <line x1="10" y1="90" x2="70" y2="30" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowHead)"/>
+                        <!-- Angle -->
+                        <path d="M 30 90 A 20 20 0 0 0 24 76" fill="none" stroke="#ef4444" stroke-width="2"/>
+                        <text x="35" y="82" font-size="8" fill="#ef4444">&theta;</text>
+                        <!-- Components -->
+                        <line x1="10" y1="90" x2="70" y2="90" stroke="#10b981" stroke-width="2" stroke-dasharray="4"/>
+                        <line x1="70" y1="90" x2="70" y2="30" stroke="#10b981" stroke-width="2" stroke-dasharray="4"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="mt-4 p-4 bg-slate-100 rounded">
+                <p class="leading-loose">
+                    Les <strong>composantes</strong> sont les déplacements horizontaux (\(v_x\)) et verticaux (\(v_y\)). <br>
+                    Notation : \(\vec{v} = (v_x, v_y)\).
+                </p>
+            </div>
+        </div>
+
+        <!-- Section 2 : Réflexion -->
+        <div class="bg-white border rounded shadow-sm p-6 mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 mb-4">2. Question de réflexion : Les relations entre vecteurs</h2>
+            <p class="mb-4">Si deux vecteurs ont la même direction (sont parallèles), mais des sens contraires et des normes différentes, comment les qualifie-t-on ?</p>
+            
+            <div class="interactive-block cursor-pointer p-4 bg-slate-50 border border-dashed border-gray-400 rounded min-h-[4rem]" onclick="this.classList.toggle('revealed')">
+                <span class="hint-content text-gray-400 italic">Cliquez pour révéler la réponse...</span>
+                <div class="answer-content text-blue-600 font-handwriting text-xl">
+                    Ils sont <strong>colinéaires</strong> (même direction). <br>
+                    - S'ils étaient identiques, ils seraient <strong>équipollents</strong>.<br>
+                    - S'ils avaient la même norme mais des sens opposés, ils seraient <strong>opposés</strong>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 : Mon exemple -->
+        <div class="bg-white border rounded shadow-sm p-6 mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 mb-4">3. Mon exemple</h2>
+            <p class="text-slate-600 mb-4">Dessine un vecteur \(\vec{u}\) dans le plan cartésien ci-dessous, puis écris ses composantes et identifie l'angle d'orientation \(\theta\).</p>
+            <div class="h-48 border-2 border-slate-200 rounded flex items-center justify-center bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNMjAgMEwwIDBMMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTJlOGYwIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9zdmc+')]">
+                <!-- Espace vide pour l'élève -->
+            </div>
+        </div>
+
+        <!-- Section 4 : Grille 2x2 (À retenir & Erreurs) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- À retenir -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded shadow-sm p-6">
+                <h3 class="text-xl font-bold text-yellow-700 mb-3 flex items-center">
+                    <span class="mr-2">⭐</span> À retenir : Les Formules
+                </h3>
+                <ul class="space-y-4 text-slate-800">
+                    <li>
+                        <strong>Norme :</strong> <br>
+                        \( \|\vec{v}\| = \sqrt{(v_x)^2 + (v_y)^2} \)
+                    </li>
+                    <li>
+                        <strong>Composantes :</strong> <br>
+                        \( v_x = \|\vec{v}\| \cos(\theta) \) <br>
+                        \( v_y = \|\vec{v}\| \sin(\theta) \)
+                    </li>
+                    <li>
+                        <strong>Orientation :</strong> <br>
+                        \( \theta \) se trouve avec \( \tan^{-1}\left(\frac{v_y}{v_x}\right) \) <br>
+                        <span class="text-sm italic text-slate-600">(Attention au quadrant !)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Erreur fatale -->
+            <div class="bg-red-50 border border-red-200 rounded shadow-sm p-6">
+                <h3 class="text-xl font-bold text-red-700 mb-3 flex items-center">
+                    <span class="mr-2">🛑</span> Erreur fatale
+                </h3>
+                <p class="text-slate-700 mb-4">Calculer l'orientation en acceptant aveuglément la réponse de la calculatrice !</p>
+                <div class="bg-white p-3 rounded border border-red-100">
+                    <p class="text-red-600 line-through mb-2">Ex: \(\vec{v} = (-3, 4)\) <br> \(\theta = \tan^{-1}(4/-3) = -53,13^\circ\)</p>
+                    <p class="text-green-700 font-semibold">Correction : <br>Le vecteur est dans le quadrant 2 ! <br>\(\theta = 180^\circ - 53,13^\circ = 126,87^\circ\)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5 : Pratique -->
+        <div class="bg-white border rounded shadow-sm p-6 mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 mb-6">5. Pratique</h2>
+            
+            <div class="space-y-8">
+                <!-- Doux -->
+                <div class="pb-6 border-b border-slate-100">
+                    <h3 class="text-lg font-semibold flex items-center mb-2">
+                        <span class="mr-2">🍏</span> Doux
+                    </h3>
+                    <p class="mb-3">Calcule la norme du vecteur \( \vec{u} = (6, -8) \).</p>
+                    <div class="interactive-block cursor-pointer p-4 bg-slate-50 border border-dashed border-gray-300 rounded min-h-[3rem]" onclick="this.classList.toggle('revealed')">
+                        <span class="hint-content text-gray-400 italic">Voir la démarche...</span>
+                        <div class="answer-content text-blue-600 font-handwriting text-xl">
+                            \( \|\vec{u}\| = \sqrt{6^2 + (-8)^2} = \sqrt{36 + 64} = \sqrt{100} = 10 \)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Moyen -->
+                <div class="pb-6 border-b border-slate-100">
+                    <h3 class="text-lg font-semibold flex items-center mb-2">
+                        <span class="mr-2">🌮</span> Moyen
+                    </h3>
+                    <p class="mb-3">Trouve les composantes d'un vecteur \( \vec{v} \) si sa norme est de 15 et son orientation est de \( 120^\circ \).</p>
+                    <div class="interactive-block cursor-pointer p-4 bg-slate-50 border border-dashed border-gray-300 rounded min-h-[3rem]" onclick="this.classList.toggle('revealed')">
+                        <span class="hint-content text-gray-400 italic">Voir la démarche...</span>
+                        <div class="answer-content text-blue-600 font-handwriting text-xl">
+                            \( v_x = 15 \times \cos(120^\circ) = -7,5 \) <br>
+                            \( v_y = 15 \times \sin(120^\circ) \approx 12,99 \) <br>
+                            \(\vec{v} = (-7,5 \ ; \ 12,99)\)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Épicé -->
+                <div>
+                    <h3 class="text-lg font-semibold flex items-center mb-2">
+                        <span class="mr-2">🌶️</span> Épicé
+                    </h3>
+                    <p class="mb-3">Trouve l'orientation exacte du vecteur \( \vec{w} \) sachant qu'il est <strong>l'opposé</strong> du vecteur \( \vec{z} = (3, 4) \).</p>
+                    <div class="interactive-block cursor-pointer p-4 bg-slate-50 border border-dashed border-gray-300 rounded min-h-[3rem]" onclick="this.classList.toggle('revealed')">
+                        <span class="hint-content text-gray-400 italic">Voir la démarche...</span>
+                        <div class="answer-content text-blue-600 font-handwriting text-xl">
+                            1. Vecteur opposé : \(\vec{w} = (-3, -4)\) <br>
+                            2. Angle aigu (réf) : \(\tan^{-1}(4/3) \approx 53,13^\circ\) <br>
+                            3. Quadrant 3 (x nég, y nég) : <br>
+                            \( \theta = 180^\circ + 53,13^\circ = 233,13^\circ \)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script pour le bouton Révéler Tout -->
+    <script>
+        document.getElementById('toggleAllBtn').addEventListener('click', function() {
+            const isRevealed = document.body.classList.contains('all-revealed');
+            const zones = document.querySelectorAll('.interactive-zone, .interactive-block');
+            
+            if (isRevealed) {
+                document.body.classList.remove('all-revealed');
+                zones.forEach(zone => zone.classList.remove('revealed'));
+                this.textContent = 'Afficher tout le corrigé';
+                this.classList.replace('bg-slate-600', 'bg-blue-600');
+            } else {
+                document.body.classList.add('all-revealed');
+                zones.forEach(zone => zone.classList.add('revealed'));
+                this.textContent = 'Masquer le corrigé';
+                this.classList.replace('bg-blue-600', 'bg-slate-600');
+            }
+        });
+    </script>
+</body>
+</html>
