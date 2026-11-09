@@ -1,373 +1,388 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pratique : Composantes de Vecteurs</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-        canvas {
-            display: block;
-            max-width: 100%;
-            height: auto;
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-    </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Pratique : Composantes de Vecteurs</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <style>
+ body {
+     font-family: 'Inter', sans-serif;
+     background-color: #f3f4f6;
+ }
+ canvas {
+     display: block;
+     max-width: 100%;
+     height: auto;
+     background-color: white;
+     border-radius: 0.5rem;
+     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+ }
+ </style>
 </head>
 <body class="min-h-screen p-4 md:p-8 flex items-center justify-center">
 
-    <div class="max-w-6xl w-full bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
-        
-        <!-- Colonne Gauche: Graphique -->
-        <div class="w-full md:w-1/2 p-6 bg-gray-50 border-r border-gray-200 flex flex-col items-center justify-center">
-            <h2 class="text-xl font-bold text-gray-700 mb-4 w-full text-center">Représentation visuelle</h2>
-            <div class="w-full aspect-square flex items-center justify-center relative">
-                <canvas id="vectorCanvas" width="500" height="500" class="w-full h-full object-contain"></canvas>
-            </div>
-            <p class="text-sm text-gray-500 mt-3 text-center">Le schéma n'est pas à l'échelle pour des raisons d'affichage, mais respecte les proportions et le quadrant.</p>
-        </div>
+ <div class="max-w-6xl w-full bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+ 
+     <!-- Colonne Gauche: Graphique -->
+     <div class="w-full md:w-1/2 p-6 bg-gray-50 border-r border-gray-200 flex flex-col items-center justify-center">
+         <h2 class="text-xl font-bold text-gray-700 mb-4 w-full text-center">Représentation visuelle</h2>
+         <div class="w-full aspect-square flex items-center justify-center relative">
+            <canvas id="vectorCanvas" width="500" height="500" class="w-full h-full object-contain"></canvas>
+         </div>
+         <p class="text-sm text-gray-500 mt-3 text-center">Le schéma n'est pas à l'échelle pour des raisons d'affichage, mais respecte les proportions et le quadrant.</p>
+     </div>
 
-        <!-- Colonne Droite: Problème et Interaction -->
-        <div class="w-full md:w-1/2 p-6 lg:p-10 flex flex-col justify-center">
-            <h1 class="text-3xl font-extrabold text-blue-600 mb-6">Composantes d'un Vecteur</h1>
-            
-            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6 shadow-sm">
-                <p id="problemStatement" class="text-lg text-gray-800 font-medium leading-relaxed"></p>
-            </div>
+     <!-- Colonne Droite: Problème et Interaction -->
+     <div class="w-full md:w-1/2 p-6 lg:p-10 flex flex-col justify-center">
+         <h1 class="text-3xl font-extrabold text-blue-600 mb-6">Composantes d'un Vecteur</h1>
+         
+         <!-- NOUVEAU: Sélection du quadrant -->
+         <div class="mb-6">
+             <label for="quadrantSelect" class="block text-sm font-bold text-gray-700 mb-2">Choisir le quadrant de travail :</label>
+             <select id="quadrantSelect" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition-shadow cursor-pointer">
+                 <option value="all">Aléatoire (Tous les quadrants)</option>
+                 <option value="1">Quadrant 1 (Entre 0° et 90°)</option>
+                 <option value="2">Quadrant 2 (Entre 90° et 180°)</option>
+                 <option value="3">Quadrant 3 (Entre 180° et 270°)</option>
+                 <option value="4">Quadrant 4 (Entre 270° et 360°)</option>
+             </select>
+         </div>
 
-            <div class="space-y-5">
-                <div>
-                    <label for="componentInput" class="block text-sm font-bold text-gray-700 mb-1">Composante manquante (inclure le signe + ou -)</label>
-                    <input type="number" id="componentInput" step="0.01" placeholder="ex: -15.25" 
-                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow">
-                </div>
+         <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6 shadow-sm">
+            <p id="problemStatement" class="text-lg text-gray-800 font-medium leading-relaxed"></p>
+         </div>
 
-                <div>
-                    <label for="normInput" class="block text-sm font-bold text-gray-700 mb-1">Norme du vecteur</label>
-                    <input type="number" id="normInput" step="0.01" min="0" placeholder="ex: 25.40" 
-                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-shadow">
-                </div>
+         <div class="space-y-5">
+             <div>
+                 <label for="componentInput" class="block text-sm font-bold text-gray-700 mb-1">Composante manquante (inclure le signe + ou -)</label>
+                 <input type="number" id="componentInput" step="0.01" placeholder="ex: -15.25" 
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow">
+             </div>
 
-                <button id="validateBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all transform active:scale-95">
-                    Valider ma réponse
-                </button>
-            </div>
+             <div>
+                 <label for="normInput" class="block text-sm font-bold text-gray-700 mb-1">Norme du vecteur</label>
+                 <input type="number" id="normInput" step="0.01" min="0" placeholder="ex: 25.40" 
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-shadow">
+             </div>
 
-            <!-- Zone de rétroaction -->
-            <div id="feedbackArea" class="mt-6 p-4 rounded-lg hidden transition-all">
-                <p id="feedbackText" class="font-semibold text-lg"></p>
-                <p id="hintText" class="text-sm mt-2 font-medium"></p>
-            </div>
+             <button id="validateBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all transform active:scale-95">
+                Valider ma réponse
+             </button>
+         </div>
 
-            <button id="nextBtn" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all hidden transform active:scale-95">
-                Nouvel exercice
-            </button>
-        </div>
-    </div>
+         <!-- Zone de rétroaction -->
+         <div id="feedbackArea" class="mt-6 p-4 rounded-lg hidden transition-all">
+             <p id="feedbackText" class="font-semibold text-lg"></p>
+             <p id="hintText" class="text-sm mt-2 font-medium"></p>
+         </div>
 
-    <script>
-        // Variables globales d'état
-        let state = {
-            theta: 0,
-            norm: 0,
-            givenType: '', // 'x' ou 'y'
-            givenValue: 0,
-            expectedComponent: 0,
-            expectedNorm: 0,
-            attempts: 0
-        };
+         <button id="nextBtn" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all hidden transform active:scale-95">
+            Nouvel exercice
+         </button>
+     </div>
+ </div>
 
-        const canvas = document.getElementById('vectorCanvas');
-        const ctx = canvas.getContext('2d');
-        const problemStatement = document.getElementById('problemStatement');
-        const componentInput = document.getElementById('componentInput');
-        const normInput = document.getElementById('normInput');
-        const validateBtn = document.getElementById('validateBtn');
-        const feedbackArea = document.getElementById('feedbackArea');
-        const feedbackText = document.getElementById('feedbackText');
-        const hintText = document.getElementById('hintText');
-        const nextBtn = document.getElementById('nextBtn');
+ <script>
+ // Variables globales d'état
+ let state = {
+     theta: 0,
+     norm: 0,
+     givenType: '', 
+     givenValue: 0,
+     expectedComponent: 0,
+     expectedNorm: 0,
+     attempts: 0
+ };
 
-        // Générer un angle valide (Éviter les multiples de 90 à +- 5 degrés)
-        function generateValidAngle() {
-            let angle;
-            let isValid = false;
-            while (!isValid) {
-                angle = Math.floor(Math.random() * 360);
-                let mod90 = angle % 90;
-                if (mod90 > 5 && mod90 < 85) {
-                    isValid = true;
-                }
-            }
-            return angle;
-        }
+ const canvas = document.getElementById('vectorCanvas');
+ const ctx = canvas.getContext('2d');
+ const problemStatement = document.getElementById('problemStatement');
+ const componentInput = document.getElementById('componentInput');
+ const normInput = document.getElementById('normInput');
+ const validateBtn = document.getElementById('validateBtn');
+ const feedbackArea = document.getElementById('feedbackArea');
+ const feedbackText = document.getElementById('feedbackText');
+ const hintText = document.getElementById('hintText');
+ const nextBtn = document.getElementById('nextBtn');
+ const quadrantSelect = document.getElementById('quadrantSelect');
 
-        function generateProblem() {
-            state.attempts = 0;
-            
-            // 1. Génération des valeurs de base
-            state.theta = generateValidAngle();
-            const thetaRad = state.theta * Math.PI / 180;
-            state.norm = Math.floor(Math.random() * 41) + 10; // Norme entre 10 et 50
+ // Générer un angle en fonction du quadrant sélectionné
+ function generateValidAngle() {
+     const quad = quadrantSelect.value;
+     let min, max;
+     
+     if (quad === '1') { min = 5; max = 85; }
+     else if (quad === '2') { min = 95; max = 175; }
+     else if (quad === '3') { min = 185; max = 265; }
+     else if (quad === '4') { min = 275; max = 355; }
+     else {
+         // Si "Tous les quadrants" est sélectionné
+         let angle;
+         let isValid = false;
+         while (!isValid) {
+             angle = Math.floor(Math.random() * 360);
+             let mod90 = angle % 90;
+             if (mod90 > 5 && mod90 < 85) {
+                 isValid = true;
+             }
+         }
+         return angle;
+     }
+     
+     return Math.floor(Math.random() * (max - min + 1)) + min;
+ }
 
-            // 2. Choix de la composante donnée
-            state.givenType = Math.random() < 0.5 ? 'x' : 'y';
+ function generateProblem() {
+     state.attempts = 0;
+     
+     state.theta = generateValidAngle();
+     const thetaRad = state.theta * Math.PI / 180;
+     state.norm = Math.floor(Math.random() * 41) + 10; 
 
-            let rawGivenValue = state.givenType === 'x' 
-                ? state.norm * Math.cos(thetaRad) 
-                : state.norm * Math.sin(thetaRad);
-            
-            // On arrondit la valeur donnée pour l'élève à 2 décimales
-            state.givenValue = Math.round(rawGivenValue * 100) / 100;
+     state.givenType = Math.random() < 0.5 ? 'x' : 'y';
 
-            // 3. Calcul des réponses attendues EXACTES basées sur la valeur arrondie de l'élève
-            if (state.givenType === 'x') {
-                state.expectedComponent = state.givenValue * Math.tan(thetaRad);
-                state.expectedNorm = Math.abs(state.givenValue / Math.cos(thetaRad));
-            } else {
-                state.expectedComponent = state.givenValue / Math.tan(thetaRad);
-                state.expectedNorm = Math.abs(state.givenValue / Math.sin(thetaRad));
-            }
+     let rawGivenValue = state.givenType === 'x' 
+         ? state.norm * Math.cos(thetaRad) 
+         : state.norm * Math.sin(thetaRad);
+     
+     state.givenValue = Math.round(rawGivenValue * 100) / 100;
 
-            updateUI();
-            drawGraph();
-        }
+     if (state.givenType === 'x') {
+         state.expectedComponent = state.givenValue * Math.tan(thetaRad);
+         state.expectedNorm = Math.abs(state.givenValue / Math.cos(thetaRad));
+     } else {
+         state.expectedComponent = state.givenValue / Math.tan(thetaRad);
+         state.expectedNorm = Math.abs(state.givenValue / Math.sin(thetaRad));
+     }
 
-        function updateUI() {
-            // Réinitialiser les champs et feedbacks
-            componentInput.value = '';
-            normInput.value = '';
-            componentInput.disabled = false;
-            normInput.disabled = false;
-            validateBtn.disabled = false;
-            validateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            feedbackArea.classList.add('hidden');
-            nextBtn.classList.add('hidden');
+     updateUI();
+     drawGraph();
+ }
 
-            // Mettre à jour l'énoncé
-            const givenName = state.givenType === 'x' ? 'horizontale (x)' : 'verticale (y)';
-            const targetName = state.givenType === 'x' ? 'verticale (y)' : 'horizontale (x)';
-            
-            problemStatement.innerHTML = `Un vecteur a une orientation de <strong>${state.theta}°</strong>. Sa composante ${givenName} vaut <strong>${state.givenValue}</strong>.<br><br>Trouve sa composante <strong>${targetName}</strong> (avec le bon signe) ainsi que sa <strong>norme</strong>.`;
-        }
+ function updateUI() {
+     componentInput.value = '';
+     normInput.value = '';
+     componentInput.disabled = false;
+     normInput.disabled = false;
+     validateBtn.disabled = false;
+     validateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+     feedbackArea.classList.add('hidden');
+     nextBtn.classList.add('hidden');
 
-        function drawGraph() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
+     const givenName = state.givenType === 'x' ? 'horizontale (x)' : 'verticale (y)';
+     const targetName = state.givenType === 'x' ? 'verticale (y)' : 'horizontale (x)';
+     
+     problemStatement.innerHTML = `Un vecteur a une orientation de <strong>${state.theta}°</strong>. Sa composante ${givenName} vaut <strong>${state.givenValue}</strong>.<br><br>Trouve sa composante <strong>${targetName}</strong> (avec le bon signe) ainsi que sa <strong>norme</strong>.`;
+ }
 
-            // Recalculer les composantes mathématiques pour le dessin (afin qu'elles matchent parfaitement l'angle visuel)
-            const thetaRad = state.theta * Math.PI / 180;
-            const vx = state.norm * Math.cos(thetaRad);
-            const vy = state.norm * Math.sin(thetaRad);
+ function drawGraph() {
+     ctx.clearRect(0, 0, canvas.width, canvas.height);
+     const cx = canvas.width / 2;
+     const cy = canvas.height / 2;
 
-            // Facteur d'échelle
-            const maxComponent = Math.max(Math.abs(vx), Math.abs(vy), state.norm);
-            const scale = (canvas.width / 2 - 40) / maxComponent;
+     const thetaRad = state.theta * Math.PI / 180;
+     const vx = state.norm * Math.cos(thetaRad);
+     const vy = state.norm * Math.sin(thetaRad);
 
-            // Fonction utilitaire de conversion math -> canvas
-            const toCanvas = (x, y) => ({ x: cx + x * scale, y: cy - y * scale });
+     const maxComponent = Math.max(Math.abs(vx), Math.abs(vy), state.norm);
+     const scale = (canvas.width / 2 - 40) / maxComponent;
 
-            // Dessiner les axes
-            ctx.strokeStyle = '#9CA3AF'; // gray-400
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, cy); ctx.lineTo(canvas.width, cy); // Axe X
-            ctx.moveTo(cx, 0); ctx.lineTo(cx, canvas.height); // Axe Y
-            ctx.stroke();
+     const toCanvas = (x, y) => ({ x: cx + x * scale, y: cy - y * scale });
 
-            // Flèches des axes
-            ctx.fillStyle = '#9CA3AF';
-            ctx.beginPath(); ctx.moveTo(canvas.width, cy); ctx.lineTo(canvas.width - 10, cy - 5); ctx.lineTo(canvas.width - 10, cy + 5); ctx.fill();
-            ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx - 5, 10); ctx.lineTo(cx + 5, 10); ctx.fill();
+     // Axes
+     ctx.strokeStyle = '#9CA3AF'; 
+     ctx.lineWidth = 2;
+     ctx.beginPath();
+     ctx.moveTo(0, cy); ctx.lineTo(canvas.width, cy); 
+     ctx.moveTo(cx, 0); ctx.lineTo(cx, canvas.height); 
+     ctx.stroke();
 
-            // Labels axes
-            ctx.font = '14px Inter';
-            ctx.fillStyle = '#4B5563';
-            ctx.fillText('X', canvas.width - 15, cy - 15);
-            ctx.fillText('Y', cx + 15, 15);
+     // Flèches des axes
+     ctx.fillStyle = '#9CA3AF';
+     ctx.beginPath(); ctx.moveTo(canvas.width, cy); ctx.lineTo(canvas.width - 10, cy - 5); ctx.lineTo(canvas.width - 10, cy + 5); ctx.fill();
+     ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx - 5, 10); ctx.lineTo(cx + 5, 10); ctx.fill();
 
-            // Dessiner la composante donnée (Ligne pointillée)
-            ctx.strokeStyle = '#EF4444'; // red-500
-            ctx.lineWidth = 3;
-            ctx.setLineDash([5, 5]);
-            ctx.beginPath();
-            if (state.givenType === 'x') {
-                const endX = toCanvas(vx, 0);
-                ctx.moveTo(cx, cy);
-                ctx.lineTo(endX.x, endX.y);
-            } else {
-                const endY = toCanvas(0, vy);
-                ctx.moveTo(cx, cy);
-                ctx.lineTo(endY.x, endY.y);
-            }
-            ctx.stroke();
-            ctx.setLineDash([]); // Reset dash
+     // Labels axes
+     ctx.font = '14px Inter';
+     ctx.fillStyle = '#4B5563';
+     ctx.fillText('X', canvas.width - 15, cy - 15);
+     ctx.fillText('Y', cx + 15, 15);
 
-            // Label composante donnée
-            ctx.fillStyle = '#EF4444';
-            ctx.font = 'bold 16px Inter';
-            if (state.givenType === 'x') {
-                const labelPos = toCanvas(vx / 2, 0);
-                ctx.fillText(`x = ${state.givenValue}`, labelPos.x, cy + (vx > 0 ? 20 : -10));
-            } else {
-                const labelPos = toCanvas(0, vy / 2);
-                ctx.fillText(`y = ${state.givenValue}`, cx + (vy > 0 ? 10 : -40), labelPos.y);
-            }
+     // Ligne composante donnée
+     ctx.strokeStyle = '#EF4444'; 
+     ctx.lineWidth = 3;
+     ctx.setLineDash([5, 5]);
+     ctx.beginPath();
+     if (state.givenType === 'x') {
+         const endX = toCanvas(vx, 0);
+         ctx.moveTo(cx, cy);
+         ctx.lineTo(endX.x, endX.y);
+     } else {
+         const endY = toCanvas(0, vy);
+         ctx.moveTo(cx, cy);
+         ctx.lineTo(endY.x, endY.y);
+     }
+     ctx.stroke();
+     ctx.setLineDash([]); 
 
-            // Dessiner le vecteur
-            const endVec = toCanvas(vx, vy);
-            ctx.strokeStyle = '#2563EB'; // blue-600
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.lineTo(endVec.x, endVec.y);
-            ctx.stroke();
+     // Label composante
+     ctx.fillStyle = '#EF4444';
+     ctx.font = 'bold 16px Inter';
+     if (state.givenType === 'x') {
+         const labelPos = toCanvas(vx / 2, 0);
+         ctx.fillText(`x = ${state.givenValue}`, labelPos.x, cy + (vx > 0 ? 20 : -10));
+     } else {
+         const labelPos = toCanvas(0, vy / 2);
+         ctx.fillText(`y = ${state.givenValue}`, cx + (vy > 0 ? 10 : -40), labelPos.y);
+     }
 
-            // Pointe de flèche du vecteur (Dans le système de coordonnées du canvas)
-            const arrowAngle = Math.atan2(endVec.y - cy, endVec.x - cx);
-            ctx.fillStyle = '#2563EB';
-            ctx.beginPath();
-            ctx.moveTo(endVec.x, endVec.y);
-            ctx.lineTo(endVec.x - 15 * Math.cos(arrowAngle - Math.PI / 6), endVec.y - 15 * Math.sin(arrowAngle - Math.PI / 6));
-            ctx.lineTo(endVec.x - 15 * Math.cos(arrowAngle + Math.PI / 6), endVec.y - 15 * Math.sin(arrowAngle + Math.PI / 6));
-            ctx.fill();
+     // Le vecteur
+     const endVec = toCanvas(vx, vy);
+     ctx.strokeStyle = '#2563EB'; 
+     ctx.lineWidth = 4;
+     ctx.beginPath();
+     ctx.moveTo(cx, cy);
+     ctx.lineTo(endVec.x, endVec.y);
+     ctx.stroke();
 
-            // Arc pour l'angle
-            ctx.strokeStyle = '#10B981'; // green-500
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            const arcRadius = 40;
-            // Arc dans canvas : sens horaire est positif. On doit aller de 0 à -thetaRad (anti-horaire)
-            ctx.arc(cx, cy, arcRadius, 0, -thetaRad, true); 
-            ctx.stroke();
+     // Pointe de flèche
+     const arrowAngle = Math.atan2(endVec.y - cy, endVec.x - cx);
+     ctx.fillStyle = '#2563EB';
+     ctx.beginPath();
+     ctx.moveTo(endVec.x, endVec.y);
+     ctx.lineTo(endVec.x - 15 * Math.cos(arrowAngle - Math.PI / 6), endVec.y - 15 * Math.sin(arrowAngle - Math.PI / 6));
+     ctx.lineTo(endVec.x - 15 * Math.cos(arrowAngle + Math.PI / 6), endVec.y - 15 * Math.sin(arrowAngle + Math.PI / 6));
+     ctx.fill();
 
-            // Label de l'angle
-            ctx.fillStyle = '#059669'; // green-600
-            ctx.font = 'bold 14px Inter';
-            const labelTheta = -thetaRad / 2; // Milieu de l'arc
-            ctx.fillText(`${state.theta}°`, cx + (arcRadius + 15) * Math.cos(labelTheta) - 10, cy + (arcRadius + 15) * Math.sin(labelTheta) + 5);
-        }
+     // Arc angle
+     ctx.strokeStyle = '#10B981'; 
+     ctx.lineWidth = 2;
+     ctx.beginPath();
+     const arcRadius = 40;
+     ctx.arc(cx, cy, arcRadius, 0, -thetaRad, true); 
+     ctx.stroke();
 
-        function handleValidation() {
-            const compValue = parseFloat(componentInput.value);
-            const normValue = parseFloat(normInput.value);
+     // Label angle
+     ctx.fillStyle = '#059669'; 
+     ctx.font = 'bold 14px Inter';
+     const labelTheta = -thetaRad / 2; 
+     ctx.fillText(`${state.theta}°`, cx + (arcRadius + 15) * Math.cos(labelTheta) - 10, cy + (arcRadius + 15) * Math.sin(labelTheta) + 5);
+ }
 
-            if (isNaN(compValue) || isNaN(normValue)) {
-                showFeedback('Veuillez remplir les deux champs avec des nombres valides.', 'orange', '');
-                return;
-            }
+ function handleValidation() {
+     const compValue = parseFloat(componentInput.value);
+     const normValue = parseFloat(normInput.value);
 
-            state.attempts++;
+     if (isNaN(compValue) || isNaN(normValue)) {
+         showFeedback('Veuillez remplir les deux champs avec des nombres valides.', 'orange', '');
+         return;
+     }
 
-            const diffComp = Math.abs(compValue - state.expectedComponent);
-            const diffNorm = Math.abs(normValue - state.expectedNorm);
-            
-            // Tolérance de 0.1 (0.11 pour éviter les erreurs d'arrondis subtiles)
-            const isCompCorrect = diffComp <= 0.11;
-            const isNormCorrect = diffNorm <= 0.11;
+     state.attempts++;
 
-            if (isCompCorrect && isNormCorrect) {
-                handleSuccess();
-            } else {
-                handleError(isCompCorrect, isNormCorrect);
-            }
-        }
+     const diffComp = Math.abs(compValue - state.expectedComponent);
+     const diffNorm = Math.abs(normValue - state.expectedNorm);
+     
+     const isCompCorrect = diffComp <= 0.11;
+     const isNormCorrect = diffNorm <= 0.11;
 
-        function showFeedback(mainText, colorMode, hint) {
-            feedbackArea.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-orange-100', 'text-orange-800', 'bg-red-100', 'text-red-800');
-            
-            if (colorMode === 'green') {
-                feedbackArea.classList.add('bg-green-100', 'text-green-800');
-            } else if (colorMode === 'orange') {
-                feedbackArea.classList.add('bg-orange-100', 'text-orange-800');
-            } else {
-                feedbackArea.classList.add('bg-red-100', 'text-red-800');
-            }
+     if (isCompCorrect && isNormCorrect) {
+         handleSuccess();
+     } else {
+         handleError(isCompCorrect, isNormCorrect);
+     }
+ }
 
-            feedbackText.innerHTML = mainText;
-            hintText.innerHTML = hint;
-        }
+ function showFeedback(mainText, colorMode, hint) {
+     feedbackArea.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-orange-100', 'text-orange-800', 'bg-red-100', 'text-red-800');
+     
+     if (colorMode === 'green') {
+         feedbackArea.classList.add('bg-green-100', 'text-green-800');
+     } else if (colorMode === 'orange') {
+         feedbackArea.classList.add('bg-orange-100', 'text-orange-800');
+     } else {
+         feedbackArea.classList.add('bg-red-100', 'text-red-800');
+     }
 
-        function handleSuccess() {
-            showFeedback('Bravo ! Tes réponses sont exactes.', 'green', '');
-            endGame();
-        }
+     feedbackText.innerHTML = mainText;
+     hintText.innerHTML = hint;
+ }
 
-        function handleError(isCompCorrect, isNormCorrect) {
-            let statusMsg = "Ce n'est pas tout à fait ça.";
-            if (isCompCorrect) statusMsg = "La composante est bonne, mais la norme est incorrecte.";
-            if (isNormCorrect) statusMsg = "La norme est bonne, mais la composante est incorrecte.";
+ function handleSuccess() {
+     showFeedback('Bravo ! Tes réponses sont exactes.', 'green', '');
+     endGame();
+ }
 
-            if (state.attempts === 1) {
-                showFeedback(
-                    statusMsg, 
-                    'orange', 
-                    "<strong>Indice 1 :</strong> Pense aux rapports trigonométriques SOH CAH TOA (sin, cos, tan). Vérifie aussi le signe de ta composante selon le quadrant dans lequel se trouve le vecteur."
-                );
-            } else if (state.attempts === 2) {
-                const hint2 = state.givenType === 'x' 
-                    ? "<strong>Indice 2 :</strong> Utilise les formules suivantes :<br>Norme = | composante_x / cos(θ) |<br>composante_y = composante_x × tan(θ)"
-                    : "<strong>Indice 2 :</strong> Utilise les formules suivantes :<br>Norme = | composante_y / sin(θ) |<br>composante_x = composante_y / tan(θ)";
+ function handleError(isCompCorrect, isNormCorrect) {
+     let statusMsg = "Ce n'est pas tout à fait ça.";
+     if (isCompCorrect) statusMsg = "La composante est bonne, mais la norme est incorrecte.";
+     if (isNormCorrect) statusMsg = "La norme est bonne, mais la composante est incorrecte.";
 
-                showFeedback(
-                    statusMsg + ' Essaie encore !', 
-                    'orange', 
-                    hint2
-                );
-            } else {
-                // 3ème erreur (Échec)
-                const targetName = state.givenType === 'x' ? 'y' : 'x';
-                const formulaComp = state.givenType === 'x' 
-                    ? `y = x · tan(θ) = ${state.givenValue} · tan(${state.theta}°) = ${state.expectedComponent.toFixed(2)}`
-                    : `x = y / tan(θ) = ${state.givenValue} / tan(${state.theta}°) = ${state.expectedComponent.toFixed(2)}`;
-                const formulaNorm = state.givenType === 'x'
-                    ? `Norme = |x / cos(θ)| = |${state.givenValue} / cos(${state.theta}°)| = ${state.expectedNorm.toFixed(2)}`
-                    : `Norme = |y / sin(θ)| = |${state.givenValue} / sin(${state.theta}°)| = ${state.expectedNorm.toFixed(2)}`;
-                
-                showFeedback(
-                    'Maximum d\'essais atteint.', 
-                    'red', 
-                    `<strong>Les bonnes réponses étaient :</strong><br>
-                     Composante ${targetName} = <strong>${state.expectedComponent.toFixed(2)}</strong><br>
-                     Norme = <strong>${state.expectedNorm.toFixed(2)}</strong><br><br>
-                     <em>Calcul composante : ${formulaComp}</em><br>
-                     <em>Calcul norme : ${formulaNorm}</em>`
-                );
-                endGame();
-            }
-        }
+     if (state.attempts === 1) {
+         showFeedback(
+             statusMsg, 
+             'orange', 
+             "<strong>Indice 1 :</strong> Pense aux rapports trigonométriques SOH CAH TOA (sin, cos, tan). Vérifie aussi le signe de ta composante selon le quadrant dans lequel se trouve le vecteur."
+         );
+     } else if (state.attempts === 2) {
+         const hint2 = state.givenType === 'x' 
+             ? "<strong>Indice 2 :</strong> Utilise les formules suivantes :<br>Norme = | composante_x / cos(θ) |<br>composante_y = composante_x × tan(θ)"
+             : "<strong>Indice 2 :</strong> Utilise les formules suivantes :<br>Norme = | composante_y / sin(θ) |<br>composante_x = composante_y / tan(θ)";
 
-        function endGame() {
-            componentInput.disabled = true;
-            normInput.disabled = true;
-            validateBtn.disabled = true;
-            validateBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            nextBtn.classList.remove('hidden');
-        }
+         showFeedback(
+             statusMsg + ' Essaie encore !', 
+             'orange', 
+             hint2
+         );
+     } else {
+         const targetName = state.givenType === 'x' ? 'y' : 'x';
+         const formulaComp = state.givenType === 'x' 
+             ? `y = x · tan(θ) = ${state.givenValue} · tan(${state.theta}°) = ${state.expectedComponent.toFixed(2)}`
+             : `x = y / tan(θ) = ${state.givenValue} / tan(${state.theta}°) = ${state.expectedComponent.toFixed(2)}`;
+         const formulaNorm = state.givenType === 'x'
+             ? `Norme = |x / cos(θ)| = |${state.givenValue} / cos(${state.theta}°)| = ${state.expectedNorm.toFixed(2)}`
+             : `Norme = |y / sin(θ)| = |${state.givenValue} / sin(${state.theta}°)| = ${state.expectedNorm.toFixed(2)}`;
+         
+         showFeedback(
+             'Maximum d\'essais atteint.', 
+             'red', 
+             `<strong>Les bonnes réponses étaient :</strong><br>
+             Composante ${targetName} = <strong>${state.expectedComponent.toFixed(2)}</strong><br>
+             Norme = <strong>${state.expectedNorm.toFixed(2)}</strong><br><br>
+             <em>Calcul composante : ${formulaComp}</em><br>
+             <em>Calcul norme : ${formulaNorm}</em>`
+         );
+         endGame();
+     }
+ }
 
-        // Écouteurs d'événements
-        validateBtn.addEventListener('click', handleValidation);
-        nextBtn.addEventListener('click', generateProblem);
-        
-        // Permettre de valider avec la touche 'Enter'
-        function checkEnter(e) {
-            if (e.key === 'Enter' && !validateBtn.disabled) {
-                handleValidation();
-            }
-        }
-        componentInput.addEventListener('keypress', checkEnter);
-        normInput.addEventListener('keypress', checkEnter);
+ function endGame() {
+     componentInput.disabled = true;
+     normInput.disabled = true;
+     validateBtn.disabled = true;
+     validateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+     nextBtn.classList.remove('hidden');
+ }
 
-        // Initialisation de la première partie
-        window.onload = generateProblem;
+ // Écouteurs d'événements
+ validateBtn.addEventListener('click', handleValidation);
+ nextBtn.addEventListener('click', generateProblem);
+ 
+ // Déclencher la création d'un nouveau problème lors du changement de quadrant
+ quadrantSelect.addEventListener('change', generateProblem);
+ 
+ function checkEnter(e) {
+     if (e.key === 'Enter' && !validateBtn.disabled) {
+         handleValidation();
+     }
+ }
+ componentInput.addEventListener('keypress', checkEnter);
+ normInput.addEventListener('keypress', checkEnter);
 
-    </script>
+ // Initialisation
+ window.onload = generateProblem;
+
+ </script>
 </body>
 </html>
