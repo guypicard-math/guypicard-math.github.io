@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes de cours : Relations Linéaires (Tables de valeurs)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax pour les formules mathématiques -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .handwritten { font-family: 'Architects Daughter', cursive; }
+        
+        /* Optimisation pour l'impression en format PDF */
+        @media print {
+            body, .bg-slate-50, .bg-white, .bg-yellow-50, .bg-red-50, .bg-blue-50 { 
+                background-color: white !important; 
+            }
+            .shadow-sm { box-shadow: none !important; }
+            .no-print { display: none !important; }
+            .border { border-color: #cbd5e1 !important; }
+            /* Révéler automatiquement toutes les réponses à l'impression */
+            .answer { display: block !important; }
+            span.answer { display: inline !important; }
+            .placeholder { display: none !important; }
+            .answer-zone { border-color: transparent !important; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 p-4 md:p-8 min-h-screen bg-slate-50 flex flex-col items-center">
+
+    <div class="max-w-4xl w-full flex flex-col gap-6 relative">
+        
+        <!-- Bouton global : Afficher le corrigé -->
+        <div class="flex justify-end no-print">
+            <button id="toggle-all" onclick="toggleAllAnswers()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-lg shadow-sm transition duration-200">
+                Afficher tout le corrigé
+            </button>
+        </div>
+
+        <!-- En-tête -->
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 text-center">
+            <h1 class="text-3xl font-bold text-indigo-700">Relations Linéaires \((y = ax + b)\)</h1>
+            <p class="text-slate-500 mt-2">Notes de cours interactives : Analyse par table de valeurs</p>
+        </div>
+
+        <!-- Section 1 : Exemple guidé -->
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-bold text-slate-700 mb-4 border-b pb-2">1. Exemple guidé : La table de valeurs</h2>
+            <p class="mb-5 text-slate-600">
+                Une relation linéaire décrit une situation où une valeur augmente ou diminue de façon constante.
+                <br><b>Exemple :</b> Un technicien demande 50 $ pour le déplacement, plus 30 $ par heure de travail.
+            </p>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <!-- Tableau des valeurs avec flèches SVG vectorielles -->
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-inner flex flex-col items-center justify-center min-h-[260px]">
+                    <div class="relative w-[360px] flex justify-center py-2">
+                        <!-- SVG des flèches ajustées -->
+                        <svg class="absolute inset-0 w-full h-full pointer-events-none overflow-visible" viewBox="0 0 360 220">
+                            <defs>
+                                <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#16a34a" />
+                                </marker>
+                                <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#dc2626" />
+                                </marker>
+                            </defs>
+
+                            <!-- Flèches Gauche (+1) -->
+                            <!-- Rangée 0 à 1 -->
+                            <path d="M 52 65 C 34 65 34 97 51 97" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)" />
+                            <text x="14" y="85" font-size="13" font-weight="bold" fill="#16a34a">+1</text>
+
+                            <!-- Rangée 1 à 2 -->
+                            <path d="M 52 103 C 34 103 34 135 51 135" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)" />
+                            <text x="14" y="123" font-size="13" font-weight="bold" fill="#16a34a">+1</text>
+
+                            <!-- Rangée 2 à 3 -->
+                            <path d="M 52 141 C 34 141 34 173 51 173" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)" />
+                            <text x="14" y="161" font-size="13" font-weight="bold" fill="#16a34a">+1</text>
+
+                            <!-- Flèches Droite (+30) -->
+                            <!-- Rangée 0 à 1 -->
+                            <path d="M 308 65 C 326 65 326 97 309 97" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-red)" />
+                            <text x="330" y="85" font-size="13" font-weight="bold" fill="#dc2626">+30</text>
+
+                            <!-- Rangée 1 à 2 -->
+                            <path d="M 308 103 C 326 103 326 135 309 135" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-red)" />
+                            <text x="330" y="123" font-size="13" font-weight="bold" fill="#dc2626">+30</text>
+
+                            <!-- Rangée 2 à 3 -->
+                            <path d="M 308 141 C 326 141 326 173 309 173" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-red)" />
+                            <text x="330" y="161" font-size="13" font-weight="bold" fill="#dc2626">+30</text>
+                        </svg>
+
+                        <table class="w-[250px] text-center border-collapse bg-white border border-slate-300 z-10 shadow-sm">
+                            <thead>
+                                <tr class="bg-slate-100 h-[44px]">
+                                    <th class="border border-slate-300 p-2 font-semibold text-slate-700 w-1/2 text-sm">Temps (h) \((x)\)</th>
+                                    <th class="border border-slate-300 p-2 font-semibold text-slate-700 w-1/2 text-sm">Coût ($) \((y)\)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-blue-50 h-[38px]">
+                                    <td class="border border-slate-300 p-2 font-bold text-blue-800">0</td>
+                                    <td class="border border-slate-300 p-2 font-bold text-blue-800">50</td>
+                                </tr>
+                                <tr class="h-[38px]">
+                                    <td class="border border-slate-300 p-2">1</td>
+                                    <td class="border border-slate-300 p-2">80</td>
+                                </tr>
+                                <tr class="h-[38px]">
+                                    <td class="border border-slate-300 p-2">2</td>
+                                    <td class="border border-slate-300 p-2">110</td>
+                                </tr>
+                                <tr class="h-[38px]">
+                                    <td class="border border-slate-300 p-2">3</td>
+                                    <td class="border border-slate-300 p-2">140</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-center mt-3 text-blue-800 font-semibold">^ La ligne bleue indique le départ (\(x=0\)).</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex flex-col gap-2">
+                        <span class="font-semibold text-slate-700">Valeur initiale (\(b\)) : <i>(Quand \(x=0\))</i></span>
+                        <span class="answer-zone cursor-pointer border-b-2 border-dashed border-slate-400 min-w-[100px] text-center transition-colors pb-1" onclick="toggleAnswer(this)">
+                            <span class="placeholder text-slate-400 text-sm">Cliquer pour révéler</span>
+                            <span class="answer hidden handwritten text-blue-600 text-xl">50 $</span>
+                        </span>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span class="font-semibold text-slate-700">Taux de variation (\(a\)) : <i>(Les bonds de \(y\))</i></span>
+                        <span class="answer-zone cursor-pointer border-b-2 border-dashed border-slate-400 min-w-[100px] text-center transition-colors pb-1" onclick="toggleAnswer(this)">
+                            <span class="placeholder text-slate-400 text-sm">Cliquer pour révéler</span>
+                            <span class="answer hidden handwritten text-blue-600 text-xl">30 $/h</span>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 text-lg mt-4 bg-indigo-50 p-3 rounded-lg">
+                        <span class="font-semibold text-indigo-900">Règle :</span>
+                        <span class="answer-zone cursor-pointer border-b-2 border-dashed border-indigo-300 min-w-[150px] text-center transition-colors" onclick="toggleAnswer(this)">
+                            <span class="placeholder text-indigo-400 text-sm">Cliquer pour révéler</span>
+                            <span class="answer hidden handwritten text-blue-600 text-xl font-bold">\(y = 30x + 50\)</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 : Question de réflexion -->
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-bold text-slate-700 mb-4 border-b pb-2">2. Question de réflexion</h2>
+            <p class="mb-3 text-slate-600">Comment trouve-t-on le taux de variation (\(a\)) à partir d'une table de valeurs si les bonds de \(x\) ne vont pas de 1 en 1 ?</p>
+            <div class="answer-zone cursor-pointer bg-slate-50 border-2 border-dashed border-slate-300 rounded-lg p-5 text-center min-h-[80px] flex items-center justify-center transition hover:bg-slate-100" onclick="toggleAnswer(this)">
+                <span class="placeholder text-slate-400">Cliquez ici pour écrire votre réponse...</span>
+                <span class="answer hidden handwritten text-blue-600 text-xl leading-relaxed">
+                    On doit diviser le bond des "y" par le bond des "x". C'est pour ça qu'on utilise la formule \( \frac{y_2 - y_1}{x_2 - x_1} \).
+                </span>
+            </div>
+        </div>
+
+        <!-- Section 3 : Mon exemple -->
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-bold text-slate-700 mb-4 border-b pb-2">3. Mon exemple</h2>
+            <p class="text-slate-500 mb-4">Invente une courte situation où la valeur initiale (\(b\)) n'est PAS 0, et écris la règle.</p>
+            <div class="answer-zone cursor-pointer bg-slate-50 border-2 border-dashed border-slate-300 rounded-lg p-5 min-h-[100px] flex flex-col justify-center transition hover:bg-slate-100" onclick="toggleAnswer(this)">
+                <span class="placeholder text-slate-400 text-center">Cliquez pour voir un exemple de situation...</span>
+                <div class="answer hidden text-left space-y-2">
+                    <p class="handwritten text-blue-600 text-xl">Mon chat pèse 4 kg (poids de départ). Il prend 0,5 kg par mois.</p>
+                    <p class="handwritten text-blue-600 text-xl font-bold mt-3">Règle : \(y = 0,5x + 4\)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4 : Grille 2x2 (À retenir & Erreur) -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- ⭐ À retenir -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-bold text-yellow-800 mb-3 flex items-center gap-2">⭐ À retenir</h3>
+                <ul class="list-disc ml-5 text-yellow-900 space-y-3 font-medium">
+                    <li>La règle s'écrit toujours : <strong class="bg-yellow-200 px-1 rounded">\(y = ax + b\)</strong></li>
+                    <li><strong>\(a\)</strong> = Taux de variation. C'est la différence entre les valeurs divisée par l'écart. <br>Formule : \(a = \frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1}\)</li>
+                    <li><strong>\(b\)</strong> = Valeur initiale. Dans la table, cherche la ligne où <strong class="bg-yellow-200 px-1 rounded">\(x = 0\)</strong>.</li>
+                </ul>
+            </div>
+
+            <!-- 🛑 Erreur fatale -->
+            <div class="bg-red-50 border border-red-200 rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-bold text-red-800 mb-3 flex items-center gap-2">🛑 Erreur fatale</h3>
+                <p class="text-red-900 mb-3 text-sm">Inverser la formule lors de l'analyse d'une table de valeurs !</p>
+                <div class="bg-white p-4 rounded-lg border border-red-200 text-center relative overflow-hidden shadow-inner">
+                    <span class="text-red-500 font-bold text-2xl line-through decoration-red-500 decoration-4">
+                        \(a = \frac{x_2 - x_1}{y_2 - y_1}\)
+                    </span>
+                    <p class="handwritten text-blue-600 font-bold mt-4 text-xl">La variation des "y" (colonne de droite ou du bas) va toujours au numérateur !</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5 : Pratique (Exercices gradués) -->
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 mb-10">
+            <h2 class="text-xl font-bold text-slate-700 mb-6 border-b pb-2">5. Pratique (Analyse de tables)</h2>
+            
+            <div class="space-y-10">
+                <!-- Doux -->
+                <div class="border-l-4 border-green-500 pl-5">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 mb-2 text-lg">🍏 Niveau Doux</h3>
+                    <p class="text-slate-600 mb-3">Identifie les paramètres et la règle de cette situation :</p>
+                    
+                    <div class="overflow-x-auto mb-4">
+                        <table class="w-full max-w-md text-center border-collapse bg-white border border-slate-300 text-sm">
+                            <tr class="bg-slate-100">
+                                <th class="border border-slate-300 p-2 w-1/2">Temps en mois \((x)\)</th>
+                                <td class="border border-slate-300 p-2 font-bold">0</td>
+                                <td class="border border-slate-300 p-2 font-bold">1</td>
+                                <td class="border border-slate-300 p-2 font-bold">2</td>
+                                <td class="border border-slate-300 p-2 font-bold">3</td>
+                            </tr>
+                            <tr>
+                                <th class="border border-slate-300 p-2 bg-slate-100">Économies en $ \((y)\)</th>
+                                <td class="border border-slate-300 p-2">150</td>
+                                <td class="border border-slate-300 p-2">200</td>
+                                <td class="border border-slate-300 p-2">250</td>
+                                <td class="border border-slate-300 p-2">300</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <span class="font-semibold text-slate-700">Règle :</span>
+                        <span class="answer-zone cursor-pointer border-b-2 border-dashed border-slate-400 w-48 inline-block text-center hover:bg-slate-50 transition" onclick="toggleAnswer(this)">
+                            <span class="placeholder text-slate-400 text-sm">Réponse</span>
+                            <span class="answer hidden handwritten text-blue-600 text-xl">\(y = 50x + 150\)</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Moyen -->
+                <div class="border-l-4 border-amber-500 pl-5">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 mb-2 text-lg">🌮 Niveau Moyen</h3>
+                    <p class="text-slate-600 mb-3">Attention, les valeurs de \(x\) ne font pas des bonds de 1 ! Calcule le taux de variation (\(a\)) et trouve la règle.</p>
+                    
+                    <div class="overflow-x-auto mb-4">
+                        <table class="w-full max-w-md text-center border-collapse bg-white border border-slate-300 text-sm">
+                            <tr class="bg-slate-100">
+                                <th class="border border-slate-300 p-2 w-1/2">Sacs vendus \((x)\)</th>
+                                <td class="border border-slate-300 p-2 font-bold">0</td>
+                                <td class="border border-slate-300 p-2 font-bold">5</td>
+                                <td class="border border-slate-300 p-2 font-bold">10</td>
+                            </tr>
+                            <tr>
+                                <th class="border border-slate-300 p-2 bg-slate-100">Salaire en $ \((y)\)</th>
+                                <td class="border border-slate-300 p-2">40</td>
+                                <td class="border border-slate-300 p-2">100</td>
+                                <td class="border border-slate-300 p-2">160</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="flex flex-col gap-4 mt-3">
+                        <div class="flex items-center gap-3">
+                            <span class="font-semibold text-slate-700">Calcul de \(a\) :</span>
+                            <span class="answer-zone cursor-pointer border-b-2 border-dashed border-slate-400 w-72 inline-block text-center hover:bg-slate-50 transition" onclick="toggleAnswer(this)">
+                                <span class="placeholder text-slate-400 text-sm">Calculs</span>
+                                <span class="answer hidden handwritten text-blue-600 text-xl">\( \frac{100 - 40}{5 - 0} = \frac{60}{5} = 12\)</span>
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-semibold text-slate-700">Règle :</span>
+                            <span class="answer-zone cursor-pointer border-b-2 border-dashed border-slate-400 w-64 inline-block text-center hover:bg-slate-50 transition" onclick="toggleAnswer(this)">
+                                <span class="placeholder text-slate-400 text-sm">Réponse</span>
+                                <span class="answer hidden handwritten text-blue-600 text-xl">\(y = 12x + 40\)</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Épicé -->
+                <div class="border-l-4 border-red-500 pl-5">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 mb-2 text-lg">🌶️ Niveau Épicé</h3>
+                    <p class="text-slate-600 mb-3">
+                        La valeur initiale n'est pas dans la table ! Trouve d'abord \(a\), puis calcule \(b\) pour trouver la règle de cette relation.
+                    </p>
+                    
+                    <div class="overflow-x-auto mb-4">
+                        <table class="w-full max-w-md text-center border-collapse bg-white border border-slate-300 text-sm">
+                            <tr class="bg-slate-100">
+                                <th class="border border-slate-300 p-2 w-1/2">Superficie couverte en m² \((x)\)</th>
+                                <td class="border border-slate-300 p-2 font-bold">10</td>
+                                <td class="border border-slate-300 p-2 font-bold">25</td>
+                            </tr>
+                            <tr>
+                                <th class="border border-slate-300 p-2 bg-slate-100">Coût total en $ \((y)\)</th>
+                                <td class="border border-slate-300 p-2">250</td>
+                                <td class="border border-slate-300 p-2">550</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="flex flex-col gap-4 mt-3">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <span class="font-semibold text-slate-700">Calcul de \(a\) et \(b\) :</span>
+                            <span class="answer-zone cursor-pointer border-b-2 border-dashed border-slate-400 min-w-[250px] inline-block text-center hover:bg-slate-50 transition p-2" onclick="toggleAnswer(this)">
+                                <span class="placeholder text-slate-400 text-sm">Démarche complète</span>
+                                <span class="answer hidden text-left space-y-2">
+                                    <span class="handwritten text-blue-600 text-xl block">1) \(a = \frac{550 - 250}{25 - 10} = \frac{300}{15} = 20\)</span>
+                                    <span class="handwritten text-blue-600 text-xl block">2) \(250 = 20(10) + b\)</span>
+                                    <span class="handwritten text-blue-600 text-xl block ml-5">\(250 = 200 + b\)</span>
+                                    <span class="handwritten text-blue-600 text-xl block ml-5">\(b = 50\)</span>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-semibold text-slate-700">Règle :</span>
+                            <span class="answer-zone cursor-pointer border-b-2 border-dashed border-slate-400 w-56 inline-block text-center hover:bg-slate-50 transition" onclick="toggleAnswer(this)">
+                                <span class="placeholder text-slate-400 text-sm">Réponse</span>
+                                <span class="answer hidden handwritten text-blue-600 text-xl font-bold">\(y = 20x + 50\)</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script de gestion de l'interactivité -->
+    <script>
+        let allRevealed = false;
+
+        function toggleAnswer(element) {
+            const placeholder = element.querySelector('.placeholder');
+            const answer = element.querySelector('.answer');
+            
+            if (answer.classList.contains('hidden')) {
+                answer.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                element.classList.remove('border-dashed', 'border-slate-400');
+                element.classList.add('border-transparent');
+            } else {
+                answer.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                element.classList.add('border-dashed', 'border-slate-400');
+                element.classList.remove('border-transparent');
+            }
+            
+            // Re-rendre les formules MathJax après l'affichage
+            if (typeof MathJax !== 'undefined') {
+                MathJax.typesetPromise([element]).catch(function (err) {
+                    console.error('Erreur MathJax: ', err.message);
+                });
+            }
+        }
+
+        function toggleAllAnswers() {
+            allRevealed = !allRevealed;
+            const zones = document.querySelectorAll('.answer-zone');
+            const btn = document.getElementById('toggle-all');
+            
+            btn.innerText = allRevealed ? "Masquer tout le corrigé" : "Afficher tout le corrigé";
+            
+            zones.forEach(zone => {
+                const placeholder = zone.querySelector('.placeholder');
+                const answer = zone.querySelector('.answer');
+                
+                if (allRevealed) {
+                    answer.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    zone.classList.remove('border-dashed', 'border-slate-400');
+                    zone.classList.add('border-transparent');
+                } else {
+                    answer.classList.add('hidden');
+                    placeholder.classList.remove('hidden');
+                    zone.classList.add('border-dashed', 'border-slate-400');
+                    zone.classList.remove('border-transparent');
+                }
+            });
+
+            // Re-rendre MathJax pour l'ensemble du document
+            if (allRevealed && typeof MathJax !== 'undefined') {
+                MathJax.typesetPromise().catch(function (err) {
+                    console.error('Erreur MathJax: ', err.message);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
