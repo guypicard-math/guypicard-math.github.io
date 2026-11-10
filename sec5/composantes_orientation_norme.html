@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activité Interactive : Vecteurs 5SN</title>
+    <!-- Tailwind CSS pour la mise en forme -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-tab { display: none; }
+        
+        /* Classe CSS personnalisée pour la notation vectorielle (ex: v avec une flèche au-dessus) */
+        .vec {
+            display: inline-block;
+            position: relative;
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            margin-top: 0.6em; /* Espace pour la flèche */
+            line-height: 1;
+            padding: 0 0.1em;
+        }
+        .vec::after {
+            content: '→';
+            position: absolute;
+            top: -0.7em;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85em;
+            font-style: normal;
+            font-family: sans-serif;
+            color: currentColor;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-900 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- En-tête -->
+        <header class="bg-white p-6 rounded-t-2xl shadow-sm border-b border-slate-200">
+            <h1 class="text-2xl font-black text-slate-800 flex items-center gap-3">
+                <i class="fa-solid fa-arrow-right text-blue-600"></i>
+                Les vecteurs dans le plan cartésien
+            </h1>
+            <p class="text-slate-500 mt-2">
+                Mathématique 5SN - Activité d'appropriation et de consolidation
+            </p>
+        </header>
+
+        <!-- Navigation des onglets -->
+        <nav class="bg-white p-2 flex flex-col md:flex-row gap-2 shadow-sm">
+            <button id="btn-tab-1" onclick="switchTab(1)" class="tab-btn px-4 py-3 text-sm font-semibold rounded-lg transition-colors flex-1 bg-blue-100 text-blue-800">
+                1. Composantes ➔ Norme/Orientation
+            </button>
+            <button id="btn-tab-2" onclick="switchTab(2)" class="tab-btn px-4 py-3 text-sm font-semibold rounded-lg transition-colors flex-1 hover:bg-slate-50 text-slate-600">
+                2. Norme/Orientation ➔ Composantes
+            </button>
+            <button id="btn-tab-3" onclick="switchTab(3)" class="tab-btn px-4 py-3 text-sm font-semibold rounded-lg transition-colors flex-1 hover:bg-slate-50 text-slate-600">
+                3. Vocabulaire
+            </button>
+        </nav>
+
+        <!-- Contenu principal -->
+        <main class="bg-white p-6 md:p-8 rounded-b-2xl shadow-md min-h-[500px]">
+            
+            <!-- ONGLET 1 : Composantes vers Polaire -->
+            <section id="tab-1" class="fade-in">
+                <div class="bg-slate-50 p-4 rounded-lg border-l-4 border-blue-500 mb-6">
+                    <h3 class="font-bold text-slate-800 mb-2">Objectif : Trouver la norme et l'orientation</h3>
+                    <p class="text-slate-700 text-lg">
+                        Soit le vecteur <strong id="t1-vector-text"><span class="vec text-blue-600 font-bold">v</span> = (x, y)</strong>. 
+                        Déterminez sa norme <em>||<span class="vec">v</span>||</em> et son orientation <em>θ</em>.
+                        <br><span class="text-sm text-slate-500 font-normal">(Arrondissez à une décimale près)</span>
+                    </p>
+                </div>
+
+                <div id="t1-svg-container" class="flex justify-center my-4 bg-white rounded-xl shadow-inner p-2 border border-slate-200">
+                    <!-- SVG injecté via JS -->
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Norme ||<span class="vec" style="font-size:0.9em; margin-top:0">v</span>||</label>
+                        <input type="number" step="0.1" id="t1-input-norm" class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ex: 5.0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Orientation θ (en degrés, [0, 360[ )</label>
+                        <input type="number" step="0.1" id="t1-input-angle" class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ex: 53.1">
+                    </div>
+                </div>
+
+                <div id="t1-feedback" class="mb-6 hidden"></div>
+
+                <div class="flex gap-4">
+                    <button id="t1-btn-check" onclick="checkTab1()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-semibold flex justify-center items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-check"></i> Vérifier ma réponse
+                    </button>
+                    <button id="t1-btn-next" onclick="initTab1()" class="hidden flex-1 bg-slate-800 hover:bg-slate-900 text-white p-3 rounded-lg font-semibold flex justify-center items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-rotate-right"></i> Prochain vecteur
+                    </button>
+                </div>
+            </section>
+
+            <!-- ONGLET 2 : Polaire vers Composantes -->
+            <section id="tab-2" class="fade-in hidden-tab">
+                <div class="bg-slate-50 p-4 rounded-lg border-l-4 border-emerald-500 mb-6">
+                    <h3 class="font-bold text-slate-800 mb-2">Objectif : Trouver les composantes</h3>
+                    <p class="text-slate-700 text-lg">
+                        Soit un vecteur <strong class="text-lg"><span class="vec text-emerald-600 font-bold">u</span></strong> tel que sa norme 
+                        <strong id="t2-norm-text">||<span class="vec">u</span>|| = ?</strong> et son orientation 
+                        <strong id="t2-angle-text">θ = ?°</strong>.
+                        <br>Déterminez ses composantes orthogonales <span class="font-mono">(x, y)</span>.
+                        <br><span class="text-sm text-slate-500 font-normal">(Arrondissez à une décimale près)</span>
+                    </p>
+                </div>
+
+                <div id="t2-svg-container" class="flex justify-center my-4 bg-white rounded-xl shadow-inner p-2 border border-slate-200">
+                    <!-- SVG injecté via JS -->
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Composante horizontale (x)</label>
+                        <input type="number" step="0.1" id="t2-input-x" class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Composante verticale (y)</label>
+                        <input type="number" step="0.1" id="t2-input-y" class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                </div>
+
+                <div id="t2-feedback" class="mb-6 hidden"></div>
+
+                <div class="flex gap-4">
+                    <button id="t2-btn-check" onclick="checkTab2()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-lg font-semibold flex justify-center items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-check"></i> Vérifier ma réponse
+                    </button>
+                    <button id="t2-btn-next" onclick="initTab2()" class="hidden flex-1 bg-slate-800 hover:bg-slate-900 text-white p-3 rounded-lg font-semibold flex justify-center items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-rotate-right"></i> Prochain vecteur
+                    </button>
+                </div>
+            </section>
+
+            <!-- ONGLET 3 : Vocabulaire -->
+            <section id="tab-3" class="fade-in hidden-tab">
+                <div class="bg-slate-50 p-4 rounded-lg border-l-4 border-purple-500 mb-6">
+                    <h3 class="font-bold text-slate-800 mb-2">Objectif : Maîtriser le vocabulaire</h3>
+                    <p class="text-slate-600">
+                        Remplissez les espaces avec le terme mathématique exact pour décrire les éléments d'un vecteur géométrique.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <span class="font-medium text-slate-700 md:w-2/3">1. La longueur géométrique du segment fléché s'appelle la :</span>
+                        <input type="text" id="t3-q1" class="flex-1 p-2 border border-slate-300 rounded focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <hr class="border-slate-100">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <span class="font-medium text-slate-700 md:w-2/3">2. L'angle formé, en position standard, à partir de l'axe des abscisses positif s'appelle l' :</span>
+                        <input type="text" id="t3-q2" class="flex-1 p-2 border border-slate-300 rounded focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <hr class="border-slate-100">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <span class="font-medium text-slate-700 md:w-2/3">3. Le point de départ (où débute la flèche) se nomme l' :</span>
+                        <input type="text" id="t3-q3" class="flex-1 p-2 border border-slate-300 rounded focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <hr class="border-slate-100">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <span class="font-medium text-slate-700 md:w-2/3">4. Le point d'arrivée (la pointe de la flèche) se nomme l' :</span>
+                        <input type="text" id="t3-q4" class="flex-1 p-2 border border-slate-300 rounded focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                </div>
+
+                <div id="t3-feedback" class="mb-6 hidden"></div>
+
+                <div class="flex gap-4">
+                    <button id="t3-btn-check" onclick="checkTab3()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-lg font-semibold flex justify-center items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-check"></i> Vérifier mes termes
+                    </button>
+                    <button id="t3-btn-next" onclick="initTab3()" class="hidden flex-1 bg-slate-800 hover:bg-slate-900 text-white p-3 rounded-lg font-semibold flex justify-center items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-rotate-right"></i> Recommencer
+                    </button>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer class="mt-8 text-center text-sm text-slate-400">
+            <p>Conforme à la Progression des Apprentissages (PDA) du Québec - Mathématique 5SN.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- UTILITAIRES MATHÉMATIQUES ---
+        const round1 = (num) => Math.round(num * 10) / 10;
+        
+        // Calcul des propriétés d'un vecteur (x,y) -> (norme, orientation)
+        const getPolar = (x, y) => {
+            const norm = Math.sqrt(x * x + y * y);
+            let angle = Math.atan2(y, x) * (180 / Math.PI);
+            if (angle < 0) angle += 360;
+            return { norm: round1(norm), angle: round1(angle) };
+        };
+
+        // Normalisation de texte (enlève accents, espaces, majuscules)
+        const normalizeText = (text) => {
+            return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        };
+
+        // --- GÉNÉRATEUR SVG ROBUSTE ---
+        function generateSVG(x, y, showComponents, showAngle) {
+            const scale = 10;
+            const maxAxis = 20;
+            const size = maxAxis * 2 * scale; // 400
+            const center = size / 2;
+            
+            const endX = center + x * scale;
+            const endY = center - y * scale; // Axe Y inversé
+
+            const angleRad = Math.atan2(y, x);
+
+            // 1. Composantes
+            let componentsSVG = '';
+            if (showComponents) {
+                componentsSVG = `
+                    <line x1="${center}" y1="${center}" x2="${endX}" y2="${center}" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" />
+                    <line x1="${endX}" y1="${center}" x2="${endX}" y2="${endY}" stroke="#10b981" stroke-width="2" stroke-dasharray="4" />
+                `;
+            }
+
+            // 2. Angle (Arc)
+            let angleSVG = '';
+            if (showAngle) {
+                const radius = 30;
+                const arcEndX = center + radius * Math.cos(angleRad);
+                const arcEndY = center - radius * Math.sin(angleRad);
+                const largeArcFlag = (angleRad < 0 || angleRad > Math.PI) ? '1' : '0';
+                
+                angleSVG = `
+                    <path d="M ${center + radius} ${center} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${arcEndX} ${arcEndY}" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4" />
+                `;
+            }
+
+            // 3. Pointe de la flèche (Dessinée manuellement pour contourner les bugs de <marker>)
+            // On calcule les 3 points du polygone de la flèche
+            const arrowLength = 14; 
+            const arrowAngleOffset = Math.PI / 7; // Ouverture de la flèche
+            
+            // L'angle de la ligne (en tenant compte de l'inversion Y du SVG)
+            const lineAngle = Math.atan2(endY - center, endX - center);
+
+            const p1x = endX;
+            const p1y = endY;
+            const p2x = endX - arrowLength * Math.cos(lineAngle - arrowAngleOffset);
+            const p2y = endY - arrowLength * Math.sin(lineAngle - arrowAngleOffset);
+            const p3x = endX - arrowLength * Math.cos(lineAngle + arrowAngleOffset);
+            const p3y = endY - arrowLength * Math.sin(lineAngle + arrowAngleOffset);
+
+            return `
+                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+                    <defs>
+                        <pattern id="grid" width="${scale}" height="${scale}" patternUnits="userSpaceOnUse">
+                            <path d="M ${scale} 0 L 0 0 0 ${scale}" fill="none" stroke="#e2e8f0" stroke-width="0.5"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                    <!-- Axes cartésiens -->
+                    <line x1="0" y1="${center}" x2="${size}" y2="${center}" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="${center}" y1="0" x2="${center}" y2="${size}" stroke="#94a3b8" stroke-width="2" />
+                    
+                    ${angleSVG}
+                    ${componentsSVG}
+
+                    <!-- Corps du vecteur -->
+                    <line x1="${center}" y1="${center}" x2="${endX}" y2="${endY}" stroke="#3b82f6" stroke-width="3" />
+                    
+                    <!-- Pointe de la flèche (Extrémité) -->
+                    <polygon points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y}" fill="#3b82f6" />
+                    
+                    <!-- Origine -->
+                    <circle cx="${center}" cy="${center}" r="4" fill="#1e293b" />
+                </svg>
+            `;
+        }
+
+        // --- GESTION DES ONGLETS ---
+        function switchTab(tabIndex) {
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                const index = i + 1;
+                btn.className = `tab-btn px-4 py-3 text-sm font-semibold rounded-lg transition-colors flex-1 ${
+                    index === tabIndex 
+                    ? (tabIndex===1 ? 'bg-blue-100 text-blue-800' : tabIndex===2 ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800')
+                    : 'hover:bg-slate-50 text-slate-600'
+                }`;
+            });
+            document.getElementById('tab-1').classList.add('hidden-tab');
+            document.getElementById('tab-2').classList.add('hidden-tab');
+            document.getElementById('tab-3').classList.add('hidden-tab');
+            document.getElementById(`tab-${tabIndex}`).classList.remove('hidden-tab');
+        }
+
+        // --- LOGIQUE ONGLET 1 (Comp -> Polaire) ---
+        let t1_state = { x: 0, y: 0, attempts: 0, target: { norm: 0, angle: 0 } };
+
+        function initTab1() {
+            do {
+                t1_state.x = Math.floor(Math.random() * 31) - 15;
+                t1_state.y = Math.floor(Math.random() * 31) - 15;
+            } while (t1_state.x === 0 || t1_state.y === 0);
+
+            t1_state.target = getPolar(t1_state.x, t1_state.y);
+            t1_state.attempts = 0;
+
+            document.getElementById('t1-vector-text').innerHTML = `<span class="vec text-blue-600 font-bold">v</span> = (${t1_state.x}, ${t1_state.y})`;
+            document.getElementById('t1-svg-container').innerHTML = generateSVG(t1_state.x, t1_state.y, true, false);
+            document.getElementById('t1-input-norm').value = '';
+            document.getElementById('t1-input-angle').value = '';
+            document.getElementById('t1-input-norm').disabled = false;
+            document.getElementById('t1-input-angle').disabled = false;
+            resetFeedback('t1');
+        }
+
+        function checkTab1() {
+            const userNorm = parseFloat(document.getElementById('t1-input-norm').value);
+            const userAngle = parseFloat(document.getElementById('t1-input-angle').value);
+
+            const normCorrect = Math.abs(userNorm - t1_state.target.norm) <= 0.15;
+            const angleCorrect = Math.abs(userAngle - t1_state.target.angle) <= 0.15;
+
+            t1_state.attempts++;
+
+            if (normCorrect && angleCorrect) {
+                showSuccess('t1', "Excellent travail ! Les calculs sont exacts.");
+            } else if (t1_state.attempts < 3) {
+                let hint = t1_state.attempts === 1 
+                    ? "Dessine un triangle rectangle. Utilise le théorème de Pythagore pour la norme, et la trigonométrie (tangente) pour l'angle aigu."
+                    : "Formules utiles : Norme = √(x² + y²). Angle de référence = tan⁻¹(|y/x|). N'oublie pas d'ajuster l'angle selon le quadrant du vecteur !";
+                showError('t1', `Essai ${t1_state.attempts}/3 incorrect.`, hint);
+            } else {
+                showFinalAnswer('t1', "Nombre d'essais maximum atteint. Voici les bonnes réponses.", () => {
+                    document.getElementById('t1-input-norm').value = t1_state.target.norm;
+                    document.getElementById('t1-input-angle').value = t1_state.target.angle;
+                });
+            }
+        }
+
+        // --- LOGIQUE ONGLET 2 (Polaire -> Comp) ---
+        let t2_state = { norm: 0, angle: 0, target: { x: 0, y: 0 }, attempts: 0 };
+
+        function initTab2() {
+            t2_state.norm = Math.floor(Math.random() * 15) + 5; 
+            t2_state.angle = Math.floor(Math.random() * 360);
+            
+            const rad = t2_state.angle * Math.PI / 180;
+            t2_state.target.x = round1(t2_state.norm * Math.cos(rad));
+            t2_state.target.y = round1(t2_state.norm * Math.sin(rad));
+            t2_state.attempts = 0;
+
+            document.getElementById('t2-norm-text').innerHTML = `||<span class="vec">u</span>|| = ${t2_state.norm}`;
+            document.getElementById('t2-angle-text').innerText = `θ = ${t2_state.angle}°`;
+            document.getElementById('t2-svg-container').innerHTML = generateSVG(t2_state.target.x, t2_state.target.y, false, true);
+            document.getElementById('t2-input-x').value = '';
+            document.getElementById('t2-input-y').value = '';
+            document.getElementById('t2-input-x').disabled = false;
+            document.getElementById('t2-input-y').disabled = false;
+            resetFeedback('t2');
+        }
+
+        function checkTab2() {
+            const userX = parseFloat(document.getElementById('t2-input-x').value);
+            const userY = parseFloat(document.getElementById('t2-input-y').value);
+
+            const xCorrect = Math.abs(userX - t2_state.target.x) <= 0.15;
+            const yCorrect = Math.abs(userY - t2_state.target.y) <= 0.15;
+
+            t2_state.attempts++;
+
+            if (xCorrect && yCorrect) {
+                showSuccess('t2', "Parfait ! La décomposition du vecteur est exacte.");
+            } else if (t2_state.attempts < 3) {
+                let hint = t2_state.attempts === 1 
+                    ? "La norme agit comme l'hypoténuse d'un triangle rectangle. Utilise les rapports trigonométriques sinus et cosinus."
+                    : "Formules : x = ||u|| · cos(θ) et y = ||u|| · sin(θ). Assure-toi que ta calculatrice est en mode degrés (DEG).";
+                showError('t2', `Essai ${t2_state.attempts}/3 incorrect.`, hint);
+            } else {
+                showFinalAnswer('t2', "Nombre d'essais maximum atteint. Voici les composantes exactes. Vérifiez les signes selon le quadrant.", () => {
+                    document.getElementById('t2-input-x').value = t2_state.target.x;
+                    document.getElementById('t2-input-y').value = t2_state.target.y;
+                });
+            }
+        }
+
+        // --- LOGIQUE ONGLET 3 (Vocabulaire) ---
+        let t3_attempts = 0;
+        const t3_answers = { q1: "norme", q2: "orientation", q3: "origine", q4: ["extremite", "extrémité"] };
+
+        function initTab3() {
+            t3_attempts = 0;
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`t3-q${i}`).value = '';
+                document.getElementById(`t3-q${i}`).disabled = false;
+            }
+            resetFeedback('t3');
+        }
+
+        function checkTab3() {
+            const val1 = normalizeText(document.getElementById('t3-q1').value);
+            const val2 = normalizeText(document.getElementById('t3-q2').value);
+            const val3 = normalizeText(document.getElementById('t3-q3').value);
+            const val4 = normalizeText(document.getElementById('t3-q4').value);
+
+            const isQ1 = val1 === t3_answers.q1;
+            const isQ2 = val2 === t3_answers.q2;
+            const isQ3 = val3 === t3_answers.q3;
+            const isQ4 = t3_answers.q4.includes(val4);
+
+            t3_attempts++;
+
+            if (isQ1 && isQ2 && isQ3 && isQ4) {
+                showSuccess('t3', "Excellente maîtrise du vocabulaire mathématique !");
+            } else if (t3_attempts < 3) {
+                let hint = t3_attempts === 1 
+                    ? "Vérifie l'orthographe de tes mots. Ce sont les 4 mots de vocabulaire fondamentaux des vecteurs."
+                    : "Les mots à placer (en désordre) ressemblent à : extrémité, norme, orientation, origine.";
+                showError('t3', `Essai ${t3_attempts}/3 incorrect.`, hint);
+            } else {
+                showFinalAnswer('t3', "Nombre d'essais maximum atteint. Les réponses ont été insérées.", () => {
+                    document.getElementById('t3-q1').value = "Norme";
+                    document.getElementById('t3-q2').value = "Orientation";
+                    document.getElementById('t3-q3').value = "Origine";
+                    document.getElementById('t3-q4').value = "Extrémité";
+                });
+            }
+        }
+
+        // --- FONCTIONS UI COMMUNES ---
+        function resetFeedback(tabPrefix) {
+            const fb = document.getElementById(`${tabPrefix}-feedback`);
+            fb.className = 'mb-6 hidden';
+            fb.innerHTML = '';
+            document.getElementById(`${tabPrefix}-btn-check`).classList.remove('hidden');
+            document.getElementById(`${tabPrefix}-btn-next`).classList.add('hidden');
+        }
+
+        function showSuccess(tabPrefix, message) {
+            const fb = document.getElementById(`${tabPrefix}-feedback`);
+            fb.className = 'mb-6 p-4 rounded bg-green-50 text-green-800 border border-green-200 flex items-center gap-3 fade-in';
+            fb.innerHTML = `<i class="fa-solid fa-circle-check text-xl"></i> <div><p class="font-bold">${message}</p></div>`;
+            lockInputs(tabPrefix);
+            toggleButtons(tabPrefix);
+        }
+
+        function showError(tabPrefix, title, hint) {
+            const fb = document.getElementById(`${tabPrefix}-feedback`);
+            fb.className = 'mb-6 p-4 rounded bg-amber-50 text-amber-800 border border-amber-200 flex items-start gap-3 fade-in';
+            fb.innerHTML = `
+                <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i> 
+                <div>
+                    <p class="font-bold">${title}</p>
+                    <p class="text-sm mt-1"><strong>Indice :</strong> ${hint}</p>
+                </div>
+            `;
+        }
+
+        function showFinalAnswer(tabPrefix, title, callbackSetAnswers) {
+            const fb = document.getElementById(`${tabPrefix}-feedback`);
+            fb.className = 'mb-6 p-4 rounded bg-red-50 text-red-800 border border-red-200 flex items-start gap-3 fade-in';
+            fb.innerHTML = `
+                <i class="fa-solid fa-circle-xmark text-xl mt-1"></i> 
+                <div>
+                    <p class="font-bold">${title}</p>
+                    <p class="text-sm mt-1">Prenez le temps d'analyser vos erreurs avant de continuer.</p>
+                </div>
+            `;
+            callbackSetAnswers();
+            lockInputs(tabPrefix);
+            toggleButtons(tabPrefix);
+        }
+
+        function lockInputs(tabPrefix) {
+            const inputs = document.querySelectorAll(`#tab-${tabPrefix.replace('t','')} input`);
+            inputs.forEach(input => input.disabled = true);
+        }
+
+        function toggleButtons(tabPrefix) {
+            document.getElementById(`${tabPrefix}-btn-check`).classList.add('hidden');
+            document.getElementById(`${tabPrefix}-btn-next`).classList.remove('hidden');
+        }
+
+        window.onload = () => {
+            initTab1();
+            initTab2();
+            initTab3();
+        };
+    </script>
+</body>
+</html>
