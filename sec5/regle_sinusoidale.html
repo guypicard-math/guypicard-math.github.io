@@ -8,8 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        /* Hauteur minimale garantie pour que le graphique soit toujours visible */
-        .canvas-container { position: relative; width: 100%; min-height: 500px; height: 100%; display: flex; flex-direction: column; }
+        .canvas-container { position: relative; width: 100%; min-height: 450px; height: 60vh; }
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 0.5rem; background-color: white; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); }
     </style>
 </head>
@@ -22,12 +21,12 @@
             <p class="text-blue-100 mt-2">Trouve les paramètres a, b, h et k pour faire entrer exactement <b>UN CYCLE</b> dans la boîte.</p>
         </div>
 
-        <div class="flex flex-col flex-grow p-4 gap-4 bg-slate-100">
-            <!-- Panneaux du haut (côte-à-côte) -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="flex flex-col lg:flex-row flex-grow">
+            <!-- Panneau de contrôle -->
+            <div class="w-full lg:w-1/3 p-5 bg-slate-50 border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col space-y-5 overflow-y-auto">
                 
-                <!-- Options (Configuration) -->
-                <div class="space-y-3 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                <!-- Options -->
+                <div class="space-y-3 bg-white p-4 rounded-lg shadow-sm border border-slate-100">
                     <h3 class="font-bold text-slate-700 border-b pb-2">1. Configuration</h3>
                     
                     <div>
@@ -58,24 +57,20 @@
                         </div>
                     </div>
 
-                    <button onclick="generateProblem()" class="w-full mt-4 py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition duration-150">
+                    <button onclick="generateProblem()" class="w-full mt-2 py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition duration-150">
                         Nouvelle boîte (Nouveau problème)
                     </button>
                 </div>
 
-                <!-- Réponses (Ma règle) -->
-                <div class="space-y-4 bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-col">
+                <!-- Réponses -->
+                <div class="space-y-4 flex-grow bg-white p-4 rounded-lg shadow-sm border border-slate-100">
                     <h3 class="font-bold text-slate-700 border-b pb-2">2. Ma règle</h3>
                     
-                    <div class="bg-blue-50 p-2 rounded text-center mb-1">
+                    <div class="bg-blue-50 p-2 rounded text-center mb-4">
                         <span id="form-display" class="font-mono text-blue-700 font-bold text-lg">f(x) = a · sin(b(x - h)) + k</span>
                     </div>
 
-                    <!-- Rétroaction et astuces EN HAUT -->
-                    <div id="feedback-zone" class="hidden p-3 rounded-lg border text-sm font-medium transition-all mb-1"></div>
-                    <p class="text-xs text-slate-600 bg-slate-50 border border-slate-100 p-2 rounded text-center">💡 <b>Astuce:</b> Écris "pi" pour π, ou des fractions (ex: 3pi/2, 1/2).</p>
-
-                    <div class="grid grid-cols-2 gap-3 mt-2">
+                    <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-semibold text-slate-600">a =</label>
                             <input type="text" id="input-a" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 p-2 border bg-slate-50" placeholder="ex: -2" oninput="liveUpdate()">
@@ -93,17 +88,21 @@
                             <input type="text" id="input-k" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 p-2 border bg-slate-50" placeholder="ex: 1" oninput="liveUpdate()">
                         </div>
                     </div>
+                    <p class="text-xs text-slate-500 text-center">Astuce: Écris "pi" pour π, ou des fractions (ex: 3pi/2, 1/2).</p>
 
                     <button onclick="checkAnswer()" id="btn-verify" class="w-full mt-4 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition duration-200">
                         Vérifier ma réponse
                     </button>
+                    
+                    <!-- Rétroaction -->
+                    <div id="feedback-zone" class="hidden mt-4 p-4 rounded-lg border text-sm font-medium transition-all"></div>
                 </div>
             </div>
 
-            <!-- Zone Graphique (En dessous) -->
-            <div class="w-full bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-col items-center flex-grow">
-                <div class="w-full border-4 border-slate-300 rounded-xl overflow-hidden shadow-sm flex flex-col" style="min-height: 500px; flex-grow: 1;">
-                    <div class="canvas-container flex-grow" id="canvas-container">
+            <!-- Zone Graphique -->
+            <div class="w-full lg:w-2/3 p-4 bg-slate-200 flex flex-col items-center">
+                <div class="w-full max-w-4xl border-4 border-slate-300 rounded-xl overflow-hidden shadow-lg">
+                    <div class="canvas-container" id="canvas-container">
                         <canvas id="mathCanvas"></canvas>
                     </div>
                 </div>
@@ -122,20 +121,18 @@
         const ctx = canvas.getContext('2d');
         let width, height;
 
-        // État de l'application
         let state = {
-            target: { xMin: 0, xMax: 0, yMin: 0, yMax: 0 }, // La boîte cible
-            a: 0, b: 0, h: 0, k: 0, // Paramètres secrets attendus (une des réponses possibles)
+            target: { xMin: 0, xMax: 0, yMin: 0, yMax: 0 },
+            a: 0, b: 0, h: 0, k: 0,
             funcType: 'sin',
             axisType: 'pi',
             period: 0,
             attempts: 0,
-            status: 'playing', // 'playing', 'success', 'failed'
+            status: 'playing',
             studentParams: null,
             view: { xMin: -10, xMax: 10, yMin: -10, yMax: 10 }
         };
 
-        // Redimensionnement robuste du canvas
         function resizeCanvas() {
             if (!container) return;
             const rect = container.getBoundingClientRect();
@@ -148,12 +145,11 @@
 
         window.addEventListener('resize', resizeCanvas);
 
-        // Parseur mathématique sécurisé
         function parseMath(str) {
             if (!str || str.trim() === '') return NaN;
             let s = str.toLowerCase().replace(/,/g, '.').replace(/\s/g, '').replace(/π/g, 'pi');
-            s = s.replace(/(\d)(pi)/g, '$1*$2'); // "2pi" -> "2*pi"
-            s = s.replace(/(pi)(\d)/g, '$1*$2'); // "pi2" -> "pi*2"
+            s = s.replace(/(\d)(pi)/g, '$1*$2');
+            s = s.replace(/(pi)(\d)/g, '$1*$2');
             s = s.replace(/pi/g, 'Math.PI');
             try {
                 if (/^[0-9\.\+\-\*\/\(\)Math\.PI]+$/.test(s)) {
@@ -171,7 +167,7 @@
             if (isPiAxis) {
                 const piMult = val / Math.PI;
                 const rounded = Math.round(piMult * 24) / 24; 
-                
+
                 const fracs = [
                     {d:1, m:1}, {d:2, m:1/2}, {d:3, m:1/3}, {d:4, m:1/4}, {d:6, m:1/6}, {d:8, m:1/8}
                 ];
@@ -192,24 +188,20 @@
             }
         }
 
-        // --- Logique métier ---
-
         function generateProblem() {
             state.funcType = document.querySelector('input[name="funcType"]:checked').value;
             state.axisType = document.querySelector('input[name="axisType"]:checked').value;
             
             document.getElementById('form-display').innerHTML = `f(x) = a &middot; ${state.funcType}(b(x - h)) + k`;
 
-            // On génère une boîte aléatoire sensée
             let possibleA = [1, 1.5, 2, 2.5, 3, 4];
             let targetA = possibleA[Math.floor(Math.random() * possibleA.length)];
-            let targetK = Math.floor(Math.random() * 11) / 2 - 2.5; // [-2.5, 2.5]
+            let targetK = Math.floor(Math.random() * 11) / 2 - 2.5; 
             
             state.target.yMax = targetK + targetA;
             state.target.yMin = targetK - targetA;
 
             if (state.axisType === 'pi') {
-                // Axe en Pi. Période rationnelle de pi. (b = rationnel)
                 const periodMults = [0.5, 1, 1.5, 2, 3, 4];
                 let pMult = periodMults[Math.floor(Math.random() * periodMults.length)];
                 state.period = pMult * Math.PI;
@@ -220,9 +212,15 @@
                 state.target.xMin = startH;
                 state.target.xMax = startH + state.period;
                 
-                state.view = { xMin: -3.5 * Math.PI, xMax: 3.5 * Math.PI, yMin: -8, yMax: 8 };
+                // AJOUT : Ajustement dynamique de la vue
+                let padding = Math.PI;
+                state.view = { 
+                    xMin: Math.min(-3.5 * Math.PI, state.target.xMin - padding), 
+                    xMax: Math.max(3.5 * Math.PI, state.target.xMax + padding), 
+                    yMin: -8, 
+                    yMax: 8 
+                };
             } else {
-                // Axe réel. Période entière/rationnelle. (b = avec pi)
                 const periods = [1, 2, 3, 4, 6, 8];
                 state.period = periods[Math.floor(Math.random() * periods.length)];
                 
@@ -232,22 +230,26 @@
                 state.target.xMin = startH;
                 state.target.xMax = startH + state.period;
                 
-                state.view = { xMin: -8, xMax: 8, yMin: -8, yMax: 8 };
+                // AJOUT : Ajustement dynamique de la vue
+                let padding = 2;
+                state.view = { 
+                    xMin: Math.min(-8, state.target.xMin - padding), 
+                    xMax: Math.max(8, state.target.xMax + padding), 
+                    yMin: -8, 
+                    yMax: 8 
+                };
             }
 
-            // Calcul d'une réponse valide pour la correction
             state.k = targetK;
-            state.a = targetA; // On assume a > 0 pour la correction de base
+            state.a = targetA; 
             state.b = (2 * Math.PI) / state.period;
             
-            // h dépend de la fonction
             if (state.funcType === 'sin') {
                 state.h = state.target.xMin;
             } else {
-                state.h = state.target.xMin; // Pour cosinus, ça part d'un sommet en haut, donc pareil si on garde a > 0
+                state.h = state.target.xMin; 
             }
 
-            // Réinitialisation de l'interface
             state.attempts = 0;
             state.status = 'playing';
             state.studentParams = null;
@@ -272,7 +274,6 @@
             const h_in = parseMath(document.getElementById('input-h').value);
             const k_in = parseMath(document.getElementById('input-k').value);
             
-            // On met à jour seulement s'il y a des valeurs partielles ou complètes valides
             if (!isNaN(a_in) || !isNaN(b_in) || !isNaN(h_in) || !isNaN(k_in)) {
                 state.studentParams = { 
                     a: isNaN(a_in) ? 1 : a_in, 
@@ -300,7 +301,7 @@
             fb.classList.remove('hidden');
 
             if (isNaN(a_in) || isNaN(b_in) || isNaN(h_in) || isNaN(k_in)) {
-                fb.className = 'mb-2 p-3 rounded-lg border text-sm font-bold bg-yellow-50 text-yellow-800 border-yellow-300';
+                fb.className = 'mt-4 p-4 rounded-lg border text-sm font-bold bg-yellow-50 text-yellow-800 border-yellow-300';
                 fb.innerHTML = "⚠️ Remplis les 4 cases avec des nombres ou des fractions (ex: 2pi/3).";
                 return;
             }
@@ -308,7 +309,6 @@
             state.studentParams = { a: a_in, b: b_in, h: h_in, k: k_in, isComplete: true };
             state.attempts++;
 
-            // Validation géométrique
             const targetAmp = (state.target.yMax - state.target.yMin) / 2;
             const targetK = (state.target.yMax + state.target.yMin) / 2;
             
@@ -318,9 +318,7 @@
             const studentPeriod = Math.abs(2 * Math.PI / b_in);
             const periodCorrect = Math.abs(studentPeriod - state.period) < 0.01;
 
-            // Phase verification inside the box
             let phaseCorrect = true;
-            // On vérifie que la fonction dessinée correspond exactement aux attentes dans la boîte
             const testPoints = [
                 state.target.xMin, 
                 state.target.xMin + state.period/4, 
@@ -328,8 +326,6 @@
                 state.target.xMin + 3*state.period/4
             ];
             
-            // La "vraie" fonction pour vérifier dépend de si on fait un Sin ou un Cos
-            // Pour le corriger, on crée la fonction "parfaite" avec a>0
             let evalTrue = (x) => targetAmp * Math[state.funcType]((2*Math.PI/state.period) * (x - state.target.xMin)) + targetK;
             
             for (let x of testPoints) {
@@ -341,17 +337,10 @@
                 }
             }
 
-            // On s'assure aussi que le h de l'élève place bien LE DÉBUT de son cycle sur le bord de la boîte
-            // Si c'est un Sinus, x=xMin doit donner k
-            // Si c'est un Cosinus, x=xMin doit donner un extremum
             let startsAtBox = false;
             if (state.funcType === 'sin') {
-                // Le cycle commence quand b(x-h) = 0, pi, 2pi... Si a>0, ça monte.
-                // On veut que xMin corresponde au début du cycle.
-                // Donc b(xMin - h) doit être un multiple pair de Pi (si a>0) ou impair (si a<0).
                 let phaseAtMin = b_in * (state.target.xMin - h_in);
                 let modPhase = Math.abs(phaseAtMin % (2*Math.PI));
-                // Autoriser les décalages de période complète
                 if (a_in > 0 && (modPhase < 0.01 || Math.abs(modPhase - 2*Math.PI) < 0.01)) startsAtBox = true;
                 if (a_in < 0 && Math.abs(modPhase - Math.PI) < 0.01) startsAtBox = true;
             } else {
@@ -363,27 +352,25 @@
 
 
             if (ampCorrect && kCorrect && periodCorrect && phaseCorrect && startsAtBox) {
-                // SUCCÈS
                 state.status = 'success';
-                fb.className = 'mb-2 p-3 rounded-lg border text-sm font-medium bg-green-50 text-green-800 border-green-300 shadow-sm';
+                fb.className = 'mt-4 p-4 rounded-lg border text-sm font-medium bg-green-50 text-green-800 border-green-300 shadow-sm';
                 fb.innerHTML = "🎉 <b>Excellent !</b> Ta fonction entre parfaitement dans la boîte !";
                 document.getElementById('btn-verify').disabled = true;
                 document.getElementById('btn-verify').classList.add('opacity-50', 'cursor-not-allowed');
             } else {
-                // ÉCHEC
                 if (state.attempts === 1) {
-                    fb.className = 'mb-2 p-3 rounded-lg border text-sm font-medium bg-orange-50 text-orange-800 border-orange-300';
+                    fb.className = 'mt-4 p-4 rounded-lg border text-sm font-medium bg-orange-50 text-orange-800 border-orange-300';
                     if (!ampCorrect || !kCorrect) {
                         fb.innerHTML = `❌ <b>Essai 1 incorrect.</b><br><u>Indice :</u> Regarde la hauteur de la boîte pour trouver l'<b>amplitude (a)</b> et le centre vertical de la boîte pour l'axe de symétrie <b>(k)</b>.`;
                     } else {
                         fb.innerHTML = `❌ <b>Essai 1 incorrect.</b><br><u>Indice :</u> Ton 'a' et 'k' sont bons. Vérifie la largeur de la boîte pour calculer la période, puis déduis-en <b>'b'</b>.`;
                     }
                 } else if (state.attempts === 2) {
-                    fb.className = 'mb-2 p-3 rounded-lg border text-sm font-medium bg-orange-50 text-orange-800 border-orange-300';
+                    fb.className = 'mt-4 p-4 rounded-lg border text-sm font-medium bg-orange-50 text-orange-800 border-orange-300';
                     fb.innerHTML = `❌ <b>Essai 2 incorrect.</b><br><u>Indice :</u> Pour faire entrer EXACTEMENT UN cycle, le début du cycle de ta fonction doit correspondre au bord gauche de la boîte (donc ton <b>'h'</b> devrait être ce point de départ).`;
                 } else {
                     state.status = 'failed';
-                    fb.className = 'mb-2 p-3 rounded-lg border text-sm font-medium bg-red-50 text-red-800 border-red-300 shadow-sm';
+                    fb.className = 'mt-4 p-4 rounded-lg border text-sm font-medium bg-red-50 text-red-800 border-red-300 shadow-sm';
                     
                     let sol_b = state.axisType === 'pi' ? state.b : `2π/${state.period}`;
                     let sol_h = formatVal(state.h, state.axisType === 'pi');
@@ -398,8 +385,6 @@
             draw();
         }
 
-        // --- Moteur de rendu graphique ---
-
         function mapX(x) { return ((x - state.view.xMin) / (state.view.xMax - state.view.xMin)) * width; }
         function mapY(y) { return height - ((y - state.view.yMin) / (state.view.yMax - state.view.yMin)) * height; }
 
@@ -407,7 +392,6 @@
             if (!ctx) return;
             ctx.clearRect(0, 0, width, height);
 
-            // 1. Grille et Axes
             let xStep = state.axisType === 'pi' ? Math.PI / 2 : 1;
             let yStep = 1;
 
@@ -415,11 +399,10 @@
             ctx.textBaseline = "top";
             ctx.font = "12px Inter";
             
-            // Lignes Verticales
             for (let x = Math.ceil(state.view.xMin / xStep) * xStep; x <= state.view.xMax; x += xStep) {
                 let cx = mapX(x);
                 ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, height);
-                ctx.strokeStyle = Math.abs(x) < 0.01 ? "#475569" : "#f1f5f9"; // Axe Y plus foncé
+                ctx.strokeStyle = Math.abs(x) < 0.01 ? "#475569" : "#f1f5f9"; 
                 ctx.lineWidth = Math.abs(x) < 0.01 ? 2 : 1;
                 ctx.stroke();
 
@@ -429,12 +412,11 @@
                 }
             }
 
-            // Lignes Horizontales
             ctx.textAlign = "right"; ctx.textBaseline = "middle";
             for (let y = Math.ceil(state.view.yMin / yStep) * yStep; y <= state.view.yMax; y += yStep) {
                 let cy = mapY(y);
                 ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(width, cy);
-                ctx.strokeStyle = Math.abs(y) < 0.01 ? "#475569" : "#f1f5f9"; // Axe X plus foncé
+                ctx.strokeStyle = Math.abs(y) < 0.01 ? "#475569" : "#f1f5f9"; 
                 ctx.lineWidth = Math.abs(y) < 0.01 ? 2 : 1;
                 ctx.stroke();
 
@@ -444,11 +426,9 @@
                 }
             }
             
-            // Zéro central
             ctx.fillStyle = "#64748b";
             ctx.fillText("0", mapX(0) - 6, mapY(0) + 8);
 
-            // 2. Fonction de base (sin/cos pure) en arrière-plan pâle
             ctx.beginPath();
             ctx.setLineDash([4, 4]);
             ctx.strokeStyle = "#cbd5e1";
@@ -462,19 +442,17 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // 3. Dessin de la BOÎTE CIBLE
             let pxMin = mapX(state.target.xMin);
             let pxMax = mapX(state.target.xMax);
-            let pyMin = mapY(state.target.yMin); // Bas en px
-            let pyMax = mapY(state.target.yMax); // Haut en px
+            let pyMin = mapY(state.target.yMin); 
+            let pyMax = mapY(state.target.yMax); 
             
-            ctx.fillStyle = "rgba(99, 102, 241, 0.1)"; // bg-indigo-500 avec opacité
+            ctx.fillStyle = "rgba(99, 102, 241, 0.1)"; 
             ctx.fillRect(pxMin, pyMax, pxMax - pxMin, pyMin - pyMax);
-            ctx.strokeStyle = "#6366f1"; // border-indigo-500
+            ctx.strokeStyle = "#6366f1"; 
             ctx.lineWidth = 2;
             ctx.strokeRect(pxMin, pyMax, pxMax - pxMin, pyMin - pyMax);
 
-            // Aide visuelle : ligne pointillée au centre de la boîte (l'axe k)
             let pyMid = mapY((state.target.yMax + state.target.yMin) / 2);
             ctx.beginPath();
             ctx.setLineDash([2, 4]);
@@ -483,7 +461,6 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Fonction de tracé générique
             const drawCurve = (params, color, lineWidth=3, dash=[]) => {
                 if(!params || isNaN(params.a) || isNaN(params.b) || isNaN(params.h) || isNaN(params.k)) return;
                 ctx.beginPath();
@@ -500,27 +477,20 @@
                 ctx.setLineDash([]);
             };
 
-            // 4. Courbes de l'utilisateur ou solution
             if (state.status === 'failed') {
-                // Dessiner la solution attendue en rouge pointillé
                 drawCurve({a: state.a, b: state.b, h: state.h, k: state.k}, "#ef4444", 3, [6, 4]);
-                // La dernière réponse de l'élève en rouge très transparent
                 if (state.studentParams) drawCurve(state.studentParams, "rgba(239, 68, 68, 0.3)", 2);
             } 
             else if (state.status === 'success' && state.studentParams) {
-                // Gagné : tracé vert épais
                 drawCurve(state.studentParams, "#22c55e", 4);
             } 
             else if (state.status === 'playing' && state.studentParams && state.studentParams.isComplete) {
-                // En cours de frappe : orange interactif
                 drawCurve(state.studentParams, "#f97316", 2);
             }
         }
 
-        // Initialisation lors du chargement complet du DOM
         document.addEventListener('DOMContentLoaded', () => {
             resizeCanvas();
-            // Générer le problème initial avec un petit délai pour s'assurer du bon rendu des polices/tailles
             setTimeout(() => {
                 resizeCanvas();
                 generateProblem();
