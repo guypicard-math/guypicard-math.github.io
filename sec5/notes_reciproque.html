@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes de cours — La réciproque d'une fonction</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts : Inter & Architects Daughter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .handwritten {
+      font-family: 'Architects Daughter', cursive;
+    }
+
+    .blank-inline {
+      display: inline-block;
+      min-width: 110px;
+      border-bottom: 2px dashed #94a3b8;
+      padding: 0 6px;
+      text-align: center;
+      vertical-align: baseline;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .blank-inline:hover {
+      background-color: #eff6ff;
+      border-bottom-color: #3b82f6;
+    }
+
+    .blank-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      background-color: #f8fafc;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .blank-box:hover {
+      background-color: #eff6ff;
+      border-color: #60a5fa;
+    }
+
+    .answer-text {
+      opacity: 0;
+      user-select: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .revealed .answer-text {
+      opacity: 1;
+      user-select: auto;
+    }
+
+    .revealed.blank-box {
+      background-color: #ffffff;
+      border-style: solid;
+      border-color: #bfdbfe;
+    }
+
+    .revealed.blank-inline {
+      border-bottom-style: solid;
+      border-bottom-color: #93c5fd;
+    }
+
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .print-card {
+        box-shadow: none !important;
+        border-color: #cbd5e1 !important;
+        break-inside: avoid;
+      }
+
+      .blank-box {
+        background-color: #ffffff !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto space-y-6">
+
+    <!-- EN-TÊTE -->
+    <header class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print-card">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wider text-indigo-600 mb-1">Notes de cours interactives</p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">La réciproque d'une fonction</h1>
+        <p class="text-sm text-slate-500 mt-1">Définition générale, lien graphique et étude des fonctions du 1<sup>er</sup> degré, racine carrée et du 2<sup>e</sup> degré.</p>
+      </div>
+      <div class="flex items-center gap-2 no-print shrink-0">
+        <button
+          id="toggleAllBtn"
+          type="button"
+          class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg shadow-sm transition cursor-pointer"
+        >
+          <span id="toggleAllLabel">Afficher tout le corrigé</span>
+        </button>
+        <button
+          type="button"
+          onclick="window.print()"
+          class="inline-flex items-center gap-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-sm font-medium px-3.5 py-2.5 rounded-lg transition cursor-pointer"
+          title="Imprimer ou enregistrer en PDF"
+        >
+          PDF
+        </button>
+      </div>
+    </header>
+
+    <!-- NOTIONS GÉNÉRALES -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4 print-card">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-slate-900">0. Qu'est-ce qu'une réciproque ?</h2>
+        <span class="text-xs text-slate-400 no-print">Cliquer sur les zones pointillées pour révéler</span>
+      </div>
+
+      <p class="leading-relaxed">
+        On obtient la <strong>réciproque</strong> d'une fonction \(f\) en
+        <span class="blank-inline cursor-pointer answer-zone">
+          <span class="answer-text handwritten text-blue-600 font-semibold">intervertissant les variables \(x\) et \(y\)</span>
+        </span>
+        dans sa règle ou dans ses couples de coordonnées : chaque point \((x, y)\) de \(f\) devient le point
+        <span class="blank-inline cursor-pointer answer-zone">
+          <span class="answer-text handwritten text-blue-600 font-semibold">\((y, x)\)</span>
+        </span>
+        sur sa réciproque.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+          <h3 class="text-sm font-bold text-slate-800 mb-2">Effet graphique</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            La courbe de la réciproque est l'image de celle de \(f\) par une
+            <span class="blank-inline cursor-pointer answer-zone">
+              <span class="answer-text handwritten text-blue-600">réflexion</span>
+            </span>
+            par rapport à la droite d'équation
+            <span class="blank-inline cursor-pointer answer-zone" style="min-width: 70px;">
+              <span class="answer-text handwritten text-blue-600">\(y = x\)</span>
+            </span>.
+          </p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+          <h3 class="text-sm font-bold text-slate-800 mb-2">Domaine et image</h3>
+          <p class="text-sm text-slate-600 leading-relaxed space-y-1">
+            <span class="block">\(\text{dom } f^{-1} = \)
+              <span class="blank-inline cursor-pointer answer-zone" style="min-width: 80px;">
+                <span class="answer-text handwritten text-blue-600">\(\text{ima } f\)</span>
+              </span>
+            </span>
+            <span class="block">\(\text{ima } f^{-1} = \)
+              <span class="blank-inline cursor-pointer answer-zone" style="min-width: 80px;">
+                <span class="answer-text handwritten text-blue-600">\(\text{dom } f\)</span>
+              </span>
+            </span>
+          </p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+          <h3 class="text-sm font-bold text-slate-800 mb-2">Notation \(f^{-1}(x)\)</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            On utilise la notation \(f^{-1}(x)\) <strong>uniquement</strong> lorsque la réciproque est elle-même
+            <span class="blank-inline cursor-pointer answer-zone">
+              <span class="answer-text handwritten text-blue-600">une fonction</span>
+            </span>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1 : EXEMPLES GUIDÉS -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-8 print-card">
+      <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">1. Exemples guidés par famille de fonctions</h2>
+
+      <!-- EXEMPLE A : 1ER DEGRÉ -->
+      <div class="space-y-4">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 text-xs font-bold bg-indigo-100 text-indigo-700 rounded-full">Exemple A</span>
+          <h3 class="text-lg font-semibold text-slate-800">Fonction polynomiale du 1<sup>er</sup> degré : \(f(x) = 2x - 6\)</h3>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-7 space-y-3 text-sm">
+            <p class="text-slate-600">
+              Propriétés de départ : \(\text{dom } f = \mathbb{R}\) et \(\text{ima } f = \mathbb{R}\).
+            </p>
+            <ol class="list-decimal list-inside space-y-2.5">
+              <li>
+                <strong>Remplacer \(f(x)\) par \(y\) :</strong> \(y = 2x - 6\)
+              </li>
+              <li>
+                <strong>Intervertir \(x\) et \(y\) :</strong>
+                <span class="blank-inline cursor-pointer answer-zone">
+                  <span class="answer-text handwritten text-blue-600">\(x = 2y - 6\)</span>
+                </span>
+              </li>
+              <li>
+                <strong>Isoler \(y\) :</strong>
+                <div class="blank-box cursor-pointer answer-zone mt-1.5">
+                  <div class="answer-text handwritten text-blue-600 space-y-1">
+                    <p>\(x + 6 = 2y\)</p>
+                    <p>\(y = \dfrac{x + 6}{2} = \dfrac{1}{2}x + 3\)</p>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <strong>Conclusion :</strong> Comme chaque valeur de \(x\) donne une seule valeur de \(y\), la réciproque est une fonction :
+                <div class="blank-box cursor-pointer answer-zone mt-1.5">
+                  <div class="answer-text handwritten text-blue-600">
+                    \(f^{-1}(x) = \dfrac{1}{2}x + 3\), avec \(\text{dom } f^{-1} = \mathbb{R}\) et \(\text{ima } f^{-1} = \mathbb{R}\).
+                  </div>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <!-- SVG 1ER DEGRÉ -->
+          <div class="lg:col-span-5 flex flex-col items-center">
+            <svg viewBox="0 0 280 280" class="w-full max-w-[270px] bg-white border border-slate-200 rounded-lg">
+              <!-- Grille -->
+              <defs>
+                <pattern id="grid1" width="15" height="15" patternUnits="userSpaceOnUse" x="5" y="5">
+                  <path d="M 15 0 L 0 0 0 15" fill="none" stroke="#f1f5f9" stroke-width="1" />
+                </pattern>
+              </defs>
+              <rect x="20" y="20" width="240" height="240" fill="url(#grid1)" />
+              <!-- Axes -->
+              <line x1="20" y1="140" x2="264" y2="140" stroke="#64748b" stroke-width="1.5" />
+              <line x1="140" y1="260" x2="140" y2="16" stroke="#64748b" stroke-width="1.5" />
+              <text x="262" y="135" font-size="11" fill="#475569" font-style="italic">x</text>
+              <text x="145" y="24" font-size="11" fill="#475569" font-style="italic">y</text>
+
+              <!-- Droite y = x -->
+              <line x1="20" y1="260" x2="260" y2="20" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,4" />
+              <text x="225" y="34" font-size="10" fill="#64748b">y = x</text>
+
+              <!-- f(x) = 2x - 6 -->
+              <line x1="125" y1="260" x2="245" y2="20" stroke="#4f46e5" stroke-width="2.2" />
+              <text x="195" y="112" font-size="11" font-weight="600" fill="#4f46e5">f(x)</text>
+
+              <!-- f^-1(x) = 0.5x + 3 -->
+              <line x1="20" y1="155" x2="260" y2="35" stroke="#0d9488" stroke-width="2.2" />
+              <text x="58" y="115" font-size="11" font-weight="600" fill="#0d9488">f⁻¹(x)</text>
+
+              <!-- Points symétriques -->
+              <circle cx="140" cy="230" r="3.5" fill="#4f46e5" />
+              <text x="146" y="234" font-size="9" fill="#4f46e5">(0, -6)</text>
+              <circle cx="50" cy="140" r="3.5" fill="#0d9488" />
+              <text x="34" y="132" font-size="9" fill="#0d9488">(-6, 0)</text>
+
+              <circle cx="185" cy="140" r="3.5" fill="#4f46e5" />
+              <text x="184" y="154" font-size="9" fill="#4f46e5">(3, 0)</text>
+              <circle cx="140" cy="95" r="3.5" fill="#0d9488" />
+              <text x="110" y="92" font-size="9" fill="#0d9488">(0, 3)</text>
+
+              <!-- Point fixe (6,6) -->
+              <circle cx="230" cy="50" r="3.5" fill="#dc2626" />
+              <text x="228" y="65" font-size="9" fill="#dc2626">(6, 6)</text>
+            </svg>
+            <p class="text-xs text-slate-500 mt-1.5 text-center">Les deux droites se croisent sur l'axe \(y = x\).</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-slate-100" />
+
+      <!-- EXEMPLE B : RACINE CARRÉE -->
+      <div class="space-y-4">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 text-xs font-bold bg-emerald-100 text-emerald-700 rounded-full">Exemple B</span>
+          <h3 class="text-lg font-semibold text-slate-800">Fonction racine carrée : \(f(x) = 2\sqrt{x - 1} + 3\)</h3>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-7 space-y-3 text-sm">
+            <div class="bg-emerald-50/70 border border-emerald-200 rounded-lg p-3">
+              <strong>Étape 0 (indispensable) :</strong> Identifier le domaine et l'image de \(f\) avant de commencer.
+              <div class="mt-1.5 flex flex-wrap gap-4">
+                <span>\(\text{dom } f = \)
+                  <span class="blank-inline cursor-pointer answer-zone">
+                    <span class="answer-text handwritten text-blue-600">\([1, +\infty[\)</span>
+                  </span>
+                </span>
+                <span>\(\text{ima } f = \)
+                  <span class="blank-inline cursor-pointer answer-zone">
+                    <span class="answer-text handwritten text-blue-600">\([3, +\infty[\)</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <ol class="list-decimal list-inside space-y-2.5">
+              <li>
+                <strong>Intervertir \(x\) et \(y\) :</strong>
+                <span class="blank-inline cursor-pointer answer-zone">
+                  <span class="answer-text handwritten text-blue-600">\(x = 2\sqrt{y - 1} + 3\)</span>
+                </span>
+              </li>
+              <li>
+                <strong>Isoler la racine, puis élever au carré :</strong>
+                <div class="blank-box cursor-pointer answer-zone mt-1.5">
+                  <div class="answer-text handwritten text-blue-600 space-y-1">
+                    <p>\(x - 3 = 2\sqrt{y - 1}\)</p>
+                    <p>\(\dfrac{x - 3}{2} = \sqrt{y - 1}\)</p>
+                    <p>\(\left(\dfrac{x - 3}{2}\right)^2 = y - 1 \implies y = \dfrac{1}{4}(x - 3)^2 + 1\)</p>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <strong>Préciser la restriction du domaine :</strong> Puisque \(\text{dom } f^{-1} = \text{ima } f\), on ne garde qu'<strong>une seule branche</strong> de la parabole :
+                <div class="blank-box cursor-pointer answer-zone mt-1.5">
+                  <div class="answer-text handwritten text-blue-600">
+                    \(f^{-1}(x) = \dfrac{1}{4}(x - 3)^2 + 1\), pour \(x \in [3, +\infty[\) (ou \(x \ge 3\)).
+                  </div>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <!-- SVG RACINE CARRÉE -->
+          <div class="lg:col-span-5 flex flex-col items-center">
+            <svg viewBox="0 0 280 280" class="w-full max-w-[270px] bg-white border border-slate-200 rounded-lg">
+              <defs>
+                <pattern id="grid2" width="24" height="24" patternUnits="userSpaceOnUse" x="16" y="0">
+                  <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#f1f5f9" stroke-width="1" />
+                </pattern>
+              </defs>
+              <rect x="16" y="20" width="244" height="244" fill="url(#grid2)" />
+              <!-- Axes (origine à 40, 240 ; 24px/unité) -->
+              <line x1="16" y1="240" x2="264" y2="240" stroke="#64748b" stroke-width="1.5" />
+              <line x1="40" y1="264" x2="40" y2="16" stroke="#64748b" stroke-width="1.5" />
+              <text x="262" y="235" font-size="11" fill="#475569" font-style="italic">x</text>
+              <text x="45" y="24" font-size="11" fill="#475569" font-style="italic">y</text>
+
+              <!-- y = x -->
+              <line x1="16" y1="264" x2="256" y2="24" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,4" />
+              <text x="218" y="38" font-size="10" fill="#64748b">y = x</text>
+
+              <!-- Branche rejetée de la parabole (x < 3) -->
+              <path d="M 112 216 Q 64 216 16 120" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4,4" />
+              <text x="20" y="114" font-size="8.5" fill="#94a3b8">branche exclue</text>
+
+              <!-- f(x) = 2*sqrt(x-1) + 3 -->
+              <path d="M 64 168 L 70 144 L 88 120 L 118 96 L 160 72 L 214 48 L 256 32" fill="none" stroke="#4f46e5" stroke-width="2.4" />
+              <text x="120" y="75" font-size="11" font-weight="600" fill="#4f46e5">f(x)</text>
+
+              <!-- f^-1(x) = 0.25(x-3)^2 + 1 pour x >= 3 -->
+              <path d="M 112 216 L 136 210 L 160 192 L 184 162 L 208 120 L 232 66 L 248 24" fill="none" stroke="#0d9488" stroke-width="2.4" />
+              <text x="205" y="150" font-size="11" font-weight="600" fill="#0d9488">f⁻¹(x)</text>
+
+              <!-- Sommets -->
+              <circle cx="64" cy="168" r="4" fill="#4f46e5" />
+              <text x="69" y="176" font-size="9.5" fill="#4f46e5">(1, 3)</text>
+              <circle cx="112" cy="216" r="4" fill="#0d9488" />
+              <text x="115" y="230" font-size="9.5" fill="#0d9488">(3, 1)</text>
+            </svg>
+            <p class="text-xs text-slate-500 mt-1.5 text-center">La réciproque est une <strong>demi-parabole</strong> (\(x \ge 3\)).</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-slate-100" />
+
+      <!-- EXEMPLE C : 2E DEGRÉ -->
+      <div class="space-y-4">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 text-xs font-bold bg-amber-100 text-amber-800 rounded-full">Exemple C</span>
+          <h3 class="text-lg font-semibold text-slate-800">Fonction polynomiale du 2<sup>e</sup> degré : \(f(x) = (x - 2)^2 + 1\)</h3>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-7 space-y-3 text-sm">
+            <p class="text-slate-600">
+              Propriétés de départ : \(\text{dom } f = \mathbb{R}\) et \(\text{ima } f = [1, +\infty[\).
+            </p>
+            <ol class="list-decimal list-inside space-y-2.5">
+              <li>
+                <strong>Intervertir \(x\) et \(y\) :</strong>
+                <span class="blank-inline cursor-pointer answer-zone">
+                  <span class="answer-text handwritten text-blue-600">\(x = (y - 2)^2 + 1\)</span>
+                </span>
+              </li>
+              <li>
+                <strong>Isoler \(y\) (attention au \(\pm\) lors de la racine carrée !) :</strong>
+                <div class="blank-box cursor-pointer answer-zone mt-1.5">
+                  <div class="answer-text handwritten text-blue-600 space-y-1">
+                    <p>\(x - 1 = (y - 2)^2\)</p>
+                    <p>\(\pm\sqrt{x - 1} = y - 2\)</p>
+                    <p>\(y = \pm\sqrt{x - 1} + 2\)</p>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <strong>Analyse :</strong> Cette réciproque est-elle une fonction ?
+                <div class="blank-box cursor-pointer answer-zone mt-1.5">
+                  <div class="answer-text handwritten text-blue-600 space-y-1">
+                    <p><strong>Non !</strong> Pour tout \(x &gt; 1\), il existe 2 valeurs de \(y\) (échec du test de la droite verticale).</p>
+                    <p>Pour obtenir une fonction réciproque, on doit <strong>restreindre le domaine de \(f\)</strong> à partir du sommet \(h = 2\) :</p>
+                    <p>• Si \(x \in [2, +\infty[\), alors \(f^{-1}(x) = +\sqrt{x - 1} + 2\)</p>
+                    <p>• Si \(x \in ]-\infty, 2]\), alors \(f^{-1}(x) = -\sqrt{x - 1} + 2\)</p>
+                  </div>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <!-- SVG 2E DEGRÉ -->
+          <div class="lg:col-span-5 flex flex-col items-center">
+            <svg viewBox="0 0 280 280" class="w-full max-w-[270px] bg-white border border-slate-200 rounded-lg">
+              <defs>
+                <pattern id="grid3" width="24" height="24" patternUnits="userSpaceOnUse" x="16" y="0">
+                  <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#f1f5f9" stroke-width="1" />
+                </pattern>
+              </defs>
+              <rect x="16" y="20" width="244" height="244" fill="url(#grid3)" />
+              <!-- Axes (origine à 64, 216 ; 24px/unité) -->
+              <line x1="16" y1="216" x2="264" y2="216" stroke="#64748b" stroke-width="1.5" />
+              <line x1="64" y1="264" x2="64" y2="16" stroke="#64748b" stroke-width="1.5" />
+              <text x="262" y="211" font-size="11" fill="#475569" font-style="italic">x</text>
+              <text x="69" y="24" font-size="11" fill="#475569" font-style="italic">y</text>
+
+              <!-- y = x -->
+              <line x1="16" y1="264" x2="256" y2="24" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,4" />
+              <text x="218" y="38" font-size="10" fill="#64748b">y = x</text>
+
+              <!-- f(x) = (x-2)^2 + 1 -->
+              <path d="M 52 42 L 64 96 L 88 168 L 112 192 L 136 168 L 160 96 L 172 42" fill="none" stroke="#4f46e5" stroke-width="2.4" />
+              <text x="148" y="65" font-size="11" font-weight="600" fill="#4f46e5">f(x)</text>
+
+              <!-- Réciproque branche + -->
+              <path d="M 88 168 L 94 156 L 112 144 L 142 132 L 184 120 L 238 108" fill="none" stroke="#0d9488" stroke-width="2.4" />
+              <!-- Réciproque branche - -->
+              <path d="M 88 168 L 94 180 L 112 192 L 142 204 L 184 216 L 238 228" fill="none" stroke="#0d9488" stroke-width="2.4" />
+              <text x="200" y="102" font-size="10" font-weight="600" fill="#0d9488">branche +</text>
+              <text x="200" y="242" font-size="10" font-weight="600" fill="#0d9488">branche −</text>
+
+              <!-- Test de la droite verticale à x = 5 (px = 184) -->
+              <line x1="184" y1="90" x2="184" y2="245" stroke="#ef4444" stroke-width="1.4" stroke-dasharray="3,3" />
+              <circle cx="184" cy="120" r="3.5" fill="#ef4444" />
+              <circle cx="184" cy="216" r="3.5" fill="#ef4444" />
+
+              <!-- Sommets -->
+              <circle cx="112" cy="192" r="3.5" fill="#4f46e5" />
+              <circle cx="88" cy="168" r="3.5" fill="#0d9488" />
+            </svg>
+            <p class="text-xs text-slate-500 mt-1.5 text-center">La droite verticale rouge coupe la réciproque en 2 points : ce n'est pas une fonction.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2 : QUESTION DE RÉFLEXION -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-3 print-card">
+      <h2 class="text-xl font-bold text-slate-900">2. Question de réflexion</h2>
+      <p class="text-sm text-slate-700 leading-relaxed">
+        Sans calculer la règle de la réciproque, comment peut-on savoir <strong>graphiquement</strong> à partir de la courbe de \(f\) si sa réciproque sera une fonction ? Explique ton raisonnement.
+      </p>
+      <div class="blank-box cursor-pointer answer-zone min-h-[78px]">
+        <div class="answer-text handwritten text-blue-600 text-sm leading-relaxed">
+          On applique le <strong>test de la droite horizontale</strong> sur le graphique de \(f\) ! Comme les axes \(x\) et \(y\) sont inversés, une droite horizontale sur \(f\) devient une droite verticale sur la réciproque. Si toute droite horizontale coupe la courbe de \(f\) au plus une fois (comme pour le 1er degré ou la racine carrée), alors sa réciproque est une fonction.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3 : MON EXEMPLE -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-3 print-card">
+      <h2 class="text-xl font-bold text-slate-900">3. Mon exemple</h2>
+      <p class="text-sm text-slate-500">
+        Choisis ta propre fonction (1<sup>er</sup> degré, racine carrée ou 2<sup>e</sup> degré), détermine sa réciproque et trace les deux courbes ainsi que la droite \(y = x\).
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 pt-1">
+        <div class="md:col-span-8 border-2 border-dashed border-slate-200 rounded-lg min-h-[190px] p-4 bg-slate-50/40 flex flex-col justify-between">
+          <span class="text-xs text-slate-400">Démarche algébrique :</span>
+        </div>
+        <div class="md:col-span-4 flex items-center justify-center">
+          <svg viewBox="0 0 200 200" class="w-full max-w-[190px] bg-white border border-slate-200 rounded-lg">
+            <defs>
+              <pattern id="gridBlank" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="1" />
+              </pattern>
+            </defs>
+            <rect width="200" height="200" fill="url(#gridBlank)" />
+            <line x1="0" y1="100" x2="200" y2="100" stroke="#64748b" stroke-width="1.5" />
+            <line x1="100" y1="0" x2="100" y2="200" stroke="#64748b" stroke-width="1.5" />
+            <line x1="0" y1="200" x2="200" y2="0" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="4,4" />
+            <text x="188" y="95" font-size="10" fill="#64748b">x</text>
+            <text x="105" y="12" font-size="10" fill="#64748b">y</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTIONS 4 & 4B : GRILLE 2x2 -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 print-card">
+      <!-- 4. À RETENIR -->
+      <div class="bg-amber-50 border border-amber-300 rounded-xl shadow-sm p-6 space-y-3">
+        <h2 class="text-lg font-bold text-amber-900">⭐ À retenir</h2>
+        <ul class="list-disc list-inside text-sm text-amber-950 space-y-2 leading-relaxed">
+          <li><strong>4 étapes algébriques :</strong> remplacer \(f(x)\) par \(y\), intervertir \(x\) et \(y\), isoler \(y\), puis vérifier le domaine/l'image.</li>
+          <li><strong>Symétrie :</strong> \((a, b) \in f \iff (b, a) \in f^{-1}\) (réflexion par rapport à \(y = x\)).</li>
+          <li><strong>1<sup>er</sup> degré :</strong> réciproque toujours du 1<sup>er</sup> degré (si \(a \neq 0\)).</li>
+          <li><strong>Racine carrée :</strong> réciproque = <strong>une demi-parabole</strong> (domaine restreint par \(\text{ima } f\)).</li>
+          <li><strong>2<sup>e</sup> degré :</strong> réciproque = <strong>relation</strong> à deux branches (\(\pm\)), sauf si on restreint le domaine de \(f\) à partir de \(x = h\).</li>
+        </ul>
+      </div>
+
+      <!-- 4b. ERREUR FATALE -->
+      <div class="bg-rose-50 border border-rose-300 rounded-xl shadow-sm p-6 space-y-3">
+        <h2 class="text-lg font-bold text-rose-900">🛑 Erreur fatale</h2>
+        <div class="space-y-3 text-sm text-rose-950 leading-relaxed">
+          <div>
+            <p class="font-semibold">1. Oublier la restriction du domaine (racine carrée) :</p>
+            <p class="mt-1">Pour \(f(x) = \sqrt{x} + 4\) (\(\text{ima } f = [4, +\infty[\)) :</p>
+            <p class="line-through text-rose-700 decoration-2">\(f^{-1}(x) = (x - 4)^2\) pour tout \(x \in \mathbb{R}\)</p>
+            <p class="text-emerald-800 font-medium">✓ \(f^{-1}(x) = (x - 4)^2\), pour \(x \ge 4\)</p>
+          </div>
+          <div class="pt-1 border-t border-rose-200">
+            <p class="font-semibold">2. Confondre réciproque et inverse multiplicatif :</p>
+            <p class="line-through text-rose-700 decoration-2">\(f^{-1}(x) = \dfrac{1}{f(x)}\)</p>
+            <p class="text-emerald-800 font-medium">✓ L'exposant \(-1\) sur \(f\) désigne la <strong>réciproque</strong>, pas l'inverse !</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5 : PRATIQUE -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-6 print-card">
+      <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">5. Pratique</h2>
+
+      <!-- DOUX -->
+      <div class="space-y-2.5">
+        <h3 class="text-base font-bold text-emerald-700 flex items-center gap-2">
+          <span>🍏 Doux</span>
+          <span class="text-xs font-normal text-slate-500">— Application directe</span>
+        </h3>
+        <p class="text-sm text-slate-700">
+          Détermine la règle de la fonction réciproque de \(f(x) = -3x + 12\), puis donne son domaine et son image.
+        </p>
+        <div class="blank-box cursor-pointer answer-zone">
+          <div class="answer-text handwritten text-blue-600 text-sm space-y-1">
+            <p>\(x = -3y + 12 \implies x - 12 = -3y \implies y = -\dfrac{1}{3}x + 4\)</p>
+            <p><strong>Réponse :</strong> \(f^{-1}(x) = -\dfrac{1}{3}x + 4\), avec \(\text{dom } f^{-1} = \mathbb{R}\) et \(\text{ima } f^{-1} = \mathbb{R}\).</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOYEN -->
+      <div class="space-y-2.5 pt-2 border-t border-slate-100">
+        <h3 class="text-base font-bold text-amber-700 flex items-center gap-2">
+          <span>🌮 Moyen</span>
+          <span class="text-xs font-normal text-slate-500">— Attention au signe et au domaine !</span>
+        </h3>
+        <p class="text-sm text-slate-700">
+          Détermine la règle de la fonction réciproque de \(g(x) = -\sqrt{2(x + 3)} + 5\) en précisant obligatoirement son domaine.
+        </p>
+        <div class="blank-box cursor-pointer answer-zone">
+          <div class="answer-text handwritten text-blue-600 text-sm space-y-1">
+            <p>D'abord : \(\text{dom } g = [-3, +\infty[\) et \(\text{ima } g = ]-\infty, 5]\) (car \(a = -1 &lt; 0\)).</p>
+            <p>\(x = -\sqrt{2(y + 3)} + 5 \implies x - 5 = -\sqrt{2(y + 3)} \implies 5 - x = \sqrt{2(y + 3)}\)</p>
+            <p>\((x - 5)^2 = 2(y + 3) \implies \dfrac{1}{2}(x - 5)^2 = y + 3 \implies y = \dfrac{1}{2}(x - 5)^2 - 3\)</p>
+            <p><strong>Réponse :</strong> \(g^{-1}(x) = \dfrac{1}{2}(x - 5)^2 - 3\), pour \(x \in ]-\infty, 5]\) (soit \(x \le 5\)).</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉPICÉ -->
+      <div class="space-y-2.5 pt-2 border-t border-slate-100">
+        <h3 class="text-base font-bold text-rose-700 flex items-center gap-2">
+          <span>🌶️ Épicé</span>
+          <span class="text-xs font-normal text-slate-500">— Choix de la bonne branche</span>
+        </h3>
+        <p class="text-sm text-slate-700 leading-relaxed">
+          Soit la fonction du 2<sup>e</sup> degré \(h(x) = -2(x - 4)^2 + 18\) définie sur le domaine restreint \(x \in ]-\infty, 4]\).<br />
+          <strong>a)</strong> Détermine la règle de \(h^{-1}(x)\) ainsi que son domaine et son image.<br />
+          <strong>b)</strong> Vérifie algébriquement si le point \((0, 1)\) appartient à la courbe de \(h^{-1}\).
+        </p>
+        <div class="blank-box cursor-pointer answer-zone">
+          <div class="answer-text handwritten text-blue-600 text-sm space-y-1.5">
+            <p><strong>a)</strong> On a \(\text{dom } h = ]-\infty, 4]\) et \(\text{ima } h = ]-\infty, 18]\).</p>
+            <p>\(x = -2(y - 4)^2 + 18 \implies x - 18 = -2(y - 4)^2 \implies -\dfrac{1}{2}(x - 18) = (y - 4)^2\)</p>
+            <p>\(y = \pm\sqrt{-\dfrac{1}{2}(x - 18)} + 4\)</p>
+            <p>Puisque \(\text{ima } h^{-1} = \text{dom } h = ]-\infty, 4]\), on doit avoir \(y \le 4\), donc on choisit le signe <strong>négatif</strong> :</p>
+            <p><strong>\(h^{-1}(x) = -\sqrt{-\dfrac{1}{2}(x - 18)} + 4\)</strong>, avec \(\text{dom } h^{-1} = ]-\infty, 18]\) et \(\text{ima } h^{-1} = ]-\infty, 4]\).</p>
+            <p><strong>b)</strong> \(h^{-1}(0) = -\sqrt{-\dfrac{1}{2}(0 - 18)} + 4 = -\sqrt{9} + 4 = -3 + 4 = 1\). <strong>Oui</strong>, le point \((0, 1)\) appartient à \(h^{-1}\) !</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const answerZones = document.querySelectorAll('.answer-zone');
+    const toggleAllBtn = document.getElementById('toggleAllBtn');
+    const toggleAllLabel = document.getElementById('toggleAllLabel');
+    let allRevealed = false;
+
+    function updateGlobalButton() {
+      const revealedCount = document.querySelectorAll('.answer-zone.revealed').length;
+      allRevealed = revealedCount === answerZones.length;
+      toggleAllLabel.textContent = allRevealed ? 'Masquer tout le corrigé' : 'Afficher tout le corrigé';
+    }
+
+    answerZones.forEach((zone) => {
+      zone.addEventListener('click', () => {
+        zone.classList.toggle('revealed');
+        updateGlobalButton();
+      });
+    });
+
+    toggleAllBtn.addEventListener('click', () => {
+      allRevealed = !allRevealed;
+      answerZones.forEach((zone) => {
+        zone.classList.toggle('revealed', allRevealed);
+      });
+      updateGlobalButton();
+    });
+  </script>
+</body>
+</html>
